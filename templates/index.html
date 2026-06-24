@@ -6,12 +6,9 @@
     <title>📚 English Everydays - Học Tiếng Anh Mỗi Ngày</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== RESET ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
         body { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); min-height: 100vh; padding: 20px; display: flex; justify-content: center; align-items: center; }
         .app { max-width: 950px; width: 100%; background: rgba(255,255,255,0.95); border-radius: 30px; padding: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
-        
-        /* ===== HEADER ===== */
         .header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; }
         .header h1 { font-size: 26px; color: #2d3436; display: flex; align-items: center; gap: 10px; }
         .header h1 i { color: #f5576c; animation: bounce 2s infinite; }
@@ -27,23 +24,18 @@
         .btn-logout { background: #e9ecef; color: #2d3436; }
         .btn-register { background: #2d3436; color: white; }
         .btn-login:hover, .btn-register:hover { transform: scale(1.05); }
-        
-        /* ===== LEVEL CARD ===== */
         .level-card { background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); border-radius: 20px; padding: 25px; color: white; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; min-height: 100px; }
         .level-card .level-info h2 { font-size: 22px; margin-bottom: 5px; }
         .level-card .level-badge { font-size: 48px; background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 20px; backdrop-filter: blur(5px); }
-        
-        /* ===== TABS ===== */
+        .guide-section { background: #fff5f7; border-radius: 15px; padding: 20px; margin: 20px 0; border-left: 5px solid #f5576c; }
+        .guide-section h3 { color: #f5576c; margin-bottom: 10px; }
+        .guide-section ul { list-style: none; padding: 0; font-size: 14px; color: #2d3436; line-height: 1.8; }
         .tabs { display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
         .tabs button { padding: 12px 25px; border: none; border-radius: 50px; background: #f1f2f6; color: #2d3436; font-weight: 600; cursor: pointer; transition: all 0.3s ease; flex: 1; min-width: 100px; }
         .tabs button.active { background: #f5576c; color: white; box-shadow: 0 4px 15px rgba(245,87,108,0.4); }
         .tabs button:hover { transform: translateY(-2px); }
-        
-        /* ===== CONTENT ===== */
         .content { background: #f8f9fa; border-radius: 20px; padding: 25px; min-height: 350px; }
         .hidden { display: none !important; }
-        
-        /* ===== LESSON ITEMS ===== */
         .lesson-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: white; border-radius: 15px; margin-bottom: 12px; transition: all 0.3s ease; cursor: pointer; border: 2px solid transparent; }
         .lesson-item:hover { border-color: #f5576c; transform: translateX(5px); }
         .lesson-item.completed { border-color: #27ae60; background: #f0fff4; }
@@ -53,8 +45,6 @@
         .lesson-item.completed .lesson-icon { background: #27ae60; color: white; }
         .lesson-item .lesson-status { font-size: 13px; padding: 5px 15px; border-radius: 50px; background: #e9ecef; color: #888; flex-shrink: 0; }
         .lesson-item.completed .lesson-status { background: #27ae60; color: white; }
-        
-        /* ===== MODAL ===== */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; }
         .modal-overlay.show { display: flex; }
         .modal-box { background: white; padding: 35px; border-radius: 25px; width: 90%; max-width: 700px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; }
@@ -65,8 +55,6 @@
         .modal-box .lesson-content { line-height: 1.8; font-size: 15px; margin-bottom: 20px; }
         .modal-box .lesson-content h3 { color: #f5576c; margin-top: 15px; margin-bottom: 8px; }
         .modal-box .lesson-content ul, .modal-box .lesson-content ol { padding-left: 25px; }
-        
-        /* ===== EXERCISE ===== */
         .exercise-item { background: #f8f9fa; padding: 15px; border-radius: 15px; margin-bottom: 15px; }
         .exercise-item .question { font-weight: 600; margin-bottom: 10px; }
         .exercise-item .options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -77,10 +65,6 @@
         .exercise-item .options button:disabled { cursor: not-allowed; opacity: 0.7; }
         .exercise-item .explanation { margin-top: 10px; padding: 10px; background: #e9ecef; border-radius: 8px; display: none; }
         .exercise-item .explanation.show { display: block; }
-        
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 650px) { .app { padding: 15px; } .header { flex-direction: column; text-align: center; } .user-stats { justify-content: center; } .level-card { flex-direction: column; text-align: center; } .exercise-item .options { grid-template-columns: 1fr; } .tabs button { font-size: 12px; padding: 10px; } }
-        
         .btn-primary { background: #f5576c; color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 16px; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(245,87,108,0.4); }
         .btn-success { background: #27ae60; color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; cursor: pointer; }
@@ -88,6 +72,7 @@
         .text-center { text-align: center; }
         .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #2d3436; color: white; padding: 15px 30px; border-radius: 50px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 9999; animation: toastSlideUp 0.5s ease; max-width: 90%; text-align: center; }
         @keyframes toastSlideUp { from { transform: translateX(-50%) translateY(50px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
+        @media (max-width: 650px) { .app { padding: 15px; } .header { flex-direction: column; text-align: center; } .user-stats { justify-content: center; } .level-card { flex-direction: column; text-align: center; } .exercise-item .options { grid-template-columns: 1fr; } .tabs button { font-size: 12px; padding: 10px; } }
     </style>
 </head>
 <body>
@@ -120,6 +105,18 @@
                 <p id="levelDesc">Bắt đầu làm quen với bảng chữ cái!</p>
             </div>
             <div class="level-badge" id="levelEmoji">🐣</div>
+        </div>
+
+        <!-- HƯỚNG DẪN SỬ DỤNG -->
+        <div class="guide-section">
+            <h3>📖 HƯỚNG DẪN SỬ DỤNG</h3>
+            <ul>
+                <li>✅ <strong>Học bài:</strong> Nhấp vào tên bài học để xem lý thuyết và làm bài tập.</li>
+                <li>✅ <strong>Nhận XP:</strong> Hoàn thành bài học và quiz để nhận điểm kinh nghiệm.</li>
+                <li>✅ <strong>Lên Level:</strong> Tích lũy đủ XP để mở khóa level tiếp theo.</li>
+                <li>✅ <strong>Thành tựu:</strong> Hoàn thành các mốc để nhận huy hiệu.</li>
+                <li>🔐 <strong>Đăng nhập:</strong> Cần đăng nhập để lưu tiến trình.</li>
+            </ul>
         </div>
 
         <!-- TABS -->
@@ -182,11 +179,12 @@
             isLoggedIn: false,
             levels: [],
             lessons: {},
+            quizzes: {},
             currentLessonId: null
         };
 
         // ============================================================
-        // API HELPER (ĐÃ SỬA LỖI)
+        // API HELPER
         // ============================================================
         async function apiCall(url, method = 'GET', body = null) {
             try {
@@ -452,9 +450,7 @@
                 const lesson = await apiCall(`/api/lessons/detail/${lessonId}`);
                 document.getElementById('modalLessonTitle').textContent = lesson.name;
                 document.getElementById('modalLessonContent').innerHTML = lesson.content;
-                
                 await loadExercises(lessonId);
-                
                 document.getElementById('lessonModal').classList.add('show');
             } catch (err) {
                 showToast('❌ Lỗi tải bài học: ' + err.message);
@@ -475,7 +471,6 @@
                     container.innerHTML = '<div class="text-center" style="padding: 15px; color: #888;">📝 Chưa có bài tập cho bài học này.</div>';
                     return;
                 }
-                
                 let html = '<h3>📝 Bài tập</h3>';
                 for (const ex of exercises) {
                     html += `
@@ -539,7 +534,6 @@
                 openLoginModal();
                 return;
             }
-            
             try {
                 const data = await apiCall('/api/progress/lesson', 'POST', {
                     lesson_id: state.currentLessonId
@@ -652,22 +646,35 @@
         function renderAchievements() {
             const container = document.getElementById('achievementList');
             const achievements = [
-                { id: 'ach_1', name: 'Người mới bắt đầu', icon: '🌱', desc: 'Hoàn thành Level 1' },
-                { id: 'ach_2', name: 'Chú gà con', icon: '🐥', desc: 'Hoàn thành Level 2' },
-                { id: 'ach_3', name: 'Chú vẹt thông thái', icon: '🦜', desc: 'Hoàn thành Level 3' },
-                { id: 'ach_4', name: 'Cá heo thông minh', icon: '🐬', desc: 'Hoàn thành Level 4' },
-                { id: 'ach_5', name: 'Sư tử tự tin', icon: '🦁', desc: 'Hoàn thành Level 5' },
-                { id: 'ach_6', name: 'Đại bàng chiến thắng', icon: '🦅', desc: 'Hoàn thành Level 6' },
-                { id: 'ach_7', name: 'Người học siêng năng', icon: '📚', desc: 'Hoàn thành 20 bài học' },
+                { id: 'ach_1', name: '🌱 Người mới bắt đầu', icon: '🌱', desc: 'Hoàn thành Level 1' },
+                { id: 'ach_2', name: '🐥 Chú gà con', icon: '🐥', desc: 'Hoàn thành Level 2' },
+                { id: 'ach_3', name: '🦜 Chú vẹt thông thái', icon: '🦜', desc: 'Hoàn thành Level 3' },
+                { id: 'ach_4', name: '🐬 Cá heo thông minh', icon: '🐬', desc: 'Hoàn thành Level 4' },
+                { id: 'ach_5', name: '🦁 Sư tử tự tin', icon: '🦁', desc: 'Hoàn thành Level 5' },
+                { id: 'ach_6', name: '🦅 Đại bàng chiến thắng', icon: '🦅', desc: 'Hoàn thành Level 6' },
+                { id: 'ach_7', name: '📚 Người học siêng năng', icon: '📚', desc: 'Hoàn thành 20 bài học' },
             ];
 
-            let html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:15px;">';
+            // Hướng dẫn cách nhận thành tựu
+            let html = `
+                <div style="background: #fff5f7; border-radius: 15px; padding: 20px; margin-bottom: 20px; border-left: 5px solid #f5576c;">
+                    <h3 style="color: #f5576c; margin-bottom: 10px;">🏆 CÁCH NHẬN THÀNH TỰU</h3>
+                    <ul style="list-style: none; padding: 0; font-size: 14px; color: #2d3436; line-height: 1.8;">
+                        <li>✅ Hoàn thành tất cả bài học trong 1 Level → Nhận huy hiệu Level đó</li>
+                        <li>✅ Hoàn thành 20 bài học bất kỳ → Nhận huy hiệu "Người học siêng năng"</li>
+                        <li>💡 Mỗi huy hiệu sẽ được đánh dấu khi bạn đạt đủ điều kiện</li>
+                    </ul>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:15px;">
+            `;
+
             for (const ach of achievements) {
                 const unlocked = state.achievements.includes(ach.id);
                 html += `
                     <div class="achievement-item" style="background:white;border-radius:15px;padding:20px;text-align:center;border:2px solid ${unlocked ? '#f5576c' : '#e9ecef'};${unlocked ? 'background:#fff5f7;' : 'opacity:0.5;filter:grayscale(1);'}">
                         <div style="font-size:36px;margin-bottom:8px;">${ach.icon}</div>
                         <div style="font-weight:600;font-size:13px;color:#2d3436;">${ach.name}</div>
+                        <div style="font-size:11px;color:#888;margin-top:5px;">${ach.desc}</div>
                         <div style="font-size:11px;color:#888;margin-top:5px;">${unlocked ? '✅ Đã mở' : '🔒 Khóa'}</div>
                     </div>
                 `;
@@ -721,7 +728,6 @@
             renderAll();
         }
 
-        // Đóng modal khi click bên ngoài
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('modal-overlay')) {
                 e.target.classList.remove('show');
