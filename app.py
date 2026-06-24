@@ -30,7 +30,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 # ============================================================
-# KHỞI TẠO DATABASE VÀ DỮ LIỆU MẪU (CHỈ CHẠY 1 LẦN)
+# KHỞI TẠO DATABASE VÀ DỮ LIỆU MẪU
 # ============================================================
 with app.app_context():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
@@ -48,7 +48,7 @@ with app.app_context():
         db.session.commit()
         print("✅ Đã tạo admin: admin / admin123")
     
-    # === TẠO DỮ LIỆU MẪU (CHỈ KHI CHƯA CÓ BÀI HỌC) ===
+    # === TẠO DỮ LIỆU MẪU ===
     if Lesson.query.count() == 0:
         print("⏳ Đang tạo dữ liệu mẫu...")
         
@@ -130,10 +130,12 @@ with app.app_context():
 # ROUTES
 # ============================================================
 
+# ---- Trang chủ ----
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# ---- Trang Admin ----
 @app.route('/admin')
 @login_required
 def admin_panel():
@@ -141,7 +143,7 @@ def admin_panel():
         return "Bạn không có quyền truy cập!", 403
     return render_template('admin.html')
 
-# ----- AUTH -----
+# ===== API AUTH =====
 @app.route('/api/register', methods=['POST'])
 def register():
     data = request.json
@@ -202,7 +204,7 @@ def get_user_progress():
         'achievements': []
     })
 
-# ----- LEARNING -----
+# ===== API LEARNING =====
 @app.route('/api/levels')
 def get_levels():
     levels = [
@@ -254,7 +256,7 @@ def get_quiz(level_id):
         })
     return jsonify({'error': 'Chưa có quiz!'}), 404
 
-# ----- PROGRESS -----
+# ===== API PROGRESS =====
 @app.route('/api/progress/lesson', methods=['POST'])
 @login_required
 def complete_lesson():
@@ -280,6 +282,30 @@ def complete_lesson():
     
     return jsonify({'message': 'Đã hoàn thành rồi!'})
 
+@app.route('/api/progress/exercise', methods=['POST'])
+@login_required
+def complete_exercise():
+    data = request.json
+    exercise_id = data.get('exercise_id')
+    lesson_id = data.get('lesson_id')
+    user_answer = data.get('user_answer')
+    
+    exercise = Exercise.query.get(exercise_id)
+    if not exercise:
+        return jsonify({'error': 'Không tìm thấy bài tập!'}), 404
+    
+    is_correct = (user_answer == exercise.correct_answer)
+    
+    progress = UserProgress.query.filter_by(user_id=current_user.id, lesson_id=lesson_id).first()
+    if progress and is_correct:
+        progress.exercise_completed = True
+        db.session.commit()
+    
+    return jsonify({
+        'correct': is_correct,
+        'explanation': exercise.explanation
+    })
+
 @app.route('/api/progress/quiz', methods=['POST'])
 @login_required
 def pass_quiz():
@@ -301,7 +327,7 @@ def pass_quiz():
     db.session.commit()
     return jsonify({'message': 'Quiz hoàn thành!', 'xp': current_user.xp})
 
-# ----- ADMIN -----
+# ===== API ADMIN =====
 @app.route('/api/admin/stats')
 @login_required
 def admin_stats():
@@ -457,5 +483,8 @@ def admin_quiz_detail(quiz_id):
         db.session.commit()
         return jsonify({'message': 'Đã xóa quiz!'})
 
+# ============================================================
+# RUN
+# ============================================================
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
