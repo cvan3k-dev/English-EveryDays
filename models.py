@@ -17,7 +17,7 @@ class User(UserMixin, db.Model):
     
     progress = db.relationship('UserProgress', backref='user', lazy=True)
 
-# Bảng bài học (có nội dung chi tiết)
+# Bảng bài học
 class Lesson(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     level_id = db.Column(db.Integer, nullable=False)
@@ -29,7 +29,7 @@ class Lesson(db.Model):
     
     exercises = db.relationship('Exercise', backref='lesson', lazy=True)
 
-# Bảng bài tập (đa dạng loại)
+# Bảng bài tập
 class Exercise(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     lesson_id = db.Column(db.Integer, db.ForeignKey('lesson.id'), nullable=False)
@@ -39,10 +39,10 @@ class Exercise(db.Model):
     option_c = db.Column(db.String(200))
     option_d = db.Column(db.String(200))
     correct_answer = db.Column(db.Integer)  # 0=A, 1=B, 2=C, 3=D
-    exercise_type = db.Column(db.String(50), default='multiple_choice')  # multiple_choice, fill_blank
-    explanation = db.Column(db.Text)  # Giải thích đáp án
+    exercise_type = db.Column(db.String(50), default='multiple_choice')
+    explanation = db.Column(db.Text)
 
-# Bảng Quiz (cuối mỗi level)
+# Bảng Quiz
 class Quiz(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     level_id = db.Column(db.Integer, nullable=False)
@@ -63,4 +63,4 @@ class UserProgress(db.Model):
     completed_at = db.Column(db.DateTime)
     quiz_passed = db.Column(db.Boolean, default=False)
     quiz_score = db.Column(db.Integer, default=0)
-    exercise_completed = db.Column(db.Boolean, default=False)  # Thêm để theo dõi bài tập
+    exercise_completed = db.Column(db.Boolean, default=False)
