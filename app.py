@@ -49,56 +49,609 @@ with app.app_context():
         db.session.commit()
         print("✅ Đã tạo admin: admin / admin123")
 
-    # ---- TẠO DỮ LIỆU MẪU ----
+    # ---- TẠO DỮ LIỆU MẪU (CHỈ KHI CHƯA CÓ BÀI HỌC) ----
     if Lesson.query.count() == 0:
         print("⏳ Đang tạo dữ liệu mẫu...")
 
-        # ===== BÀI HỌC (LÝ THUYẾT CHI TIẾT) =====
+        # ============================================================
+        # BÀI HỌC (LÝ THUYẾT CHI TIẾT - MỞ RỘNG)
+        # ============================================================
         lessons_data = [
-            # LEVEL 1
-            {'level_id':1,'name':'🔤 Bảng chữ cái ABC','description':'Học 26 chữ cái','content':'## 📚 LÝ THUYẾT\nBảng chữ cái tiếng Anh có 26 chữ cái...','xp_reward':20,'order':1},
-            {'level_id':1,'name':'🔢 Số đếm 1-20','description':'Học đếm từ 1 đến 20','content':'## 📚 LÝ THUYẾT\nSố đếm từ 1 đến 20...','xp_reward':20,'order':2},
-            # LEVEL 2
-            {'level_id':2,'name':'👨‍👩‍👧‍👦 Gia đình','description':'Từ vựng về gia đình','content':'## 📚 LÝ THUYẾT\nTừ vựng về gia đình...','xp_reward':30,'order':1},
-            {'level_id':2,'name':'🐱 Động vật','description':'Từ vựng về động vật','content':'## 📚 LÝ THUYẾT\nTừ vựng về động vật...','xp_reward':30,'order':2},
-            # LEVEL 3
-            {'level_id':3,'name':'⏰ Thì hiện tại đơn','description':'Cấu trúc và cách dùng','content':'## 📚 LÝ THUYẾT\nThì hiện tại đơn...','xp_reward':35,'order':1},
-            {'level_id':3,'name':'📝 Câu phủ định & nghi vấn','description':'Cách đặt câu phủ định và câu hỏi','content':'## 📚 LÝ THUYẾT\nCâu phủ định và nghi vấn...','xp_reward':35,'order':2},
-            # LEVEL 4
-            {'level_id':4,'name':'⏳ Thì quá khứ đơn','description':'Cách dùng thì quá khứ đơn','content':'## 📚 LÝ THUYẾT\nThì quá khứ đơn...','xp_reward':45,'order':1},
-            {'level_id':4,'name':'🔮 Thì tương lai gần','description':'Cấu trúc "be going to"','content':'## 📚 LÝ THUYẾT\nThì tương lai gần...','xp_reward':45,'order':2},
-            # LEVEL 5
-            {'level_id':5,'name':'🎯 Câu điều kiện loại 1','description':'If + hiện tại, will + V','content':'## 📚 LÝ THUYẾT\nCâu điều kiện loại 1...','xp_reward':55,'order':1},
-            {'level_id':5,'name':'📖 Câu bị động','description':'Cấu trúc câu bị động','content':'## 📚 LÝ THUYẾT\nCâu bị động...','xp_reward':55,'order':2},
-            # LEVEL 6
-            {'level_id':6,'name':'💼 Giao tiếp công sở','description':'Từ vựng và mẫu câu công sở','content':'## 📚 LÝ THUYẾT\nTừ vựng công sở...','xp_reward':70,'order':1},
-            {'level_id':6,'name':'🌍 Du lịch & Văn hóa','description':'Từ vựng du lịch và giao tiếp','content':'## 📚 LÝ THUYẾT\nTừ vựng du lịch...','xp_reward':70,'order':2},
+            # ==================== LEVEL 1: EGG ====================
+            {
+                'level_id': 1,
+                'name': '🔤 Bảng chữ cái ABC',
+                'description': 'Học 26 chữ cái tiếng Anh qua hình ảnh và âm thanh',
+                'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Bảng chữ cái tiếng Anh (English Alphabet) có **26 chữ cái**, được chia thành hai loại chính:
+
+### 🔤 Nguyên âm (Vowels)
+Có **5 nguyên âm**: **A, E, I, O, U**
+- Đây là những chữ cái phát ra âm thanh rõ ràng, không bị cản trở bởi lưỡi, môi hay răng.
+- Ví dụ: **A**pple (quả táo), **E**lephant (con voi), **I**ce (đá), **O**range (quả cam), **U**mbrella (cây dù).
+
+### 🔤 Phụ âm (Consonants)
+Có **21 phụ âm** còn lại: B, C, D, F, G, H, J, K, L, M, N, P, Q, R, S, T, V, W, X, Y, Z
+- Phụ âm là những chữ cái phát ra âm thanh khi kết hợp với nguyên âm.
+- Ví dụ: **B**all (quả bóng), **C**at (con mèo), **D**og (con chó).
+
+### 🎯 MẸO GHI NHỚ NHANH
+Hãy học thuộc bài hát ABC để nhớ thứ tự các chữ cái!
+- **A B C D E F G** / **H I J K L M N O P** / **Q R S T U V** / **W X Y Z**
+
+### 📝 VÍ DỤ CỤ THỂ
+| Chữ cái | Từ vựng | Nghĩa |
+|---------|---------|-------|
+| A | **A**pple | Quả táo |
+| B | **B**all | Quả bóng |
+| C | **C**at | Con mèo |
+| D | **D**og | Con chó |
+| E | **E**lephant | Con voi |
+| F | **F**ish | Con cá |
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. **Khoanh tròn nguyên âm** trong các chữ cái sau: B, A, C, E, D, I, O, F, U
+2. **Viết 3 từ** bắt đầu bằng chữ cái "B" mà bạn biết.
+3. **Viết 2 từ** bắt đầu bằng chữ cái "M".
+                ''',
+                'xp_reward': 25,
+                'order': 1
+            },
+            {
+                'level_id': 1,
+                'name': '🔢 Số đếm 1-20',
+                'description': 'Học đếm từ 1 đến 20 và cách sử dụng trong câu',
+                'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Số đếm từ 1 đến 20 trong tiếng Anh được chia thành các nhóm:
+
+### 🧮 Nhóm 1-10 (Cơ bản)
+- **1** One
+- **2** Two
+- **3** Three
+- **4** Four
+- **5** Five
+- **6** Six
+- **7** Seven
+- **8** Eight
+- **9** Nine
+- **10** Ten
+
+### 🧮 Nhóm 11-20 (Phức tạp hơn)
+- **11** Eleven
+- **12** Twelve
+- **13** Thirteen
+- **14** Fourteen
+- **15** Fifteen
+- **16** Sixteen
+- **17** Seventeen
+- **18** Eighteen
+- **19** Nineteen
+- **20** Twenty
+
+### 🎯 MẸO GHI NHỚ NHANH
+- Các số từ **13 đến 19** đều có đuôi **"teen"** (thir**teen**, four**teen**, six**teen**...).
+- Số **20** là **Twenty** (không phải "twoty").
+- Số **12** là **Twelve** (không phải "two" + "teen").
+
+### 📝 VÍ DỤ CỤ THỂ
+- **One** apple = 1 quả táo.
+- **Five** dogs = 5 con chó.
+- **Twenty** students = 20 học sinh.
+- I have **three** brothers. (Tôi có 3 anh em trai.)
+- She is **ten** years old. (Cô ấy 10 tuổi.)
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. Điền số thích hợp vào chỗ trống:
+   - There are ____ (7) days in a week.
+   - I have ____ (12) pencils.
+   - She has ____ (15) books.
+2. Viết các số sau bằng tiếng Anh: 4, 9, 11, 18, 20.
+3. Dịch sang tiếng Anh: "Tôi có 8 quả cam."
+                ''',
+                'xp_reward': 25,
+                'order': 2
+            },
+            # ==================== LEVEL 2: CHICK ====================
+            {
+                'level_id': 2,
+                'name': '👨‍👩‍👧‍👦 Gia đình (Family)',
+                'description': 'Từ vựng về các thành viên trong gia đình và cách giới thiệu',
+                'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Từ vựng về gia đình giúp bạn giới thiệu về những người thân yêu của mình.
+
+### 👨‍👩‍👧 Các thành viên chính
+| Tiếng Anh | Tiếng Việt | Ghi chú |
+|-----------|------------|---------|
+| **Father** | Bố | Cách nói trang trọng |
+| **Dad** | Bố | Cách nói thân mật |
+| **Mother** | Mẹ | Cách nói trang trọng |
+| **Mom** | Mẹ | Cách nói thân mật |
+| **Brother** | Anh/Em trai | Có thể là anh hoặc em trai |
+| **Sister** | Chị/Em gái | Có thể là chị hoặc em gái |
+| **Grandfather** | Ông | Ông nội/ngoại |
+| **Grandmother** | Bà | Bà nội/ngoại |
+| **Uncle** | Chú/Bác | Anh/em trai của bố mẹ |
+| **Aunt** | Cô/Dì | Chị/em gái của bố mẹ |
+| **Cousin** | Anh/chị/em họ | Con của cô/chú/bác |
+
+### 🎯 MẸO GHI NHỚ NHANH
+- **Father** và **Mother** là cách nói trang trọng, dùng trong văn viết.
+- **Dad** và **Mom** là cách nói thân mật, dùng trong giao tiếp hàng ngày.
+
+### 📝 VÍ DỤ CỤ THỂ
+- "This is my **mother**." (Đây là mẹ tôi.)
+- "I have one **brother**." (Tôi có một anh trai.)
+- "My **grandfather** is 70 years old." (Ông tôi 70 tuổi.)
+- "She is my **sister**." (Cô ấy là em gái tôi.)
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. "Mẹ" trong tiếng Anh là gì? (Viết cả 2 cách)
+2. Dịch sang tiếng Anh: "Tôi có một em gái."
+3. Dịch sang tiếng Anh: "Ông tôi là bác sĩ."
+4. Giới thiệu về gia đình bạn bằng tiếng Anh (3-4 câu).
+                ''',
+                'xp_reward': 35,
+                'order': 1
+            },
+            {
+                'level_id': 2,
+                'name': '🐱 Động vật (Animals)',
+                'description': 'Từ vựng về các loài động vật quen thuộc',
+                'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Từ vựng về động vật giúp bạn miêu tả thế giới xung quanh.
+
+### 🐾 Động vật nuôi trong nhà
+| Tiếng Anh | Tiếng Việt |
+|-----------|------------|
+| **Cat** | Mèo |
+| **Dog** | Chó |
+| **Bird** | Chim |
+| **Fish** | Cá |
+| **Hamster** | Chuột hamster |
+| **Rabbit** | Thỏ |
+
+### 🐾 Động vật hoang dã
+| Tiếng Anh | Tiếng Việt |
+|-----------|------------|
+| **Lion** | Sư tử |
+| **Tiger** | Hổ |
+| **Elephant** | Voi |
+| **Giraffe** | Hươu cao cổ |
+| **Monkey** | Khỉ |
+| **Bear** | Gấu |
+
+### 🎯 MẸO GHI NHỚ NHANH
+- **Cat** và **Dog** là hai con vật nuôi phổ biến nhất.
+- **Elephant** là động vật lớn nhất trên cạn.
+- **Giraffe** có cổ dài nhất.
+
+### 📝 VÍ DỤ CỤ THỂ
+- I have a **cat**. (Tôi có một con mèo.)
+- The **dog** is big. (Con chó to.)
+- **Elephants** are very large. (Voi rất to lớn.)
+- **Birds** can fly. (Chim có thể bay.)
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. "Dog" có nghĩa là gì?
+2. Dịch sang tiếng Anh: "Con chim đang bay."
+3. Viết tên 3 động vật hoang dã bằng tiếng Anh.
+4. Viết một câu miêu tả con vật yêu thích của bạn.
+                ''',
+                'xp_reward': 35,
+                'order': 2
+            },
+            # ==================== LEVEL 3: PARROT ====================
+            {
+                'level_id': 3,
+                'name': '⏰ Thì hiện tại đơn',
+                'description': 'Cấu trúc, cách dùng và dấu hiệu nhận biết thì hiện tại đơn',
+                'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Thì hiện tại đơn (Present Simple Tense) là thì cơ bản nhất trong tiếng Anh, dùng để diễn tả:
+
+### 📌 Cách dùng
+1. **Hành động thường xuyên xảy ra** (thói quen, sở thích)
+   - I **eat** breakfast every day. (Tôi ăn sáng mỗi ngày.)
+   - She **goes** to school by bus. (Cô ấy đi học bằng xe buýt.)
+
+2. **Sự thật hiển nhiên, chân lý**
+   - The sun **rises** in the east. (Mặt trời mọc ở hướng đông.)
+   - Water **boils** at 100°C. (Nước sôi ở 100°C.)
+
+3. **Sở thích, thói quen**
+   - He **likes** music. (Anh ấy thích âm nhạc.)
+   - They **love** dogs. (Họ yêu chó.)
+
+### 🔧 CẤU TRÚC
+**Khẳng định:** S + V(s/es) + O
+- I/You/We/They + V (nguyên mẫu)
+- He/She/It + V(s/es)
+
+**Phủ định:** S + do/does + not + V
+- I/You/We/They + do not (don't) + V
+- He/She/It + does not (doesn't) + V
+
+**Nghi vấn:** Do/Does + S + V?
+- Do you like coffee?
+- Does she speak English?
+
+### 🎯 MẸO GHI NHỚ NHANH
+- **Thêm "s/es"** vào động từ khi chủ ngữ là **He/She/It**.
+- **Don't** = do not (dùng với I/You/We/They)
+- **Doesn't** = does not (dùng với He/She/It)
+
+### 📝 VÍ DỤ CỤ THỂ
+- I **eat** breakfast at 7 AM.
+- She **eats** lunch at noon.
+- They **do not (don't) play** football.
+- **Does** he **like** coffee?
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. Chia động từ: She (go) ____ to school every day.
+2. Chia động từ: They (play) ____ football.
+3. Chuyển sang phủ định: He likes cats.
+4. Chuyển sang nghi vấn: They play football.
+                ''',
+                'xp_reward': 40,
+                'order': 1
+            },
+            {
+                'level_id': 3,
+                'name': '📝 Câu phủ định & nghi vấn',
+                'description': 'Cách đặt câu phủ định và câu hỏi trong thì hiện tại đơn',
+                'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+### ❌ CÂU PHỦ ĐỊNH (Negative Sentences)
+Thêm **"do not"** (don't) hoặc **"does not"** (doesn't) trước động từ.
+
+**Cấu trúc:** S + do/does + not + V
+- I **don't** like coffee.
+- She **doesn't** eat meat.
+
+**Lưu ý:** Khi dùng **don't/doesn't**, động từ trở về nguyên mẫu (không thêm "s/es").
+
+### ❓ CÂU NGHI VẤN (Interrogative Sentences)
+Đưa **"do"** hoặc **"does"** lên đầu câu.
+
+**Cấu trúc:** Do/Does + S + V?
+- **Do** you like music?
+- **Does** she speak English?
+
+**Trả lời ngắn:**
+- Yes, I do. / No, I don't.
+- Yes, she does. / No, she doesn't.
+
+### 🎯 MẸO GHI NHỚ NHANH
+- **Don't** = do not (dùng với I/You/We/They)
+- **Doesn't** = does not (dùng với He/She/It)
+- **Do/Does** đứng đầu câu khi hỏi.
+
+### 📝 VÍ DỤ CỤ THỂ
+- **Phủ định:** He doesn't like cats. (Anh ấy không thích mèo.)
+- **Nghi vấn:** Do they play football? (Họ có chơi bóng không?)
+- **Trả lời:** Yes, they do. / No, they don't.
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. Chuyển sang phủ định: "He likes cats."
+2. Chuyển sang nghi vấn: "They play football."
+3. Trả lời câu hỏi: "Do you like coffee?" (Trả lời bằng 2 cách: có và không)
+4. Đặt câu phủ định với: She / eat / meat.
+                ''',
+                'xp_reward': 40,
+                'order': 2
+            },
+            # ==================== LEVEL 4: DOLPHIN ====================
+            {
+                'level_id': 4,
+                'name': '⏳ Thì quá khứ đơn',
+                'description': 'Cấu trúc, cách dùng và động từ bất quy tắc trong thì quá khứ đơn',
+                'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Thì quá khứ đơn (Past Simple Tense) diễn tả hành động đã xảy ra và kết thúc trong quá khứ.
+
+### 📌 Cách dùng
+1. **Hành động đã xảy ra và kết thúc trong quá khứ**
+   - I **walked** to school yesterday. (Hôm qua tôi đã đi bộ đến trường.)
+   - She **visited** her grandmother last week. (Tuần trước cô ấy đã thăm bà.)
+
+2. **Chuỗi hành động trong quá khứ**
+   - I **woke up**, **brushed** my teeth, and **went** to school.
+
+### 🔧 CẤU TRÚC
+**Khẳng định:** S + V(ed/ cột 2) + O
+- I **walked** to school.
+- She **went** to the market.
+
+**Phủ định:** S + did not (didn't) + V
+- I didn't **walk** to school.
+- She didn't **go** to the market.
+
+**Nghi vấn:** Did + S + V?
+- Did you **walk** to school?
+- Did she **go** to the market?
+
+### 🎯 MẸO GHI NHỚ NHANH
+- **Động từ có quy tắc:** Thêm **-ed** (walk → walked).
+- **Động từ bất quy tắc:** Học thuộc bảng động từ bất quy tắc (go → went, eat → ate).
+
+### 📝 VÍ DỤ CỤ THỂ
+- I **visited** my grandmother yesterday.
+- They **played** football last Sunday.
+- She **didn't eat** breakfast this morning.
+- **Did** you **see** the movie?
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. Chia động từ: I (visit) ____ my grandmother yesterday.
+2. Chia động từ: They (play) ____ football last Sunday.
+3. Chuyển sang phủ định: He went to school.
+4. Chuyển sang nghi vấn: She ate breakfast.
+                ''',
+                'xp_reward': 50,
+                'order': 1
+            },
+            {
+                'level_id': 4,
+                'name': '🔮 Thì tương lai gần',
+                'description': 'Cấu trúc "be going to" để diễn tả dự định và kế hoạch',
+                'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Thì tương lai gần (Near Future Tense) diễn tả dự định hoặc kế hoạch trong tương lai gần.
+
+### 📌 Cách dùng
+1. **Dự định đã có kế hoạch từ trước**
+   - I **am going to** study English tonight. (Tôi dự định học tiếng Anh tối nay.)
+   - She **is going to** travel to Japan next month. (Cô ấy dự định du lịch Nhật Bản tháng sau.)
+
+2. **Dấu hiệu sắp xảy ra** (dựa trên bằng chứng hiện tại)
+   - Look at the clouds! It **is going to** rain. (Nhìn những đám mây kìa! Trời sắp mưa.)
+
+### 🔧 CẤU TRÚC
+**Khẳng định:** S + am/is/are + going to + V
+- I **am going to** study.
+- She **is going to** travel.
+
+**Phủ định:** S + am/is/are + not + going to + V
+- I **am not going to** study.
+- She **is not going to** travel.
+
+**Nghi vấn:** Am/Is/Are + S + going to + V?
+- **Are** you **going to** study?
+- **Is** she **going to** travel?
+
+### 🎯 MẸO GHI NHỚ NHANH
+- Dùng "**going to**" cho dự định đã có kế hoạch.
+- Dùng "**will**" cho quyết định tại thời điểm nói.
+
+### 📝 VÍ DỤ CỤ THỂ
+- I **am going to** visit my friend.
+- We **are going to** have a party.
+- She **isn't going to** buy a new car.
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. We (visit) ____ the museum tomorrow.
+2. He (buy) ____ a new car.
+3. Chuyển sang phủ định: She is going to travel.
+4. Chuyển sang nghi vấn: They are going to study.
+                ''',
+                'xp_reward': 50,
+                'order': 2
+            },
+            # ==================== LEVEL 5: LION ====================
+            {
+                'level_id': 5,
+                'name': '🎯 Câu điều kiện loại 1',
+                'description': 'Cấu trúc If + hiện tại đơn, will + động từ nguyên mẫu',
+                'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Câu điều kiện loại 1 (First Conditional) diễn tả một điều có thể xảy ra ở hiện tại hoặc tương lai.
+
+### 📌 Cách dùng
+Dùng để nói về một điều kiện có thể thực hiện được và kết quả sẽ xảy ra nếu điều kiện đó được đáp ứng.
+
+### 🔧 CẤU TRÚC
+**If + S + V(hiện tại đơn), S + will + V**
+- If it **rains**, I **will stay** home. (Nếu trời mưa, tôi sẽ ở nhà.)
+- If you **study** hard, you **will pass** the exam. (Nếu bạn học chăm chỉ, bạn sẽ đỗ kỳ thi.)
+
+**Lưu ý:** Có thể đảo ngược vế:
+- I will stay home if it rains.
+
+### 🎯 MẸO GHI NHỚ NHANH
+- Vế "If" chia ở **thì hiện tại đơn**.
+- Vế chính chia ở **thì tương lai đơn** (will + V).
+
+### 📝 VÍ DỤ CỤ THỂ
+- If she **comes**, I **will tell** her the news.
+- We **will go** out if it **doesn't rain**.
+- If you **don't hurry**, you **will miss** the bus.
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. If she (come) ____, I (tell) ____ her.
+2. We (go) ____ out if it (not/rain) ____.
+3. Hoàn thành câu: If you don't study, you ____ the exam.
+4. Viết một câu điều kiện loại 1 về thời tiết.
+                ''',
+                'xp_reward': 60,
+                'order': 1
+            },
+            {
+                'level_id': 5,
+                'name': '📖 Câu bị động',
+                'description': 'Cấu trúc câu bị động trong tiếng Anh',
+                'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Câu bị động (Passive Voice) dùng khi người thực hiện hành động không quan trọng hoặc không được biết đến.
+
+### 📌 Cách dùng
+1. **Không biết hoặc không cần biết người thực hiện**
+   - The window was broken. (Cửa sổ đã bị vỡ - ai vỡ không quan trọng.)
+
+2. **Muốn nhấn mạnh vào hành động hoặc đối tượng bị tác động**
+   - A letter is written by her. (Một bức thư được viết bởi cô ấy - nhấn mạnh vào lá thư.)
+
+### 🔧 CẤU TRÚC
+**Be + V3/ed + (by + O)**
+- Active: She **writes** a letter.
+- Passive: A letter **is written** by her.
+
+**Chuyển đổi theo các thì:**
+| Thì | Cấu trúc bị động |
+|-----|------------------|
+| Hiện tại đơn | is/am/are + V3/ed |
+| Quá khứ đơn | was/were + V3/ed |
+| Tương lai đơn | will be + V3/ed |
+
+### 🎯 MẸO GHI NHỚ NHANH
+- **Be** chia theo thì của câu chủ động.
+- **V3/ed** là quá khứ phân từ của động từ.
+
+### 📝 VÍ DỤ CỤ THỂ
+- He cleans the room. → The room **is cleaned** by him.
+- They built this house in 2000. → This house **was built** in 2000.
+- She will write a letter. → A letter **will be written** by her.
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. He cleans the room. → The room ____ by him.
+2. They built this house in 2000. → This house ____ in 2000.
+3. Chuyển sang bị động: She writes a letter.
+4. Chuyển sang bị động: They will buy a car.
+                ''',
+                'xp_reward': 60,
+                'order': 2
+            },
+            # ==================== LEVEL 6: EAGLE ====================
+            {
+                'level_id': 6,
+                'name': '💼 Giao tiếp công sở',
+                'description': 'Từ vựng và mẫu câu giao tiếp trong môi trường công sở',
+                'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Từ vựng và mẫu câu giao tiếp trong công sở giúp bạn tự tin trong môi trường làm việc.
+
+### 📌 TỪ VỰNG CÔNG SỞ
+| Tiếng Anh | Tiếng Việt | Ghi chú |
+|-----------|------------|---------|
+| **Meeting** | Cuộc họp | Họp bàn công việc |
+| **Presentation** | Thuyết trình | Trình bày ý tưởng/dự án |
+| **Report** | Báo cáo | Báo cáo kết quả công việc |
+| **Email** | Thư điện tử | Gửi thư công việc qua email |
+| **Deadline** | Hạn chót | Thời hạn hoàn thành công việc |
+| **Colleague** | Đồng nghiệp | Người cùng làm việc với bạn |
+| **Manager** | Quản lý | Người giám sát công việc |
+| **Office** | Văn phòng | Nơi làm việc |
+
+### 📝 MẪU CÂU GIAO TIẾP
+- "I'd like to schedule a meeting." (Tôi muốn lên lịch một cuộc họp.)
+- "Please send me the report by Friday." (Vui lòng gửi cho tôi báo cáo trước thứ Sáu.)
+- "Can you help me with this task?" (Bạn có thể giúp tôi việc này không?)
+- "I have a meeting at 2 PM." (Tôi có một cuộc họp lúc 2 giờ chiều.)
+
+### 🎯 MẸO GHI NHỚ NHANH
+- **Colleague** thường dùng thay cho "co-worker".
+- **Deadline** là từ vựng rất quan trọng trong công sở.
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. Dịch sang tiếng Anh: "Tôi có một cuộc họp lúc 2 giờ."
+2. Dịch sang tiếng Anh: "Cô ấy đang viết một báo cáo."
+3. Viết một câu với từ "Deadline".
+4. Viết một email ngắn (3-4 câu) đề nghị họp với đồng nghiệp.
+                ''',
+                'xp_reward': 75,
+                'order': 1
+            },
+            {
+                'level_id': 6,
+                'name': '🌍 Du lịch & Văn hóa',
+                'description': 'Từ vựng và mẫu câu giao tiếp khi đi du lịch',
+                'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Từ vựng và mẫu câu du lịch giúp bạn tự tin khi đi nước ngoài.
+
+### 📌 TỪ VỰNG DU LỊCH
+| Tiếng Anh | Tiếng Việt | Ghi chú |
+|-----------|------------|---------|
+| **Airport** | Sân bay | Nơi máy bay cất/hạ cánh |
+| **Hotel** | Khách sạn | Nơi lưu trú khi đi du lịch |
+| **Reservation** | Đặt chỗ | Đặt phòng khách sạn/vé |
+| **Ticket** | Vé | Vé máy bay, vé tàu, vé tham quan |
+| **Tourist** | Du khách | Khách du lịch |
+| **Sightseeing** | Tham quan | Hoạt động tham quan các địa điểm |
+| **Passport** | Hộ chiếu | Giấy tờ xuất nhập cảnh |
+| **Currency** | Tiền tệ | Tiền của một quốc gia |
+
+### 📝 MẪU CÂU GIAO TIẾP
+- "I'd like to book a room." (Tôi muốn đặt một phòng.)
+- "Where is the train station?" (Nhà ga ở đâu?)
+- "How much is this?" (Cái này giá bao nhiêu?)
+- "Can I have the bill, please?" (Tôi có thể xin hóa đơn không?)
+
+### 🎯 MẸO GHI NHỚ NHANH
+- **Tourist** và **Sightseeing** thường đi cùng nhau.
+- **Currency** giúp bạn biết đổi tiền ở nước ngoài.
+
+### 📝 VÍ DỤ CỤ THỂ
+- I need to buy a **ticket** to London. (Tôi cần mua vé đến London.)
+- The **hotel** is near the beach. (Khách sạn ở gần bãi biển.)
+- We are going **sightseeing** tomorrow. (Chúng tôi sẽ tham quan vào ngày mai.)
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. Dịch sang tiếng Anh: "Tôi muốn đặt vé máy bay."
+2. Dịch sang tiếng Anh: "Khách sạn ở gần bãi biển."
+3. Viết 2 câu hỏi bạn sẽ hỏi tại khách sạn.
+4. Viết một đoạn hội thoại ngắn (3-4 câu) khi đặt phòng khách sạn.
+                ''',
+                'xp_reward': 75,
+                'order': 2
+            },
         ]
+
         for data in lessons_data:
             db.session.add(Lesson(**data))
         db.session.commit()
-        print(f"✅ Đã tạo {Lesson.query.count()} bài học")
+        print(f"✅ Đã tạo {Lesson.query.count()} bài học với nội dung chi tiết")
 
-        # ===== BÀI TẬP =====
+        # ---- BÀI TẬP (EXERCISES) ----
         exercises_data = [
-            {'lesson_id':1,'question':'Chữ cái nào là nguyên âm?','option_a':'B','option_b':'C','option_c':'A','option_d':'D','correct_answer':2,'explanation':'Nguyên âm là A, E, I, O, U'},
-            {'lesson_id':1,'question':'Phát âm chữ "B" là gì?','option_a':'/biː/','option_b':'/siː/','option_c':'/diː/','option_d':'/iː/','correct_answer':0,'explanation':'B phát âm /biː/'},
-            {'lesson_id':2,'question':'Số 7 trong tiếng Anh là gì?','option_a':'Seven','option_b':'Six','option_c':'Eight','option_d':'Nine','correct_answer':0,'explanation':'7 = Seven'},
-            {'lesson_id':2,'question':'Số 12 trong tiếng Anh là gì?','option_a':'Ten','option_b':'Eleven','option_c':'Twelve','option_d':'Twenty','correct_answer':2,'explanation':'12 = Twelve'},
-            {'lesson_id':3,'question':'"Mẹ" trong tiếng Anh là gì?','option_a':'Father','option_b':'Mother','option_c':'Brother','option_d':'Sister','correct_answer':1,'explanation':'Mother = Mẹ'},
-            {'lesson_id':3,'question':'"Anh trai" trong tiếng Anh là gì?','option_a':'Sister','option_b':'Brother','option_c':'Uncle','option_d':'Aunt','correct_answer':1,'explanation':'Brother = Anh trai'},
-            {'lesson_id':4,'question':'"Dog" có nghĩa là gì?','option_a':'Mèo','option_b':'Chó','option_c':'Chim','option_d':'Cá','correct_answer':1,'explanation':'Dog = Chó'},
-            {'lesson_id':4,'question':'"Cat" có nghĩa là gì?','option_a':'Chó','option_b':'Mèo','option_c':'Chim','option_d':'Cá','correct_answer':1,'explanation':'Cat = Mèo'},
-            {'lesson_id':5,'question':'Chia động từ: She (go) ____ to school.','option_a':'go','option_b':'goes','option_c':'going','option_d':'went','correct_answer':1,'explanation':'She + goes'},
-            {'lesson_id':5,'question':'Chia động từ: They (play) ____ football.','option_a':'play','option_b':'plays','option_c':'playing','option_d':'played','correct_answer':0,'explanation':'They + play'},
-            {'lesson_id':6,'question':'Phủ định: "He likes cats." → He ____ cats.','option_a':"don't like",'option_b':"doesn't like",'option_c':"not like",'option_d':"isn't like",'correct_answer':1,'explanation':'He + doesn\'t + V'},
-            {'lesson_id':7,'question':'Quá khứ của "go" là gì?','option_a':'goed','option_b':'went','option_c':'gone','option_d':'going','correct_answer':1,'explanation':'go → went'},
-            {'lesson_id':7,'question':'Quá khứ của "visit" là gì?','option_a':'visited','option_b':'visitted','option_c':'visit','option_d':'visiting','correct_answer':0,'explanation':'visit → visited'},
-            {'lesson_id':8,'question':'"I am going to study" nghĩa là gì?','option_a':'Tôi đang học','option_b':'Tôi sẽ học','option_c':'Tôi đã học','option_d':'Tôi học','correct_answer':1,'explanation':'be going to = sẽ (dự định)'},
-            {'lesson_id':9,'question':'If it rains, I ____ stay home.','option_a':'will','option_b':'would','option_c':'am','option_d':'was','correct_answer':0,'explanation':'Câu điều kiện loại 1: will + V'},
-            {'lesson_id':10,'question':'Bị động: "She writes a letter" → A letter ____ by her.','option_a':'is written','option_b':'was written','option_c':'is writing','option_d':'writes','correct_answer':0,'explanation':'Hiện tại đơn bị động: is/am/are + V3/ed'},
-            {'lesson_id':11,'question':'Từ nào là "cuộc họp"?','option_a':'Meeting','option_b':'Report','option_c':'Email','option_d':'Deadline','correct_answer':0,'explanation':'Meeting = Cuộc họp'},
-            {'lesson_id':11,'question':'"Deadline" có nghĩa là gì?','option_a':'Cuộc họp','option_b':'Báo cáo','option_c':'Hạn chót','option_d':'Thư điện tử','correct_answer':2,'explanation':'Deadline = Hạn chót'},
+            # Level 1
+            {'lesson_id': 1, 'question': 'Chữ cái nào là nguyên âm?', 'option_a': 'B', 'option_b': 'C', 'option_c': 'A', 'option_d': 'D', 'correct_answer': 2, 'explanation': 'Nguyên âm là A, E, I, O, U'},
+            {'lesson_id': 1, 'question': 'Phát âm chữ "B" là gì?', 'option_a': '/biː/', 'option_b': '/siː/', 'option_c': '/diː/', 'option_d': '/iː/', 'correct_answer': 0, 'explanation': 'B phát âm /biː/'},
+            {'lesson_id': 2, 'question': 'Số 7 trong tiếng Anh là gì?', 'option_a': 'Seven', 'option_b': 'Six', 'option_c': 'Eight', 'option_d': 'Nine', 'correct_answer': 0, 'explanation': '7 = Seven'},
+            {'lesson_id': 2, 'question': 'Số 12 trong tiếng Anh là gì?', 'option_a': 'Ten', 'option_b': 'Eleven', 'option_c': 'Twelve', 'option_d': 'Twenty', 'correct_answer': 2, 'explanation': '12 = Twelve'},
+            # Level 2
+            {'lesson_id': 3, 'question': '"Mẹ" trong tiếng Anh là gì?', 'option_a': 'Father', 'option_b': 'Mother', 'option_c': 'Brother', 'option_d': 'Sister', 'correct_answer': 1, 'explanation': 'Mother = Mẹ'},
+            {'lesson_id': 3, 'question': '"Anh trai" trong tiếng Anh là gì?', 'option_a': 'Sister', 'option_b': 'Brother', 'option_c': 'Uncle', 'option_d': 'Aunt', 'correct_answer': 1, 'explanation': 'Brother = Anh trai'},
+            {'lesson_id': 4, 'question': '"Dog" có nghĩa là gì?', 'option_a': 'Mèo', 'option_b': 'Chó', 'option_c': 'Chim', 'option_d': 'Cá', 'correct_answer': 1, 'explanation': 'Dog = Chó'},
+            {'lesson_id': 4, 'question': '"Cat" có nghĩa là gì?', 'option_a': 'Chó', 'option_b': 'Mèo', 'option_c': 'Chim', 'option_d': 'Cá', 'correct_answer': 1, 'explanation': 'Cat = Mèo'},
+            # Level 3
+            {'lesson_id': 5, 'question': 'Chia động từ: She (go) ____ to school.', 'option_a': 'go', 'option_b': 'goes', 'option_c': 'going', 'option_d': 'went', 'correct_answer': 1, 'explanation': 'She + goes'},
+            {'lesson_id': 5, 'question': 'Chia động từ: They (play) ____ football.', 'option_a': 'play', 'option_b': 'plays', 'option_c': 'playing', 'option_d': 'played', 'correct_answer': 0, 'explanation': 'They + play'},
+            {'lesson_id': 6, 'question': 'Phủ định: "He likes cats." → He ____ cats.', 'option_a': "don't like", 'option_b': "doesn't like", 'option_c': "not like", 'option_d': "isn't like", 'correct_answer': 1, 'explanation': 'He + doesn\'t + V'},
+            # Level 4
+            {'lesson_id': 7, 'question': 'Quá khứ của "go" là gì?', 'option_a': 'goed', 'option_b': 'went', 'option_c': 'gone', 'option_d': 'going', 'correct_answer': 1, 'explanation': 'go → went'},
+            {'lesson_id': 7, 'question': 'Quá khứ của "visit" là gì?', 'option_a': 'visited', 'option_b': 'visitted', 'option_c': 'visit', 'option_d': 'visiting', 'correct_answer': 0, 'explanation': 'visit → visited'},
+            {'lesson_id': 8, 'question': '"I am going to study" nghĩa là gì?', 'option_a': 'Tôi đang học', 'option_b': 'Tôi sẽ học', 'option_c': 'Tôi đã học', 'option_d': 'Tôi học', 'correct_answer': 1, 'explanation': 'be going to = sẽ (dự định)'},
+            # Level 5
+            {'lesson_id': 9, 'question': 'If it rains, I ____ stay home.', 'option_a': 'will', 'option_b': 'would', 'option_c': 'am', 'option_d': 'was', 'correct_answer': 0, 'explanation': 'Câu điều kiện loại 1: will + V'},
+            {'lesson_id': 10, 'question': 'Bị động: "She writes a letter" → A letter ____ by her.', 'option_a': 'is written', 'option_b': 'was written', 'option_c': 'is writing', 'option_d': 'writes', 'correct_answer': 0, 'explanation': 'Hiện tại đơn bị động: is/am/are + V3/ed'},
+            # Level 6
+            {'lesson_id': 11, 'question': 'Từ nào là "cuộc họp"?', 'option_a': 'Meeting', 'option_b': 'Report', 'option_c': 'Email', 'option_d': 'Deadline', 'correct_answer': 0, 'explanation': 'Meeting = Cuộc họp'},
+            {'lesson_id': 11, 'question': '"Deadline" có nghĩa là gì?', 'option_a': 'Cuộc họp', 'option_b': 'Báo cáo', 'option_c': 'Hạn chót', 'option_d': 'Thư điện tử', 'correct_answer': 2, 'explanation': 'Deadline = Hạn chót'},
         ]
         for data in exercises_data:
             db.session.add(Exercise(**data))
@@ -267,7 +820,6 @@ def get_exercises(lesson_id):
         'correct_answer': e.correct_answer, 'explanation': e.explanation
     } for e in exercises])
 
-# ---- LẤY DANH SÁCH QUIZ CỦA LEVEL ----
 @app.route('/api/quizzes/<int:level_id>')
 def get_quizzes(level_id):
     quizzes = Quiz.query.filter_by(level_id=level_id).all()
@@ -279,7 +831,6 @@ def get_quizzes(level_id):
         'xp_reward': q.xp_reward
     } for q in quizzes])
 
-# ---- API QUIZ CŨ (GIỮ LẠI ĐỂ TƯƠNG THÍCH) ----
 @app.route('/api/quiz/<int:level_id>')
 def get_quiz_old(level_id):
     quiz = Quiz.query.filter_by(level_id=level_id).first()
@@ -307,7 +858,6 @@ def complete_lesson():
         lesson = Lesson.query.get(lesson_id)
         if lesson:
             current_user.xp += lesson.xp_reward
-            # Cập nhật level
             new_level = 1
             if current_user.xp >= 1300: new_level = 6
             elif current_user.xp >= 900: new_level = 5
@@ -350,9 +900,7 @@ def pass_quiz():
     if not quiz:
         return jsonify({'error': 'Không tìm thấy quiz!'}), 404
     
-    # Cộng XP cho quiz
     current_user.xp += quiz.xp_reward
-    # Cập nhật level
     new_level = 1
     if current_user.xp >= 1300: new_level = 6
     elif current_user.xp >= 900: new_level = 5
