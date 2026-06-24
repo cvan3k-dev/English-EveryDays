@@ -32,10 +32,28 @@ def load_user(user_id):
 
 # ===== TẠO BẢNG VÀ DỮ LIỆU MẪU =====
 with app.app_context():
+    # Tạo thư mục instance nếu chưa có
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+    
+    # Tạo bảng
     db.create_all()
     
+    # Kiểm tra và tạo admin nếu chưa có
+    if not User.query.filter_by(username='admin').first():
+        admin = User(
+            username='admin',
+            password=generate_password_hash('admin123'),
+            email='admin@example.com',
+            is_admin=True
+        )
+        db.session.add(admin)
+        db.session.commit()
+        print("✅ Đã tạo tài khoản admin!")
+    
+    # Kiểm tra và tạo dữ liệu mẫu nếu chưa có bài học
     if Lesson.query.count() == 0:
+        # ... (phần tạo lessons, exercises, quizzes đã có trong code)
+        print("✅ Đã tạo dữ liệu mẫu!")
         # ===== LEVEL 1: EGG =====
         lessons_data = [
             # Level 1
