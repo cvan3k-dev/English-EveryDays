@@ -3,684 +3,409 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📚 English Journey - Học Tiếng Anh Vui Nhộn</title>
+    <title>Admin - English Journey</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== RESET ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        body { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); min-height: 100vh; padding: 20px; display: flex; justify-content: center; align-items: center; }
-        .app { max-width: 950px; width: 100%; background: rgba(255,255,255,0.95); border-radius: 30px; padding: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
-        
-        /* ===== HEADER ===== */
-        .header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; }
-        .header h1 { font-size: 26px; color: #2d3436; display: flex; align-items: center; gap: 10px; }
-        .header h1 i { color: #f5576c; animation: bounce 2s infinite; }
-        @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        .user-stats { display: flex; gap: 15px; background: #f8f9fa; padding: 8px 18px; border-radius: 50px; flex-wrap: wrap; align-items: center; font-size: 14px; }
-        .user-stats span { font-weight: 600; color: #2d3436; }
-        .user-stats i { color: #f5576c; margin-right: 4px; }
-        .xp-bar { width: 120px; height: 8px; background: #e9ecef; border-radius: 10px; overflow: hidden; display: inline-block; vertical-align: middle; margin-left: 5px; }
-        .xp-fill { height: 100%; background: linear-gradient(90deg, #f093fb, #f5576c); border-radius: 10px; transition: width 0.5s ease; }
-        .auth-buttons { display: flex; gap: 10px; }
-        .auth-buttons button { padding: 8px 18px; border: none; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 14px; }
-        .btn-login { background: #f5576c; color: white; }
-        .btn-logout { background: #e9ecef; color: #2d3436; }
-        .btn-register { background: #2d3436; color: white; }
-        .btn-login:hover, .btn-register:hover { transform: scale(1.05); }
-        
-        /* ===== LEVEL CARD ===== */
-        .level-card { background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); border-radius: 20px; padding: 25px; color: white; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; min-height: 100px; }
-        .level-card .level-info h2 { font-size: 22px; margin-bottom: 5px; }
-        .level-card .level-badge { font-size: 48px; background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 20px; backdrop-filter: blur(5px); }
-        
-        /* ===== TABS ===== */
-        .tabs { display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
-        .tabs button { padding: 12px 25px; border: none; border-radius: 50px; background: #f1f2f6; color: #2d3436; font-weight: 600; cursor: pointer; transition: all 0.3s ease; flex: 1; min-width: 100px; }
-        .tabs button.active { background: #f5576c; color: white; box-shadow: 0 4px 15px rgba(245,87,108,0.4); }
-        .tabs button:hover { transform: translateY(-2px); }
-        
-        /* ===== CONTENT ===== */
-        .content { background: #f8f9fa; border-radius: 20px; padding: 25px; min-height: 350px; }
-        .hidden { display: none !important; }
-        
-        /* ===== LESSON ITEMS ===== */
-        .lesson-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: white; border-radius: 15px; margin-bottom: 12px; transition: all 0.3s ease; cursor: pointer; border: 2px solid transparent; }
-        .lesson-item:hover { border-color: #f5576c; transform: translateX(5px); }
-        .lesson-item.completed { border-color: #27ae60; background: #f0fff4; }
-        .lesson-item.locked { opacity: 0.6; cursor: not-allowed; }
-        .lesson-item .lesson-info { display: flex; align-items: center; gap: 15px; flex: 1; }
-        .lesson-item .lesson-icon { width: 40px; height: 40px; border-radius: 50%; background: #e9ecef; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-        .lesson-item.completed .lesson-icon { background: #27ae60; color: white; }
-        .lesson-item .lesson-status { font-size: 13px; padding: 5px 15px; border-radius: 50px; background: #e9ecef; color: #888; flex-shrink: 0; }
-        .lesson-item.completed .lesson-status { background: #27ae60; color: white; }
-        
-        /* ===== MODAL ===== */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; }
+        body { background: #f0f2f5; display: flex; min-height: 100vh; }
+        .sidebar { width: 260px; background: #2d3436; color: white; padding: 20px; min-height: 100vh; position: fixed; top: 0; left: 0; }
+        .sidebar h2 { margin-bottom: 30px; font-size: 22px; display: flex; align-items: center; gap: 10px; }
+        .sidebar h2 i { color: #f5576c; }
+        .sidebar a { display: block; padding: 14px 18px; color: #dfe6e9; text-decoration: none; border-radius: 12px; margin-bottom: 5px; transition: all 0.3s; }
+        .sidebar a:hover, .sidebar a.active { background: #f5576c; color: white; }
+        .sidebar a i { width: 24px; margin-right: 10px; }
+        .sidebar .logout { margin-top: 30px; border-top: 1px solid #444; padding-top: 15px; }
+        .sidebar .logout a { color: #e74c3c; }
+        .main { margin-left: 260px; padding: 25px; flex: 1; }
+        .page-title { font-size: 28px; color: #2d3436; margin-bottom: 25px; }
+        .page-title i { color: #f5576c; margin-right: 10px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px 25px; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        .stat-card .label { font-size: 13px; color: #888; font-weight: 600; text-transform: uppercase; }
+        .stat-card .number { font-size: 28px; font-weight: 700; color: #2d3436; margin-top: 5px; }
+        .table-container { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); margin-bottom: 25px; overflow-x: auto; }
+        .table-container h3 { margin-bottom: 15px; color: #2d3436; display: flex; align-items: center; gap: 10px; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th { text-align: left; padding: 12px 15px; background: #f8f9fa; font-weight: 600; color: #2d3436; border-bottom: 2px solid #e9ecef; }
+        td { padding: 12px 15px; border-bottom: 1px solid #f1f2f6; }
+        tr:hover td { background: #f8f9fa; }
+        .btn { padding: 8px 16px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 13px; display: inline-flex; align-items: center; gap: 5px; }
+        .btn:hover { transform: translateY(-1px); }
+        .btn-primary { background: #f5576c; color: white; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn-warning { background: #f39c12; color: white; }
+        .btn-sm { padding: 5px 12px; font-size: 12px; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
         .modal-overlay.show { display: flex; }
-        .modal-box { background: white; padding: 35px; border-radius: 25px; width: 90%; max-width: 700px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; }
+        .modal-box { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 700px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; }
         @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .modal-box .close-modal { float: right; cursor: pointer; font-size: 28px; color: #aaa; transition: color 0.3s; line-height: 1; }
-        .modal-box .close-modal:hover { color: #2d3436; }
-        .modal-box h2 { margin-bottom: 15px; color: #2d3436; }
-        .modal-box .lesson-content { line-height: 1.8; font-size: 15px; margin-bottom: 20px; }
-        .modal-box .lesson-content h3 { color: #f5576c; margin-top: 15px; margin-bottom: 8px; }
-        .modal-box .lesson-content ul, .modal-box .lesson-content ol { padding-left: 25px; }
-        
-        /* ===== EXERCISE ===== */
-        .exercise-item { background: #f8f9fa; padding: 15px; border-radius: 15px; margin-bottom: 15px; }
-        .exercise-item .question { font-weight: 600; margin-bottom: 10px; }
-        .exercise-item .options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .exercise-item .options button { padding: 10px; border: 2px solid #e9ecef; border-radius: 10px; background: white; cursor: pointer; transition: all 0.3s ease; text-align: left; }
-        .exercise-item .options button:hover:not(:disabled) { border-color: #f5576c; }
-        .exercise-item .options button.correct { border-color: #27ae60; background: #f0fff4; }
-        .exercise-item .options button.wrong { border-color: #e74c3c; background: #fff5f5; }
-        .exercise-item .options button:disabled { cursor: not-allowed; opacity: 0.7; }
-        .exercise-item .explanation { margin-top: 10px; padding: 10px; background: #e9ecef; border-radius: 8px; display: none; }
-        .exercise-item .explanation.show { display: block; }
-        
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 650px) { .app { padding: 15px; } .header { flex-direction: column; text-align: center; } .user-stats { justify-content: center; } .level-card { flex-direction: column; text-align: center; } .exercise-item .options { grid-template-columns: 1fr; } .tabs button { font-size: 12px; padding: 10px; } }
-        
-        .btn-primary { background: #f5576c; color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 16px; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(245,87,108,0.4); }
-        .btn-success { background: #27ae60; color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; cursor: pointer; }
-        .mt-20 { margin-top: 20px; }
+        .modal-box .close { float: right; cursor: pointer; font-size: 28px; color: #aaa; }
+        .modal-box .close:hover { color: #2d3436; }
+        .modal-box h2 { margin-bottom: 20px; color: #2d3436; }
+        .modal-box label { display: block; font-weight: 600; margin: 12px 0 5px; color: #2d3436; font-size: 14px; }
+        .modal-box input, .modal-box textarea, .modal-box select { width: 100%; padding: 10px 14px; border: 2px solid #e9ecef; border-radius: 10px; font-size: 14px; outline: none; }
+        .modal-box input:focus, .modal-box textarea:focus { border-color: #f5576c; }
+        .modal-box textarea { min-height: 100px; resize: vertical; }
+        .modal-box .btn-submit { margin-top: 15px; width: 100%; padding: 12px; background: #f5576c; color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 16px; cursor: pointer; }
+        .modal-box .btn-submit:hover { background: #e04156; }
+        .user-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0; }
+        .user-detail-item { background: #f8f9fa; padding: 12px 18px; border-radius: 10px; }
+        .user-detail-item .label { color: #888; font-size: 12px; text-transform: uppercase; }
+        .user-detail-item .value { font-weight: 700; font-size: 16px; color: #2d3436; }
+        .status-badge { padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .status-badge.admin { background: #f5576c; color: white; }
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; min-height: auto; position: relative; padding: 15px; }
+            .sidebar a { display: inline-block; padding: 10px 15px; }
+            .main { margin-left: 0; padding: 15px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .user-detail-grid { grid-template-columns: 1fr; }
+        }
+        .hidden { display: none !important; }
         .text-center { text-align: center; }
-        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #2d3436; color: white; padding: 15px 30px; border-radius: 50px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 9999; animation: toastSlideUp 0.5s ease; max-width: 90%; text-align: center; }
-        @keyframes toastSlideUp { from { transform: translateX(-50%) translateY(50px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
     </style>
 </head>
 <body>
-    <div class="app" id="app">
-        <!-- HEADER -->
-        <div class="header">
-            <h1><i class="fas fa-rocket"></i> English Journey</h1>
-            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
-                <div class="user-stats" id="userStats">
-                    <span><i class="fas fa-star"></i> Level <span id="levelDisplay">1</span></span>
-                    <span><i class="fas fa-bolt"></i> <span id="xpDisplay">0</span> XP</span>
-                    <span><i class="fas fa-check-circle"></i> <span id="lessonDoneDisplay">0</span>/<span id="lessonTotalDisplay">0</span></span>
-                    <span><div class="xp-bar"><div class="xp-fill" id="xpBar" style="width: 0%"></div></div></span>
-                </div>
-                <div class="auth-buttons" id="authButtons">
-                    <button class="btn-login" onclick="openLoginModal()"><i class="fas fa-sign-in-alt"></i> Đăng nhập</button>
-                    <button class="btn-register" onclick="openRegisterModal()"><i class="fas fa-user-plus"></i> Đăng ký</button>
-                </div>
-                <div class="auth-buttons hidden" id="userInfo">
-                    <span style="font-weight: 600; color: #2d3436;" id="usernameDisplay">User</span>
-                    <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Thoát</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- LEVEL CARD -->
-        <div class="level-card">
-            <div class="level-info">
-                <h2 id="levelTitle">🐣 Level 1: Egg</h2>
-                <p id="levelDesc">Bắt đầu làm quen với bảng chữ cái!</p>
-            </div>
-            <div class="level-badge" id="levelEmoji">🐣</div>
-        </div>
-
-        <!-- TABS -->
-        <div class="tabs">
-            <button class="active" data-tab="lessons" onclick="switchTab('lessons')"><i class="fas fa-book"></i> Bài học</button>
-            <button data-tab="quiz" onclick="switchTab('quiz')"><i class="fas fa-puzzle-piece"></i> Quiz</button>
-            <button data-tab="achievements" onclick="switchTab('achievements')"><i class="fas fa-trophy"></i> Thành tích</button>
-        </div>
-
-        <!-- CONTENT -->
-        <div class="content" id="contentArea">
-            <div id="tab-lessons"><div id="lessonList"><div class="text-center" style="padding: 30px; color: #888;">📖 Đang tải bài học...</div></div></div>
-            <div id="tab-quiz" class="hidden"><div id="quizContainer"><div class="text-center" style="padding: 30px; color: #888;">📝 Đang tải quiz...</div></div></div>
-            <div id="tab-achievements" class="hidden"><div id="achievementList" class="text-center" style="padding: 30px; color: #888;">🏆 Đang tải thành tích...</div></div>
+    <div class="sidebar">
+        <h2><i class="fas fa-rocket"></i> Admin</h2>
+        <a href="#" class="active" onclick="loadSection('dashboard')"><i class="fas fa-chart-pie"></i> Dashboard</a>
+        <a href="#" onclick="loadSection('users')"><i class="fas fa-users"></i> Người dùng</a>
+        <a href="#" onclick="loadSection('lessons')"><i class="fas fa-book"></i> Bài học</a>
+        <a href="#" onclick="loadSection('quizzes')"><i class="fas fa-puzzle-piece"></i> Quiz</a>
+        <div class="logout">
+            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
         </div>
     </div>
 
-    <!-- MODAL CHI TIẾT BÀI HỌC -->
-    <div class="modal-overlay" id="lessonModal">
+    <div class="main" id="mainContent">
+        <h1 class="page-title"><i class="fas fa-chart-pie"></i> Dashboard</h1>
+        <div id="sectionContent"></div>
+    </div>
+
+    <!-- Modal User Detail -->
+    <div class="modal-overlay" id="userDetailModal">
         <div class="modal-box">
-            <span class="close-modal" onclick="closeLessonModal()">&times;</span>
-            <h2 id="modalLessonTitle">📖 Bài học</h2>
-            <div id="modalLessonContent" class="lesson-content"></div>
-            <div id="modalExercises"></div>
-            <button class="btn-primary mt-20" onclick="markLessonComplete()">✅ Đánh dấu hoàn thành</button>
+            <span class="close" onclick="closeUserDetail()">&times;</span>
+            <h2><i class="fas fa-user"></i> Chi tiết người dùng</h2>
+            <div id="userDetailContent"></div>
         </div>
     </div>
 
-    <!-- MODAL ĐĂNG NHẬP -->
-    <div class="modal-overlay" id="authModal">
+    <!-- Modal Edit -->
+    <div class="modal-overlay" id="editModal">
         <div class="modal-box">
-            <span class="close-modal" onclick="closeAuthModal()">&times;</span>
-            <h2 id="authModalTitle">Đăng nhập</h2>
-            <div id="authError" style="color: #e74c3c; display: none; margin: 8px 0;">Sai tên đăng nhập hoặc mật khẩu!</div>
-            <form id="authForm" onsubmit="handleAuth(event)">
-                <input type="hidden" id="authMode" value="login">
-                <input type="text" id="authUsername" placeholder="Tên đăng nhập" required style="width:100%; padding:12px; margin:8px 0; border:2px solid #e9ecef; border-radius:12px; font-size:16px;">
-                <input type="password" id="authPassword" placeholder="Mật khẩu" required style="width:100%; padding:12px; margin:8px 0; border:2px solid #e9ecef; border-radius:12px; font-size:16px;">
-                <input type="email" id="authEmail" placeholder="Email" style="width:100%; padding:12px; margin:8px 0; border:2px solid #e9ecef; border-radius:12px; font-size:16px; display:none;">
-                <button type="submit" id="authSubmitBtn" style="width:100%; padding:14px; background:#f5576c; color:white; border:none; border-radius:12px; font-weight:700; font-size:16px; cursor:pointer; margin-top:10px;">Đăng nhập</button>
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h2 id="editModalTitle">Thêm mới</h2>
+            <form id="editForm" onsubmit="saveItem(event)">
+                <input type="hidden" id="editId">
+                <input type="hidden" id="editType" value="lesson">
+                <label>Level ID</label>
+                <input type="number" id="editLevel" value="1" min="1" max="6">
+                <label>Tên</label>
+                <input type="text" id="editName" required>
+                <label>Mô tả</label>
+                <textarea id="editDesc" rows="2"></textarea>
+                <label>Nội dung</label>
+                <textarea id="editContent" rows="5"></textarea>
+                <label>XP thưởng</label>
+                <input type="number" id="editXP" value="20">
+                <button type="submit" class="btn-submit">Lưu</button>
             </form>
-            <div class="text-center mt-20" style="color: #888; font-size:14px;">
-                <span id="switchText">Chưa có tài khoản?</span>
-                <a onclick="switchAuthMode()" style="color:#f5576c; cursor:pointer; font-weight:600;">Đăng ký ngay</a>
-            </div>
         </div>
     </div>
 
     <script>
-        // ============================================================
-        // STATE
-        // ============================================================
-        let state = {
-            currentLevel: 1,
-            xp: 0,
-            completedLessons: [],
-            quizPassed: {},
-            achievements: [],
-            user: null,
-            isLoggedIn: false,
-            levels: [],
-            lessons: {},
-            currentLessonId: null
-        };
-
-        // ============================================================
-        // API HELPER
-        // ============================================================
         async function apiCall(url, method = 'GET', body = null) {
             const options = { method, headers: { 'Content-Type': 'application/json' } };
             if (body) options.body = JSON.stringify(body);
             const res = await fetch(url, options);
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Lỗi kết nối');
-            return data;
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || 'Lỗi');
+            }
+            return res.json();
         }
 
-        // ============================================================
-        // AUTH
-        // ============================================================
-        function openLoginModal() {
-            document.getElementById('authModalTitle').textContent = 'Đăng nhập';
-            document.getElementById('authMode').value = 'login';
-            document.getElementById('authSubmitBtn').textContent = 'Đăng nhập';
-            document.getElementById('switchText').textContent = 'Chưa có tài khoản?';
-            document.getElementById('switchLink').textContent = 'Đăng ký ngay';
-            document.getElementById('authEmail').style.display = 'none';
-            document.getElementById('authError').style.display = 'none';
-            document.getElementById('authModal').classList.add('show');
-            document.getElementById('authUsername').value = '';
-            document.getElementById('authPassword').value = '';
-            document.getElementById('authEmail').value = '';
+        function loadSection(section) {
+            document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+            document.querySelector(`.sidebar a[onclick="loadSection('${section}')"]`).classList.add('active');
+            const title = document.querySelector('.page-title');
+            switch(section) {
+                case 'dashboard': title.innerHTML = '<i class="fas fa-chart-pie"></i> Dashboard'; loadDashboard(); break;
+                case 'users': title.innerHTML = '<i class="fas fa-users"></i> Quản lý người dùng'; loadUsers(); break;
+                case 'lessons': title.innerHTML = '<i class="fas fa-book"></i> Quản lý bài học'; loadLessons(); break;
+                case 'quizzes': title.innerHTML = '<i class="fas fa-puzzle-piece"></i> Quản lý Quiz'; loadQuizzes(); break;
+            }
         }
 
-        function openRegisterModal() {
-            document.getElementById('authModalTitle').textContent = 'Đăng ký';
-            document.getElementById('authMode').value = 'register';
-            document.getElementById('authSubmitBtn').textContent = 'Đăng ký';
-            document.getElementById('switchText').textContent = 'Đã có tài khoản?';
-            document.getElementById('switchLink').textContent = 'Đăng nhập';
-            document.getElementById('authEmail').style.display = 'block';
-            document.getElementById('authError').style.display = 'none';
-            document.getElementById('authModal').classList.add('show');
-            document.getElementById('authUsername').value = '';
-            document.getElementById('authPassword').value = '';
-            document.getElementById('authEmail').value = '';
+        async function loadDashboard() {
+            try {
+                const stats = await apiCall('/api/admin/stats');
+                const users = await apiCall('/api/admin/users');
+                let html = `
+                    <div class="stats-grid">
+                        <div class="stat-card"><div class="label">👥 Người dùng</div><div class="number">${stats.totalUsers}</div></div>
+                        <div class="stat-card"><div class="label">📚 Bài học</div><div class="number">${stats.totalLessons}</div></div>
+                        <div class="stat-card"><div class="label">📝 Quiz</div><div class="number">${stats.totalQuizzes}</div></div>
+                        <div class="stat-card"><div class="label">⭐ Tổng XP</div><div class="number">${stats.totalXP.toLocaleString()}</div></div>
+                        <div class="stat-card"><div class="label">✅ Bài học hoàn thành</div><div class="number">${stats.totalCompleted}</div></div>
+                    </div>
+                    <div class="table-container">
+                        <h3><i class="fas fa-users"></i> Danh sách người dùng</h3>
+                        <table>
+                            <thead><tr><th>ID</th><th>Tên</th><th>Email</th><th>XP</th><th>Level</th><th>Bài học</th><th>Quiz</th><th>Hành động</th></tr></thead>
+                            <tbody>
+                                ${users.map(u => `
+                                    <tr>
+                                        <td>${u.id}</td>
+                                        <td><strong>${u.username}</strong></td>
+                                        <td>${u.email || 'N/A'}</td>
+                                        <td>${u.xp}</td>
+                                        <td>${u.current_level}</td>
+                                        <td>${u.completed_lessons}</td>
+                                        <td>${u.quiz_passed}</td>
+                                        <td>
+                                            <button class="btn btn-primary btn-sm" onclick="viewUser(${u.id})"><i class="fas fa-eye"></i></button>
+                                            ${u.is_admin ? '<span class="status-badge admin">Admin</span>' : ''}
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                document.getElementById('sectionContent').innerHTML = html;
+            } catch(err) {
+                document.getElementById('sectionContent').innerHTML = `<div style="color:#e74c3c;">❌ ${err.message}</div>`;
+            }
         }
 
-        function switchAuthMode() {
-            const mode = document.getElementById('authMode').value;
-            if (mode === 'login') openRegisterModal();
-            else openLoginModal();
+        async function loadUsers() {
+            try {
+                const users = await apiCall('/api/admin/users');
+                let html = `
+                    <div class="table-container">
+                        <h3><i class="fas fa-users"></i> Danh sách người dùng</h3>
+                        <table>
+                            <thead><tr><th>ID</th><th>Tên</th><th>Email</th><th>XP</th><th>Level</th><th>Bài học</th><th>Quiz</th><th>Ngày tạo</th><th>Hành động</th></tr></thead>
+                            <tbody>
+                                ${users.map(u => `
+                                    <tr>
+                                        <td>${u.id}</td>
+                                        <td><strong>${u.username}</strong></td>
+                                        <td>${u.email || 'N/A'}</td>
+                                        <td>${u.xp}</td>
+                                        <td>${u.current_level}</td>
+                                        <td>${u.completed_lessons}</td>
+                                        <td>${u.quiz_passed}</td>
+                                        <td>${u.created_at ? new Date(u.created_at).toLocaleDateString() : 'N/A'}</td>
+                                        <td>
+                                            <button class="btn btn-primary btn-sm" onclick="viewUser(${u.id})"><i class="fas fa-eye"></i></button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                document.getElementById('sectionContent').innerHTML = html;
+            } catch(err) {
+                document.getElementById('sectionContent').innerHTML = `<div style="color:#e74c3c;">❌ ${err.message}</div>`;
+            }
         }
 
-        function closeAuthModal() {
-            document.getElementById('authModal').classList.remove('show');
+        async function viewUser(userId) {
+            try {
+                const data = await apiCall(`/api/admin/user/${userId}/progress`);
+                const u = data.user;
+                let html = `
+                    <div class="user-detail-grid">
+                        <div class="user-detail-item"><div class="label">Tên</div><div class="value">${u.username}</div></div>
+                        <div class="user-detail-item"><div class="label">Email</div><div class="value">${u.email || 'N/A'}</div></div>
+                        <div class="user-detail-item"><div class="label">XP</div><div class="value">${u.xp}</div></div>
+                        <div class="user-detail-item"><div class="label">Level</div><div class="value">${u.current_level}</div></div>
+                        <div class="user-detail-item"><div class="label">Bài học đã hoàn thành</div><div class="value">${data.total_completed}</div></div>
+                    </div>
+                    <h3>📚 Bài học đã hoàn thành</h3>
+                    ${data.completed_lessons.length === 0 ? '<p style="color:#888;">Chưa hoàn thành bài học nào.</p>' : `
+                        <table>
+                            <thead><tr><th>Bài học</th><th>Level</th><th>Ngày hoàn thành</th><th>Quiz</th></tr></thead>
+                            <tbody>
+                                ${data.completed_lessons.map(l => `
+                                    <tr>
+                                        <td>${l.lesson_name}</td>
+                                        <td>Level ${l.level}</td>
+                                        <td>${l.completed_at ? new Date(l.completed_at).toLocaleString() : 'N/A'}</td>
+                                        <td>${l.quiz_passed ? '✅ Đã qua' : '⏳ Chưa'}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `}
+                `;
+                document.getElementById('userDetailContent').innerHTML = html;
+                document.getElementById('userDetailModal').classList.add('show');
+            } catch(err) {
+                alert('Lỗi: ' + err.message);
+            }
         }
 
-        async function handleAuth(e) {
+        function closeUserDetail() {
+            document.getElementById('userDetailModal').classList.remove('show');
+        }
+
+        async function loadLessons() {
+            try {
+                const lessons = await apiCall('/api/admin/lessons');
+                let html = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+                        <h3><i class="fas fa-book"></i> Quản lý bài học</h3>
+                        <button class="btn btn-success" onclick="openAddModal('lesson')"><i class="fas fa-plus"></i> Thêm bài học</button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead><tr><th>ID</th><th>Level</th><th>Tên</th><th>XP</th><th>Hành động</th></tr></thead>
+                            <tbody>
+                                ${lessons.map(l => `
+                                    <tr>
+                                        <td>${l.id}</td>
+                                        <td>${l.level_id}</td>
+                                        <td><strong>${l.name}</strong></td>
+                                        <td>${l.xp_reward}</td>
+                                        <td>
+                                            <button class="btn btn-warning btn-sm" onclick="editLesson(${l.id})"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-danger btn-sm" onclick="deleteItem('lesson', ${l.id})"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                document.getElementById('sectionContent').innerHTML = html;
+            } catch(err) {
+                document.getElementById('sectionContent').innerHTML = `<div style="color:#e74c3c;">❌ ${err.message}</div>`;
+            }
+        }
+
+        async function editLesson(id) {
+            const lessons = await apiCall('/api/admin/lessons');
+            const item = lessons.find(l => l.id === id);
+            if (!item) return;
+            openAddModal('lesson', item);
+        }
+
+        async function loadQuizzes() {
+            try {
+                const quizzes = await apiCall('/api/admin/quizzes');
+                let html = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+                        <h3><i class="fas fa-puzzle-piece"></i> Quản lý Quiz</h3>
+                        <button class="btn btn-success" onclick="openAddModal('quiz')"><i class="fas fa-plus"></i> Thêm Quiz</button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead><tr><th>ID</th><th>Level</th><th>Câu hỏi</th><th>Đáp án đúng</th><th>XP</th><th>Hành động</th></tr></thead>
+                            <tbody>
+                                ${quizzes.map(q => `
+                                    <tr>
+                                        <td>${q.id}</td>
+                                        <td>${q.level_id}</td>
+                                        <td>${q.question.substring(0, 40)}${q.question.length > 40 ? '...' : ''}</td>
+                                        <td>${['A', 'B', 'C', 'D'][q.correct_answer]}</td>
+                                        <td>${q.xp_reward}</td>
+                                        <td>
+                                            <button class="btn btn-warning btn-sm" onclick="editQuiz(${q.id})"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-danger btn-sm" onclick="deleteItem('quiz', ${q.id})"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                document.getElementById('sectionContent').innerHTML = html;
+            } catch(err) {
+                document.getElementById('sectionContent').innerHTML = `<div style="color:#e74c3c;">❌ ${err.message}</div>`;
+            }
+        }
+
+        async function editQuiz(id) {
+            const quizzes = await apiCall('/api/admin/quizzes');
+            const item = quizzes.find(q => q.id === id);
+            if (!item) return;
+            openAddModal('quiz', item);
+        }
+
+        function openAddModal(type, data = null) {
+            document.getElementById('editType').value = type;
+            document.getElementById('editId').value = data ? data.id : '';
+            document.getElementById('editLevel').value = data ? data.level_id : 1;
+            document.getElementById('editName').value = data ? data.name : '';
+            document.getElementById('editDesc').value = data ? data.description : '';
+            document.getElementById('editContent').value = data ? data.content : '';
+            document.getElementById('editXP').value = data ? data.xp_reward : 20;
+            document.getElementById('editModalTitle').textContent = data ? `Sửa ${type === 'lesson' ? 'bài học' : 'quiz'}` : `Thêm ${type === 'lesson' ? 'bài học' : 'quiz'} mới`;
+            document.getElementById('editModal').classList.add('show');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('show');
+        }
+
+        async function saveItem(e) {
             e.preventDefault();
-            const mode = document.getElementById('authMode').value;
-            const username = document.getElementById('authUsername').value.trim();
-            const password = document.getElementById('authPassword').value.trim();
-            const email = document.getElementById('authEmail').value.trim();
-            const errorEl = document.getElementById('authError');
-
-            if (!username || !password) {
-                errorEl.textContent = 'Vui lòng nhập đầy đủ thông tin!';
-                errorEl.style.display = 'block';
-                return;
-            }
-            if (mode === 'register' && !email) {
-                errorEl.textContent = 'Vui lòng nhập email!';
-                errorEl.style.display = 'block';
-                return;
-            }
+            const type = document.getElementById('editType').value;
+            const id = document.getElementById('editId').value;
+            const data = {
+                level_id: parseInt(document.getElementById('editLevel').value),
+                name: document.getElementById('editName').value,
+                description: document.getElementById('editDesc').value,
+                content: document.getElementById('editContent').value,
+                xp_reward: parseInt(document.getElementById('editXP').value)
+            };
 
             try {
-                const url = mode === 'login' ? '/api/login' : '/api/register';
-                const body = mode === 'login' ? { username, password } : { username, password, email };
-                const data = await apiCall(url, 'POST', body);
+                const url = `/api/admin/${type}s${id ? '/' + id : ''}`;
+                const method = id ? 'PUT' : 'POST';
+                await apiCall(url, method, data);
+                closeEditModal();
+                showToast('✅ Lưu thành công!');
+                loadSection(type + 's');
+            } catch(err) {
+                alert('Lỗi: ' + err.message);
+            }
+        }
 
-                if (mode === 'login') {
-                    state.user = username;
-                    state.isLoggedIn = true;
-                    document.getElementById('usernameDisplay').textContent = username;
-                    document.getElementById('authButtons').classList.add('hidden');
-                    document.getElementById('userInfo').classList.remove('hidden');
-                    closeAuthModal();
-                    showToast('👋 Chào mừng ' + username + '!');
-                    await loadUserProgress();
-                    await loadAllData();
-                } else {
-                    showToast('✅ Đăng ký thành công! Hãy đăng nhập.');
-                    openLoginModal();
-                }
-            } catch (err) {
-                errorEl.textContent = err.message || 'Lỗi kết nối!';
-                errorEl.style.display = 'block';
+        async function deleteItem(type, id) {
+            if (!confirm(`Xóa ${type === 'lesson' ? 'bài học' : 'quiz'} này?`)) return;
+            try {
+                await apiCall(`/api/admin/${type}s/${id}`, 'DELETE');
+                showToast('✅ Đã xóa!');
+                loadSection(type + 's');
+            } catch(err) {
+                alert('Lỗi: ' + err.message);
             }
         }
 
         async function logout() {
             try {
                 await apiCall('/api/logout', 'POST');
-                state.isLoggedIn = false;
-                state.user = null;
-                document.getElementById('authButtons').classList.remove('hidden');
-                document.getElementById('userInfo').classList.add('hidden');
-                showToast('👋 Đã đăng xuất!');
-                state.completedLessons = [];
-                state.quizPassed = {};
-                state.xp = 0;
-                state.currentLevel = 1;
-                renderAll();
-            } catch (err) {
-                showToast('Lỗi đăng xuất!');
+                window.location.href = '/';
+            } catch(err) {
+                alert('Lỗi đăng xuất!');
             }
         }
 
-        // ============================================================
-        // USER PROGRESS
-        // ============================================================
-        async function loadUserProgress() {
-            try {
-                const data = await apiCall('/api/user/progress');
-                state.completedLessons = data.completed_lessons || [];
-                state.quizPassed = data.quiz_passed || {};
-                state.xp = data.xp || 0;
-                state.currentLevel = data.current_level || 1;
-                state.achievements = data.achievements || [];
-            } catch (err) {
-                // Chưa login thì bỏ qua
-            }
-        }
-
-        // ============================================================
-        // LOAD DATA
-        // ============================================================
-        async function loadAllData() {
-            try {
-                const levels = await apiCall('/api/levels');
-                state.levels = levels;
-                await loadLessonsForLevel(state.currentLevel);
-                await loadQuizForLevel(state.currentLevel);
-                renderAll();
-            } catch (err) {
-                console.error('Lỗi load data:', err);
-                showToast('Lỗi tải dữ liệu!');
-            }
-        }
-
-        async function loadLessonsForLevel(levelId) {
-            try {
-                const lessons = await apiCall(`/api/lessons/${levelId}`);
-                state.lessons[levelId] = lessons;
-            } catch (err) {
-                state.lessons[levelId] = [];
-            }
-        }
-
-        async function loadQuizForLevel(levelId) {
-            try {
-                const quiz = await apiCall(`/api/quiz/${levelId}`);
-                state.quizzes[levelId] = quiz;
-            } catch (err) {
-                state.quizzes[levelId] = null;
-            }
-        }
-
-        // ============================================================
-        // RENDER
-        // ============================================================
-        function renderAll() {
-            renderHeader();
-            renderLevelCard();
-            renderLessons();
-            renderQuiz();
-            renderAchievements();
-        }
-
-        function renderHeader() {
-            const totalLessons = Object.values(state.lessons).flat().length;
-            document.getElementById('levelDisplay').textContent = state.currentLevel;
-            document.getElementById('xpDisplay').textContent = state.xp;
-            document.getElementById('lessonDoneDisplay').textContent = state.completedLessons.length;
-            document.getElementById('lessonTotalDisplay').textContent = totalLessons || 0;
-            
-            const levelData = state.levels.find(l => l.id === state.currentLevel);
-            const nextLevel = state.levels.find(l => l.id === state.currentLevel + 1);
-            let xpPercent = 0;
-            if (levelData && nextLevel) {
-                const xpNeeded = nextLevel.xpRequired - levelData.xpRequired;
-                const xpEarned = state.xp - levelData.xpRequired;
-                xpPercent = Math.min(100, (xpEarned / xpNeeded) * 100);
-            } else if (state.levels.length > 0) {
-                xpPercent = 100;
-            }
-            document.getElementById('xpBar').style.width = xpPercent + '%';
-        }
-
-        function renderLevelCard() {
-            const levelData = state.levels.find(l => l.id === state.currentLevel);
-            if (levelData) {
-                document.getElementById('levelTitle').textContent = `${levelData.emoji} Level ${levelData.id}: ${levelData.name}`;
-                document.getElementById('levelDesc').textContent = levelData.desc;
-                document.getElementById('levelEmoji').textContent = levelData.emoji;
-            }
-        }
-
-        // ===== LESSONS =====
-        function renderLessons() {
-            const container = document.getElementById('lessonList');
-            const lessons = state.lessons[state.currentLevel] || [];
-            
-            if (lessons.length === 0) {
-                container.innerHTML = `<div class="text-center" style="padding: 30px; color: #888;">🎉 Chúc mừng! Bạn đã hoàn thành tất cả bài học ở level này!</div>`;
-                return;
-            }
-
-            let html = '';
-            for (const lesson of lessons) {
-                const isCompleted = state.completedLessons.includes(String(lesson.id));
-                const isLocked = !isCompleted && !isPreviousLessonCompleted(lesson.id);
-                html += `
-                    <div class="lesson-item ${isCompleted ? 'completed' : ''} ${isLocked ? 'locked' : ''}" 
-                         onclick="${isLocked ? '' : `openLessonDetail(${lesson.id})`}">
-                        <div class="lesson-info">
-                            <div class="lesson-icon">${isCompleted ? '✅' : isLocked ? '🔒' : '📖'}</div>
-                            <div>
-                                <div class="lesson-name">${lesson.name}</div>
-                                <div class="lesson-desc" style="font-size:13px;color:#888;">${lesson.description} (${lesson.xp_reward} XP)</div>
-                            </div>
-                        </div>
-                        <div class="lesson-status">${isCompleted ? 'Hoàn thành' : isLocked ? 'Khóa' : 'Bắt đầu'}</div>
-                    </div>
-                `;
-            }
-            container.innerHTML = html;
-        }
-
-        function isPreviousLessonCompleted(lessonId) {
-            const lessons = state.lessons[state.currentLevel] || [];
-            const index = lessons.findIndex(l => l.id === lessonId);
-            if (index <= 0) return true;
-            const prevLesson = lessons[index - 1];
-            return state.completedLessons.includes(String(prevLesson.id));
-        }
-
-        // ===== OPEN LESSON DETAIL =====
-        async function openLessonDetail(lessonId) {
-            state.currentLessonId = lessonId;
-            try {
-                const lesson = await apiCall(`/api/lessons/detail/${lessonId}`);
-                document.getElementById('modalLessonTitle').textContent = lesson.name;
-                document.getElementById('modalLessonContent').innerHTML = lesson.content;
-                
-                // Load bài tập
-                await loadExercises(lessonId);
-                
-                document.getElementById('lessonModal').classList.add('show');
-            } catch (err) {
-                showToast('❌ Lỗi tải bài học: ' + err.message);
-            }
-        }
-
-        function closeLessonModal() {
-            document.getElementById('lessonModal').classList.remove('show');
-            state.currentLessonId = null;
-        }
-
-        // ===== EXERCISES =====
-        async function loadExercises(lessonId) {
-            const container = document.getElementById('modalExercises');
-            try {
-                const exercises = await apiCall(`/api/exercises/${lessonId}`);
-                if (exercises.length === 0) {
-                    container.innerHTML = '<div class="text-center" style="padding: 15px; color: #888;">📝 Chưa có bài tập cho bài học này.</div>';
-                    return;
-                }
-                
-                let html = '<h3>📝 Bài tập</h3>';
-                for (const ex of exercises) {
-                    html += `
-                        <div class="exercise-item" data-exercise-id="${ex.id}">
-                            <div class="question">${ex.question}</div>
-                            <div class="options">
-                                ${ex.options.map((opt, idx) => `
-                                    <button onclick="checkExercise(${ex.id}, ${idx}, this)" data-idx="${idx}">${opt}</button>
-                                `).join('')}
-                            </div>
-                            <div class="explanation" id="explanation-${ex.id}"></div>
-                        </div>
-                    `;
-                }
-                container.innerHTML = html;
-            } catch (err) {
-                container.innerHTML = '<div style="color: #e74c3c;">❌ Lỗi tải bài tập!</div>';
-            }
-        }
-
-        async function checkExercise(exerciseId, selected, button) {
-            const parent = button.closest('.exercise-item');
-            const buttons = parent.querySelectorAll('.options button');
-            buttons.forEach(btn => btn.disabled = true);
-            
-            try {
-                const result = await apiCall('/api/progress/exercise', 'POST', {
-                    exercise_id: exerciseId,
-                    lesson_id: state.currentLessonId,
-                    user_answer: selected
-                });
-                
-                // Đánh dấu đúng/sai
-                if (result.correct) {
-                    button.classList.add('correct');
-                    showToast('✅ Chính xác!');
-                } else {
-                    button.classList.add('wrong');
-                    // Hiển thị đáp án đúng
-                    buttons.forEach((btn, idx) => {
-                        if (parseInt(btn.dataset.idx) === result.correct_answer) {
-                            btn.classList.add('correct');
-                        }
-                    });
-                    showToast('❌ Sai rồi! Xem giải thích bên dưới.');
-                }
-                
-                // Hiển thị giải thích
-                const explanationEl = document.getElementById(`explanation-${exerciseId}`);
-                if (result.explanation) {
-                    explanationEl.textContent = '💡 ' + result.explanation;
-                    explanationEl.classList.add('show');
-                }
-            } catch (err) {
-                showToast('❌ Lỗi: ' + err.message);
-            }
-        }
-
-        // ===== MARK LESSON COMPLETE =====
-        async function markLessonComplete() {
-            if (!state.currentLessonId) return;
-            if (!state.isLoggedIn) {
-                showToast('🔐 Vui lòng đăng nhập để lưu tiến trình!');
-                openLoginModal();
-                return;
-            }
-            
-            try {
-                const data = await apiCall('/api/progress/lesson', 'POST', {
-                    lesson_id: state.currentLessonId
-                });
-                state.xp = data.xp;
-                state.completedLessons.push(String(state.currentLessonId));
-                // Kiểm tra lên level
-                const newLevel = Math.min(6, Math.floor(state.xp / 150) + 1);
-                if (newLevel > state.currentLevel) {
-                    state.currentLevel = newLevel;
-                    await loadLessonsForLevel(newLevel);
-                    await loadQuizForLevel(newLevel);
-                    showToast(`🚀 LEVEL UP! Bạn đã lên Level ${newLevel}!`);
-                }
-                closeLessonModal();
-                renderAll();
-                showToast(`🎉 Hoàn thành bài học! +${data.xp_reward || 15} XP`);
-            } catch (err) {
-                showToast('❌ Lỗi: ' + err.message);
-            }
-        }
-
-        // ===== QUIZ =====
-        function renderQuiz() {
-            const container = document.getElementById('quizContainer');
-            const quiz = state.quizzes[state.currentLevel];
-            const passed = state.quizPassed[state.currentLevel] || false;
-
-            if (!quiz) {
-                container.innerHTML = `<div class="text-center" style="padding: 30px; color: #888;">🎯 Hoàn thành các bài học để mở khóa Quiz!</div>`;
-                return;
-            }
-
-            if (passed) {
-                container.innerHTML = `
-                    <div class="text-center" style="padding: 30px; background: white; border-radius: 20px;">
-                        <div style="font-size: 64px;">🎉</div>
-                        <h3>Bạn đã vượt qua Quiz Level ${state.currentLevel}!</h3>
-                        <p style="color: #888;">+${quiz.xp_reward} XP</p>
-                        <button class="btn-success" onclick="resetQuiz()">Làm lại</button>
-                    </div>
-                `;
-                return;
-            }
-
-            const lessons = state.lessons[state.currentLevel] || [];
-            const allCompleted = lessons.every(l => state.completedLessons.includes(String(l.id)));
-            if (!allCompleted) {
-                container.innerHTML = `<div class="text-center" style="padding: 30px; color: #888;">📚 Hoàn thành tất cả bài học để mở khóa Quiz!</div>`;
-                return;
-            }
-
-            container.innerHTML = `
-                <div class="quiz-container">
-                    <div class="quiz-question" style="font-size:18px;font-weight:600;margin-bottom:20px;">${quiz.question}</div>
-                    <div class="quiz-options" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="quizOptions">
-                        ${quiz.options.map((opt, idx) => `
-                            <button onclick="checkQuizAnswer(${idx})" style="padding:15px;border:2px solid #e9ecef;border-radius:15px;background:white;cursor:pointer;transition:all 0.3s;font-size:16px;text-align:left;">${opt}</button>
-                        `).join('')}
-                    </div>
-                    <div id="quizFeedback" class="mt-20"></div>
-                </div>
-            `;
-        }
-
-        async function checkQuizAnswer(selected) {
-            const quiz = state.quizzes[state.currentLevel];
-            if (!quiz) return;
-
-            const buttons = document.querySelectorAll('#quizOptions button');
-            buttons.forEach((btn, idx) => {
-                btn.disabled = true;
-                if (idx === quiz.correct_answer) btn.classList.add('correct');
-                else if (idx === selected && idx !== quiz.correct_answer) btn.classList.add('wrong');
-            });
-
-            const feedback = document.getElementById('quizFeedback');
-            if (selected === quiz.correct_answer) {
-                try {
-                    const data = await apiCall('/api/progress/quiz', 'POST', { level_id: state.currentLevel });
-                    state.xp = data.xp;
-                    state.quizPassed[state.currentLevel] = true;
-                    feedback.innerHTML = `
-                        <div class="text-center" style="padding:20px;background:white;border-radius:20px;margin-top:10px;">
-                            <div style="font-size:48px;">🌟</div>
-                            <h3>Chính xác! +${quiz.xp_reward} XP</h3>
-                            <button class="btn-primary" onclick="renderAll()">Tiếp tục</button>
-                        </div>
-                    `;
-                    renderAll();
-                    showToast(`🎉 Quiz hoàn thành! +${quiz.xp_reward} XP`);
-                } catch (err) {
-                    showToast('❌ Lỗi: ' + err.message);
-                }
-            } else {
-                feedback.innerHTML = `
-                    <div style="background:#fff5f5;padding:20px;border-radius:15px;text-align:center;margin-top:10px;">
-                        <p style="color:#e74c3c;font-size:18px;">❌ Sai rồi! Hãy thử lại nhé!</p>
-                        <button class="btn-primary" onclick="renderQuiz()">Thử lại</button>
-                    </div>
-                `;
-            }
-        }
-
-        function resetQuiz() {
-            state.quizPassed[state.currentLevel] = false;
-            renderQuiz();
-        }
-
-        // ===== ACHIEVEMENTS =====
-        function renderAchievements() {
-            const container = document.getElementById('achievementList');
-            const achievements = [
-                { id: 'ach_1', name: 'Người mới bắt đầu', icon: '🌱', desc: 'Hoàn thành Level 1' },
-                { id: 'ach_2', name: 'Chú gà con', icon: '🐥', desc: 'Hoàn thành Level 2' },
-                { id: 'ach_3', name: 'Chú vẹt thông thái', icon: '🦜', desc: 'Hoàn thành Level 3' },
-                { id: 'ach_4', name: 'Cá heo thông minh', icon: '🐬', desc: 'Hoàn thành Level 4' },
-                { id: 'ach_5', name: 'Sư tử tự tin', icon: '🦁', desc: 'Hoàn thành Level 5' },
-                { id: 'ach_6', name: 'Đại bàng chiến thắng', icon: '🦅', desc: 'Hoàn thành Level 6' },
-                { id: 'ach_7', name: 'Người học siêng năng', icon: '📚', desc: 'Hoàn thành 20 bài học' },
-            ];
-
-            let html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:15px;">';
-            for (const ach of achievements) {
-                const unlocked = state.achievements.includes(ach.id);
-                html += `
-                    <div class="achievement-item" style="background:white;border-radius:15px;padding:20px;text-align:center;border:2px solid ${unlocked ? '#f5576c' : '#e9ecef'};${unlocked ? 'background:#fff5f7;' : 'opacity:0.5;filter:grayscale(1);'}">
-                        <div style="font-size:36px;margin-bottom:8px;">${ach.icon}</div>
-                        <div style="font-weight:600;font-size:13px;color:#2d3436;">${ach.name}</div>
-                        <div style="font-size:11px;color:#888;margin-top:5px;">${unlocked ? '✅ Đã mở' : '🔒 Khóa'}</div>
-                    </div>
-                `;
-            }
-            html += '</div>';
-            container.innerHTML = html;
-        }
-
-        // ===== TABS =====
-        function switchTab(tab) {
-            document.querySelectorAll('.tabs button').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`.tabs button[data-tab="${tab}"]`).classList.add('active');
-            document.querySelectorAll('#contentArea > div').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`tab-${tab}`).classList.remove('hidden');
-            if (tab === 'quiz') renderQuiz();
-            if (tab === 'achievements') renderAchievements();
-        }
-
-        // ===== TOAST =====
         function showToast(message) {
             const existing = document.querySelector('.toast');
             if (existing) existing.remove();
             const toast = document.createElement('div');
-            toast.className = 'toast';
+            toast.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#2d3436;color:white;padding:15px 30px;border-radius:50px;font-weight:600;z-index:9999;animation:slideUp 0.5s ease;max-width:90%;text-align:center;';
             toast.textContent = message;
             document.body.appendChild(toast);
             setTimeout(() => {
@@ -690,35 +415,13 @@
             }, 3000);
         }
 
-        // ============================================================
-        // INIT
-        // ============================================================
-        async function init() {
-            await loadAllData();
-            try {
-                const data = await apiCall('/api/user/status');
-                if (data.logged_in) {
-                    state.isLoggedIn = true;
-                    state.user = data.username;
-                    document.getElementById('usernameDisplay').textContent = data.username;
-                    document.getElementById('authButtons').classList.add('hidden');
-                    document.getElementById('userInfo').classList.remove('hidden');
-                    await loadUserProgress();
-                    renderAll();
-                }
-            } catch (err) {}
-            renderAll();
-        }
-
-        // Đóng modal khi click bên ngoài
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('modal-overlay')) {
                 e.target.classList.remove('show');
             }
         });
 
-        document.addEventListener('DOMContentLoaded', init);
-        console.log('🚀 English Journey - Học tiếng Anh vui nhộn!');
+        document.addEventListener('DOMContentLoaded', () => loadDashboard());
     </script>
 </body>
 </html>
