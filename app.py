@@ -30,7 +30,9 @@ login_manager.login_view = 'login'
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# ===== TẠO BẢNG VÀ DỮ LIỆU MẪU =====
+# ============================================================
+# TẠO BẢNG VÀ DỮ LIỆU MẪU (ĐÃ SỬA LỖI UNIQUE)
+# ============================================================
 with app.app_context():
     # Tạo thư mục instance nếu chưa có
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
@@ -38,7 +40,7 @@ with app.app_context():
     # Tạo bảng
     db.create_all()
     
-    # Kiểm tra và tạo admin nếu chưa có
+    # ===== TẠO ADMIN (CHỈ KHI CHƯA TỒN TẠI) =====
     if not User.query.filter_by(username='admin').first():
         admin = User(
             username='admin',
@@ -48,15 +50,15 @@ with app.app_context():
         )
         db.session.add(admin)
         db.session.commit()
-        print("✅ Đã tạo tài khoản admin!")
+        print("✅ Đã tạo tài khoản admin: admin / admin123")
+    else:
+        print("ℹ️ Admin đã tồn tại, bỏ qua.")
     
-    # Kiểm tra và tạo dữ liệu mẫu nếu chưa có bài học
+    # ===== TẠO DỮ LIỆU MẪU (CHỈ KHI CHƯA CÓ BÀI HỌC) =====
     if Lesson.query.count() == 0:
-        # ... (phần tạo lessons, exercises, quizzes đã có trong code)
-        print("✅ Đã tạo dữ liệu mẫu!")
         # ===== LEVEL 1: EGG =====
         lessons_data = [
-            # Level 1
+            # Level 1 - Bài 1
             {
                 'level_id': 1,
                 'name': '🔤 Bảng chữ cái ABC',
@@ -415,18 +417,14 @@ Dịch sang tiếng Anh:
             )
             db.session.add(quiz)
         
-        # Tạo admin
-        admin = User(
-            username='admin',
-            password=generate_password_hash('admin123'),
-            email='admin@example.com',
-            is_admin=True
-        )
-        db.session.add(admin)
         db.session.commit()
-        print("✅ Đã tạo dữ liệu mẫu và admin (user: admin, pass: admin123)")
+        print("✅ Đã tạo dữ liệu mẫu (bài học, bài tập, quiz)!")
+    else:
+        print("ℹ️ Dữ liệu mẫu đã tồn tại, bỏ qua.")
 
-# ==================== ROUTES ====================
+# ============================================================
+# ROUTES
+# ============================================================
 
 # ---- TRANG CHỦ ----
 @app.route('/')
