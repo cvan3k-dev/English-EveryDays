@@ -53,97 +53,439 @@ with app.app_context():
     
     # ---- TẠO BÀI HỌC ----
     if Lesson.query.count() == 0:
-        print("⏳ Đang tạo dữ liệu mẫu...")
-        
-        lessons_data = [
-            # LEVEL 1
-            {'level_id':1, 'name':'🔤 Bảng chữ cái ABC', 'description':'Học 26 chữ cái', 
-             'content':'## 📚 LÝ THUYẾT\nBảng chữ cái tiếng Anh có 26 chữ cái...', 'xp_reward':20, 'order':1},
-            {'level_id':1, 'name':'🔢 Số đếm 1-20', 'description':'Học đếm từ 1 đến 20', 
-             'content':'## 📚 LÝ THUYẾT\nSố đếm từ 1 đến 20...', 'xp_reward':20, 'order':2},
-            # LEVEL 2
-            {'level_id':2, 'name':'👨‍👩‍👧‍👦 Gia đình', 'description':'Từ vựng về gia đình', 
-             'content':'## 📚 LÝ THUYẾT\nTừ vựng về gia đình...', 'xp_reward':30, 'order':1},
-            {'level_id':2, 'name':'🐱 Động vật', 'description':'Từ vựng về động vật', 
-             'content':'## 📚 LÝ THUYẾT\nTừ vựng về động vật...', 'xp_reward':30, 'order':2},
-            # LEVEL 3
-            {'level_id':3, 'name':'⏰ Thì hiện tại đơn', 'description':'Cấu trúc và cách dùng', 
-             'content':'## 📚 LÝ THUYẾT\nThì hiện tại đơn...', 'xp_reward':35, 'order':1},
-            {'level_id':3, 'name':'📝 Câu phủ định & nghi vấn', 'description':'Cách đặt câu phủ định và câu hỏi', 
-             'content':'## 📚 LÝ THUYẾT\nCâu phủ định và nghi vấn...', 'xp_reward':35, 'order':2},
-            # LEVEL 4
-            {'level_id':4, 'name':'⏳ Thì quá khứ đơn', 'description':'Cách dùng thì quá khứ đơn', 
-             'content':'## 📚 LÝ THUYẾT\nThì quá khứ đơn...', 'xp_reward':45, 'order':1},
-            {'level_id':4, 'name':'🔮 Thì tương lai gần', 'description':'Cấu trúc "be going to"', 
-             'content':'## 📚 LÝ THUYẾT\nThì tương lai gần...', 'xp_reward':45, 'order':2},
-            # LEVEL 5
-            {'level_id':5, 'name':'🎯 Câu điều kiện loại 1', 'description':'Cấu trúc If + hiện tại, will + V', 
-             'content':'## 📚 LÝ THUYẾT\nCâu điều kiện loại 1...', 'xp_reward':55, 'order':1},
-            {'level_id':5, 'name':'📖 Câu bị động', 'description':'Cấu trúc câu bị động', 
-             'content':'## 📚 LÝ THUYẾT\nCâu bị động...', 'xp_reward':55, 'order':2},
-            # LEVEL 6
-            {'level_id':6, 'name':'💼 Giao tiếp công sở', 'description':'Từ vựng và mẫu câu công sở', 
-             'content':'## 📚 LÝ THUYẾT\nTừ vựng công sở...', 'xp_reward':70, 'order':1},
-            {'level_id':6, 'name':'🌍 Du lịch & Văn hóa', 'description':'Từ vựng du lịch và giao tiếp', 
-             'content':'## 📚 LÝ THUYẾT\nTừ vựng du lịch...', 'xp_reward':70, 'order':2},
-        ]
-        for data in lessons_data:
-            db.session.add(Lesson(**data))
-        db.session.commit()
-        print(f"✅ Đã tạo {Lesson.query.count()} bài học")
+    print("⏳ Đang tạo dữ liệu mẫu...")
     
-    # ---- TẠO BÀI TẬP ----
-    if Exercise.query.count() == 0:
-        exercises = [
-            # Level 1 - Bài 1
-            {'lesson_id':1, 'question':'Chữ cái nào là nguyên âm?', 'option_a':'B', 'option_b':'C', 'option_c':'A', 'option_d':'D', 'correct_answer':2, 'explanation':'Nguyên âm là A, E, I, O, U'},
-            {'lesson_id':1, 'question':'Phát âm chữ "B" là gì?', 'option_a':'/biː/', 'option_b':'/siː/', 'option_c':'/diː/', 'option_d':'/iː/', 'correct_answer':0, 'explanation':'B phát âm là /biː/'},
-            # Level 1 - Bài 2
-            {'lesson_id':2, 'question':'Số 7 trong tiếng Anh là gì?', 'option_a':'Seven', 'option_b':'Six', 'option_c':'Eight', 'option_d':'Nine', 'correct_answer':0, 'explanation':'7 = Seven'},
-            {'lesson_id':2, 'question':'Số 12 trong tiếng Anh là gì?', 'option_a':'Ten', 'option_b':'Eleven', 'option_c':'Twelve', 'option_d':'Twenty', 'correct_answer':2, 'explanation':'12 = Twelve'},
-            # Level 2 - Bài 1
-            {'lesson_id':3, 'question':'"Mẹ" trong tiếng Anh là gì?', 'option_a':'Father', 'option_b':'Mother', 'option_c':'Brother', 'option_d':'Sister', 'correct_answer':1, 'explanation':'Mother = Mẹ'},
-            {'lesson_id':3, 'question':'"Anh trai" trong tiếng Anh là gì?', 'option_a':'Sister', 'option_b':'Brother', 'option_c':'Uncle', 'option_d':'Aunt', 'correct_answer':1, 'explanation':'Brother = Anh trai'},
-            # Level 2 - Bài 2
-            {'lesson_id':4, 'question':'"Dog" có nghĩa là gì?', 'option_a':'Mèo', 'option_b':'Chó', 'option_c':'Chim', 'option_d':'Cá', 'correct_answer':1, 'explanation':'Dog = Chó'},
-            {'lesson_id':4, 'question':'"Cat" có nghĩa là gì?', 'option_a':'Chó', 'option_b':'Mèo', 'option_c':'Chim', 'option_d':'Cá', 'correct_answer':1, 'explanation':'Cat = Mèo'},
-            # Level 3 - Bài 1
-            {'lesson_id':5, 'question':'Chia động từ: She (go) ____ to school.', 'option_a':'go', 'option_b':'goes', 'option_c':'going', 'option_d':'went', 'correct_answer':1, 'explanation':'She + goes'},
-            {'lesson_id':5, 'question':'Chia động từ: They (play) ____ football.', 'option_a':'play', 'option_b':'plays', 'option_c':'playing', 'option_d':'played', 'correct_answer':0, 'explanation':'They + play'},
-            # Level 3 - Bài 2
-            {'lesson_id':6, 'question':'Phủ định: "He likes cats." → He ____ cats.', 'option_a':"don't like", 'option_b':"doesn't like", 'option_c':"not like", 'option_d':"isn't like", 'correct_answer':1, 'explanation':'He + doesn\'t + V'},
-            # Level 4 - Bài 1
-            {'lesson_id':7, 'question':'Quá khứ của "go" là gì?', 'option_a':'goed', 'option_b':'went', 'option_c':'gone', 'option_d':'going', 'correct_answer':1, 'explanation':'go → went'},
-            {'lesson_id':7, 'question':'Quá khứ của "visit" là gì?', 'option_a':'visited', 'option_b':'visitted', 'option_c':'visit', 'option_d':'visiting', 'correct_answer':0, 'explanation':'visit → visited'},
-            # Level 4 - Bài 2
-            {'lesson_id':8, 'question':'"I am going to study" nghĩa là gì?', 'option_a':'Tôi đang học', 'option_b':'Tôi sẽ học', 'option_c':'Tôi đã học', 'option_d':'Tôi học', 'correct_answer':1, 'explanation':'be going to = sẽ (dự định)'},
-            # Level 5 - Bài 1
-            {'lesson_id':9, 'question':'Hoàn thành: If it rains, I ____ stay home.', 'option_a':'will', 'option_b':'would', 'option_c':'am', 'option_d':'was', 'correct_answer':0, 'explanation':'Câu điều kiện loại 1: will + V'},
-            # Level 5 - Bài 2
-            {'lesson_id':10, 'question':'Bị động: "She writes a letter" → A letter ____ by her.', 'option_a':'is written', 'option_b':'was written', 'option_c':'is writing', 'option_d':'writes', 'correct_answer':0, 'explanation':'Hiện tại đơn bị động: is/am/are + V3/ed'},
-            # Level 6 - Bài 1
-            {'lesson_id':11, 'question':'Từ nào có nghĩa là "cuộc họp"?', 'option_a':'Meeting', 'option_b':'Report', 'option_c':'Email', 'option_d':'Deadline', 'correct_answer':0, 'explanation':'Meeting = Cuộc họp'},
-            {'lesson_id':11, 'question':'"Deadline" có nghĩa là gì?', 'option_a':'Cuộc họp', 'option_b':'Báo cáo', 'option_c':'Hạn chót', 'option_d':'Thư điện tử', 'correct_answer':2, 'explanation':'Deadline = Hạn chót'},
-        ]
-        for data in exercises:
-            db.session.add(Exercise(**data))
-        db.session.commit()
-        print(f"✅ Đã tạo {Exercise.query.count()} bài tập")
+    # ===== BÀI HỌC (LÝ THUYẾT CHI TIẾT) =====
+    lessons_data = [
+        # LEVEL 1: EGG
+        {
+            'level_id': 1,
+            'name': '🔤 Bảng chữ cái ABC',
+            'description': 'Học 26 chữ cái tiếng Anh qua hình ảnh',
+            'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Bảng chữ cái tiếng Anh có **26 chữ cái**, chia thành:
+- **Nguyên âm (Vowels):** A, E, I, O, U (5 chữ)
+- **Phụ âm (Consonants):** 21 chữ còn lại
+
+### 🎯 MẸO GHI NHỚ
+Hát theo bài hát ABC để nhớ thứ tự các chữ cái!
+
+### 📝 VÍ DỤ
+- **A** → **A**pple (quả táo)
+- **B** → **B**all (quả bóng)
+- **C** → **C**at (con mèo)
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. Chữ cái nào là nguyên âm? (Khoanh tròn)
+2. Viết 3 từ bắt đầu bằng chữ cái "B".
+            ''',
+            'xp_reward': 20,
+            'order': 1
+        },
+        {
+            'level_id': 1,
+            'name': '🔢 Số đếm 1-20',
+            'description': 'Học đếm từ 1 đến 20',
+            'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Số đếm từ 1 đến 20:
+- **1-10:** One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten
+- **11-20:** Eleven, Twelve, Thirteen, Fourteen, Fifteen, Sixteen, Seventeen, Eighteen, Nineteen, Twenty
+
+### 🎯 MẸO GHI NHỚ
+- Số 13-19 đều có đuôi "**teen**"
+- Số 20 là "**Twenty**"
+
+### 📝 VÍ DỤ
+- **One** apple = 1 quả táo
+- **Five** dogs = 5 con chó
+- **Twenty** students = 20 học sinh
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. Điền số thích hợp: There are ____ (7) days in a week.
+2. Viết số 15 bằng tiếng Anh.
+            ''',
+            'xp_reward': 20,
+            'order': 2
+        },
+        # LEVEL 2: CHICK
+        {
+            'level_id': 2,
+            'name': '👨‍👩‍👧‍👦 Gia đình (Family)',
+            'description': 'Từ vựng về các thành viên trong gia đình',
+            'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Từ vựng về gia đình:
+- **Father (Dad)** - Bố
+- **Mother (Mom)** - Mẹ
+- **Brother** - Anh/Em trai
+- **Sister** - Chị/Em gái
+- **Grandfather (Grandpa)** - Ông
+- **Grandmother (Grandma)** - Bà
+
+### 🎯 MẸO GHI NHỚ
+- "**Father**" và "**Mother**" là cách nói trang trọng
+- "**Dad**" và "**Mom**" là cách nói thân mật
+
+### 📝 VÍ DỤ
+- "This is my **mother**." (Đây là mẹ tôi.)
+- "I have one **brother**." (Tôi có một anh trai.)
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. "Mẹ" trong tiếng Anh là gì?
+2. Dịch: "Tôi có một em gái."
+            ''',
+            'xp_reward': 30,
+            'order': 1
+        },
+        {
+            'level_id': 2,
+            'name': '🐱 Động vật (Animals)',
+            'description': 'Từ vựng về các con vật',
+            'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Từ vựng về động vật:
+- **Cat** - Mèo
+- **Dog** - Chó
+- **Bird** - Chim
+- **Fish** - Cá
+- **Horse** - Ngựa
+- **Elephant** - Voi
+
+### 🎯 MẸO GHI NHỚ
+- **Cat** và **Dog** là 2 con vật nuôi phổ biến nhất
+- **Elephant** là con vật lớn nhất trên cạn
+
+### 📝 VÍ DỤ
+- I have a **cat**. (Tôi có một con mèo.)
+- The **dog** is big. (Con chó to.)
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. "Dog" có nghĩa là gì?
+2. Dịch: "Con chim đang bay."
+            ''',
+            'xp_reward': 30,
+            'order': 2
+        },
+        # LEVEL 3: PARROT
+        {
+            'level_id': 3,
+            'name': '⏰ Thì hiện tại đơn',
+            'description': 'Cấu trúc và cách dùng thì hiện tại đơn',
+            'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Thì hiện tại đơn diễn tả:
+- **Hành động thường xuyên xảy ra** (I eat breakfast every day.)
+- **Sự thật hiển nhiên** (The sun rises in the east.)
+- **Sở thích, thói quen** (She likes music.)
+
+### 🔧 CẤU TRÚC
+**Khẳng định:** S + V(s/es) + O
+- I/You/We/They + V (nguyên mẫu)
+- He/She/It + V(s/es)
+
+**Phủ định:** S + do/does + not + V
+- I/You/We/They + do not (don't) + V
+- He/She/It + does not (doesn't) + V
+
+**Nghi vấn:** Do/Does + S + V?
+
+### 📝 VÍ DỤ
+- **I eat** breakfast at 7 AM.
+- **She eats** lunch at noon.
+- **They do not (don't) play** football.
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. Chia động từ: She (go) ____ to school every day.
+2. Chia động từ: They (play) ____ football.
+            ''',
+            'xp_reward': 35,
+            'order': 1
+        },
+        {
+            'level_id': 3,
+            'name': '📝 Câu phủ định & nghi vấn',
+            'description': 'Cách đặt câu phủ định và câu hỏi',
+            'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+**Câu phủ định:** Thêm "do not" (don't) hoặc "does not" (doesn't) trước động từ.
+- I **don't** like coffee.
+- She **doesn't** eat meat.
+
+**Câu nghi vấn:** Đưa "do/does" lên đầu câu.
+- **Do** you like music?
+- **Does** she speak English?
+
+### 🎯 MẸO GHI NHỚ
+- **Don't** = do not (dùng với I/You/We/They)
+- **Doesn't** = does not (dùng với He/She/It)
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. Chuyển sang phủ định: "He likes cats."
+2. Chuyển sang nghi vấn: "They play football."
+            ''',
+            'xp_reward': 35,
+            'order': 2
+        },
+        # LEVEL 4: DOLPHIN
+        {
+            'level_id': 4,
+            'name': '⏳ Thì quá khứ đơn',
+            'description': 'Cách dùng thì quá khứ đơn',
+            'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Thì quá khứ đơn diễn tả hành động đã xảy ra và kết thúc trong quá khứ.
+
+**Cấu trúc:** S + V(ed/ cột 2) + O
+- I **walked** to school.
+- She **went** to the market.
+
+### 🎯 MẸO GHI NHỚ
+- Động từ có quy tắc: thêm **-ed** (walk → walked)
+- Động từ bất quy tắc: học thuộc (go → went)
+
+### 📝 VÍ DỤ
+- I **visited** my grandmother yesterday.
+- They **played** football last Sunday.
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. Chia động từ: I (visit) ____ my grandmother yesterday.
+2. Chia động từ: They (play) ____ football last Sunday.
+            ''',
+            'xp_reward': 45,
+            'order': 1
+        },
+        {
+            'level_id': 4,
+            'name': '🔮 Thì tương lai gần',
+            'description': 'Cấu trúc "be going to"',
+            'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Thì tương lai gần diễn tả dự định hoặc kế hoạch trong tương lai.
+
+**Cấu trúc:** S + am/is/are + going to + V
+- I **am going to** study.
+- She **is going to** travel.
+
+### 🎯 MẸO GHI NHỚ
+- Dùng "**going to**" cho dự định đã có kế hoạch
+- Dùng "**will**" cho quyết định tại thời điểm nói
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. We (visit) ____ the museum tomorrow.
+2. He (buy) ____ a new car.
+            ''',
+            'xp_reward': 45,
+            'order': 2
+        },
+        # LEVEL 5: LION
+        {
+            'level_id': 5,
+            'name': '🎯 Câu điều kiện loại 1',
+            'description': 'Cấu trúc If + hiện tại, will + V',
+            'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Câu điều kiện loại 1 diễn tả điều có thể xảy ra ở hiện tại hoặc tương lai.
+
+**Cấu trúc:** If + S + V(hiện tại), S + will + V
+- If it **rains**, I **will stay** home.
+- If you **study** hard, you **will pass** the exam.
+
+### 🎯 MẸO GHI NHỚ
+- Vế "If" chia ở thì hiện tại đơn
+- Vế chính chia ở thì tương lai đơn (will)
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. If she (come) ____, I (tell) ____ her.
+2. We (go) ____ out if it (not/rain) ____.
+            ''',
+            'xp_reward': 55,
+            'order': 1
+        },
+        {
+            'level_id': 5,
+            'name': '📖 Câu bị động',
+            'description': 'Cấu trúc câu bị động',
+            'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Câu bị động dùng khi chủ thể thực hiện hành động không quan trọng hoặc không rõ.
+
+**Cấu trúc:** S + be + V3/ed + (by O)
+- Active: She **writes** a letter.
+- Passive: A letter **is written** by her.
+
+### 🎯 MẸO GHI NHỚ
+- **Be** chia theo thì của câu chủ động
+- **V3/ed** là quá khứ phân từ của động từ
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. He cleans the room. → The room ____ by him.
+2. They built this house in 2000. → This house ____ in 2000.
+            ''',
+            'xp_reward': 55,
+            'order': 2
+        },
+        # LEVEL 6: EAGLE
+        {
+            'level_id': 6,
+            'name': '💼 Giao tiếp công sở',
+            'description': 'Từ vựng và mẫu câu công sở',
+            'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Từ vựng công sở:
+- **Meeting** - Cuộc họp
+- **Presentation** - Thuyết trình
+- **Report** - Báo cáo
+- **Email** - Thư điện tử
+- **Deadline** - Hạn chót
+
+### 📝 MẪU CÂU
+- "I'd like to schedule a meeting." (Tôi muốn lên lịch một cuộc họp.)
+- "Please send me the report by Friday." (Làm ơn gửi tôi báo cáo trước thứ Sáu.)
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. Dịch: "Tôi có một cuộc họp lúc 2 giờ."
+2. Dịch: "Cô ấy đang viết một báo cáo."
+            ''',
+            'xp_reward': 70,
+            'order': 1
+        },
+        {
+            'level_id': 6,
+            'name': '🌍 Du lịch & Văn hóa',
+            'description': 'Từ vựng du lịch và giao tiếp',
+            'content': '''
+## 📚 LÝ THUYẾT CẦN NHỚ
+
+Từ vựng du lịch:
+- **Airport** - Sân bay
+- **Hotel** - Khách sạn
+- **Reservation** - Đặt chỗ
+- **Ticket** - Vé
+- **Tourist** - Du khách
+
+### 📝 MẪU CÂU
+- "I'd like to book a room." (Tôi muốn đặt một phòng.)
+- "Where is the train station?" (Nhà ga ở đâu?)
+
+### ✅ BÀI TẬP THỰC HÀNH
+1. Dịch: "Tôi muốn đặt vé máy bay."
+2. Dịch: "Khách sạn ở gần bãi biển."
+            ''',
+            'xp_reward': 70,
+            'order': 2
+        },
+    ]
     
-    # ---- TẠO QUIZ ----
-    if Quiz.query.count() == 0:
-        quizzes = [
-            {'level_id':1, 'question':'Từ nào là màu sắc?', 'option_a':'Red', 'option_b':'Table', 'option_c':'Run', 'option_d':'Happy', 'correct_answer':0, 'xp_reward':30},
-            {'level_id':2, 'question':'"Cat" có nghĩa là gì?', 'option_a':'Chó', 'option_b':'Mèo', 'option_c':'Chim', 'option_d':'Cá', 'correct_answer':1, 'xp_reward':40},
-            {'level_id':3, 'question':'Câu nào đúng ở thì hiện tại đơn?', 'option_a':'He eat apples.', 'option_b':'He eats apples.', 'option_c':'He eating apples.', 'option_d':'He ate apples.', 'correct_answer':1, 'xp_reward':50},
-            {'level_id':4, 'question':'"Beautiful" có nghĩa là gì?', 'option_a':'Xấu xí', 'option_b':'Đẹp', 'option_c':'Cao', 'option_d':'Thấp', 'correct_answer':1, 'xp_reward':50},
-            {'level_id':5, 'question':'Câu bị động của "She writes a letter" là gì?', 'option_a':'A letter is written by her.', 'option_b':'A letter was written by her.', 'option_c':'A letter is being written by her.', 'option_d':'A letter has been written by her.', 'correct_answer':0, 'xp_reward':60},
-            {'level_id':6, 'question':'Từ nào là đại từ quan hệ?', 'option_a':'Who', 'option_b':'And', 'option_c':'But', 'option_d':'So', 'correct_answer':0, 'xp_reward':70},
-        ]
-        for data in quizzes:
-            db.session.add(Quiz(**data))
-        db.session.commit()
-        print(f"✅ Đã tạo {Quiz.query.count()} quiz")
+    for data in lessons_data:
+        db.session.add(Lesson(**data))
+    db.session.commit()
+    print(f"✅ Đã tạo {Lesson.query.count()} bài học")
+    
+    # ===== BÀI TẬP (EXERCISES) =====
+    exercises_data = [
+        # Level 1 - Bài 1
+        {'lesson_id':1, 'question':'Chữ cái nào là nguyên âm?', 'option_a':'B', 'option_b':'C', 'option_c':'A', 'option_d':'D', 'correct_answer':2, 'explanation':'Nguyên âm là A, E, I, O, U'},
+        {'lesson_id':1, 'question':'Phát âm chữ "B" là gì?', 'option_a':'/biː/', 'option_b':'/siː/', 'option_c':'/diː/', 'option_d':'/iː/', 'correct_answer':0, 'explanation':'B phát âm là /biː/'},
+        {'lesson_id':1, 'question':'Từ nào bắt đầu bằng chữ "C"?', 'option_a':'Apple', 'option_b':'Ball', 'option_c':'Cat', 'option_d':'Dog', 'correct_answer':2, 'explanation':'Cat bắt đầu bằng C'},
+        # Level 1 - Bài 2
+        {'lesson_id':2, 'question':'Số 7 trong tiếng Anh là gì?', 'option_a':'Seven', 'option_b':'Six', 'option_c':'Eight', 'option_d':'Nine', 'correct_answer':0, 'explanation':'7 = Seven'},
+        {'lesson_id':2, 'question':'Số 12 trong tiếng Anh là gì?', 'option_a':'Ten', 'option_b':'Eleven', 'option_c':'Twelve', 'option_d':'Twenty', 'correct_answer':2, 'explanation':'12 = Twelve'},
+        {'lesson_id':2, 'question':'Số 20 trong tiếng Anh là gì?', 'option_a':'Twenty', 'option_b':'Twelve', 'option_c':'Two', 'option_d':'Ten', 'correct_answer':0, 'explanation':'20 = Twenty'},
+        # Level 2 - Bài 1
+        {'lesson_id':3, 'question':'"Mẹ" trong tiếng Anh là gì?', 'option_a':'Father', 'option_b':'Mother', 'option_c':'Brother', 'option_d':'Sister', 'correct_answer':1, 'explanation':'Mother = Mẹ'},
+        {'lesson_id':3, 'question':'"Anh trai" trong tiếng Anh là gì?', 'option_a':'Sister', 'option_b':'Brother', 'option_c':'Uncle', 'option_d':'Aunt', 'correct_answer':1, 'explanation':'Brother = Anh trai'},
+        {'lesson_id':3, 'question':'"Grandfather" có nghĩa là gì?', 'option_a':'Bố', 'option_b':'Mẹ', 'option_c':'Ông', 'option_d':'Bà', 'correct_answer':2, 'explanation':'Grandfather = Ông'},
+        # Level 2 - Bài 2
+        {'lesson_id':4, 'question':'"Dog" có nghĩa là gì?', 'option_a':'Mèo', 'option_b':'Chó', 'option_c':'Chim', 'option_d':'Cá', 'correct_answer':1, 'explanation':'Dog = Chó'},
+        {'lesson_id':4, 'question':'"Cat" có nghĩa là gì?', 'option_a':'Chó', 'option_b':'Mèo', 'option_c':'Chim', 'option_d':'Cá', 'correct_answer':1, 'explanation':'Cat = Mèo'},
+        {'lesson_id':4, 'question':'Con voi trong tiếng Anh là gì?', 'option_a':'Horse', 'option_b':'Elephant', 'option_c':'Bird', 'option_d':'Fish', 'correct_answer':1, 'explanation':'Elephant = Voi'},
+        # Level 3 - Bài 1
+        {'lesson_id':5, 'question':'Chia động từ: She (go) ____ to school.', 'option_a':'go', 'option_b':'goes', 'option_c':'going', 'option_d':'went', 'correct_answer':1, 'explanation':'She + goes'},
+        {'lesson_id':5, 'question':'Chia động từ: They (play) ____ football.', 'option_a':'play', 'option_b':'plays', 'option_c':'playing', 'option_d':'played', 'correct_answer':0, 'explanation':'They + play'},
+        {'lesson_id':5, 'question':'Chia động từ: He (eat) ____ breakfast.', 'option_a':'eat', 'option_b':'eats', 'option_c':'eating', 'option_d':'ate', 'correct_answer':1, 'explanation':'He + eats'},
+        # Level 3 - Bài 2
+        {'lesson_id':6, 'question':'Phủ định: "He likes cats." → He ____ cats.', 'option_a':"don't like", 'option_b':"doesn't like", 'option_c':"not like", 'option_d':"isn't like", 'correct_answer':1, 'explanation':'He + doesn\'t + V'},
+        {'lesson_id':6, 'question':'Phủ định: "They play football." → They ____ football.', 'option_a':"don't play", 'option_b':"doesn't play", 'option_c':"not play", 'option_d':"isn't play", 'correct_answer':0, 'explanation':'They + don\'t + V'},
+        {'lesson_id':6, 'question':'Nghi vấn: "She speaks English." → ____ she speak English?', 'option_a':'Do', 'option_b':'Does', 'option_c':'Is', 'option_d':'Are', 'correct_answer':1, 'explanation':'Does + she + V?'},
+        # Level 4 - Bài 1
+        {'lesson_id':7, 'question':'Quá khứ của "go" là gì?', 'option_a':'goed', 'option_b':'went', 'option_c':'gone', 'option_d':'going', 'correct_answer':1, 'explanation':'go → went'},
+        {'lesson_id':7, 'question':'Quá khứ của "visit" là gì?', 'option_a':'visited', 'option_b':'visitted', 'option_c':'visit', 'option_d':'visiting', 'correct_answer':0, 'explanation':'visit → visited'},
+        {'lesson_id':7, 'question':'Quá khứ của "eat" là gì?', 'option_a':'eated', 'option_b':'ate', 'option_c':'eaten', 'option_d':'eating', 'correct_answer':1, 'explanation':'eat → ate'},
+        # Level 4 - Bài 2
+        {'lesson_id':8, 'question':'"I am going to study" nghĩa là gì?', 'option_a':'Tôi đang học', 'option_b':'Tôi sẽ học', 'option_c':'Tôi đã học', 'option_d':'Tôi học', 'correct_answer':1, 'explanation':'be going to = sẽ (dự định)'},
+        {'lesson_id':8, 'question':'"She is going to travel" nghĩa là gì?', 'option_a':'Cô ấy đang đi du lịch', 'option_b':'Cô ấy sẽ đi du lịch', 'option_c':'Cô ấy đã đi du lịch', 'option_d':'Cô ấy đi du lịch', 'correct_answer':1, 'explanation':'be going to = sẽ (dự định)'},
+        # Level 5 - Bài 1
+        {'lesson_id':9, 'question':'Hoàn thành: If it rains, I ____ stay home.', 'option_a':'will', 'option_b':'would', 'option_c':'am', 'option_d':'was', 'correct_answer':0, 'explanation':'Câu điều kiện loại 1: will + V'},
+        {'lesson_id':9, 'question':'Hoàn thành: If she (come) ____, I will tell her.', 'option_a':'come', 'option_b':'comes', 'option_c':'came', 'option_d':'coming', 'correct_answer':1, 'explanation':'Vế If chia hiện tại đơn'},
+        # Level 5 - Bài 2
+        {'lesson_id':10, 'question':'Bị động: "She writes a letter" → A letter ____ by her.', 'option_a':'is written', 'option_b':'was written', 'option_c':'is writing', 'option_d':'writes', 'correct_answer':0, 'explanation':'Hiện tại đơn bị động: is/am/are + V3/ed'},
+        {'lesson_id':10, 'question':'Bị động: "He cleans the room" → The room ____ by him.', 'option_a':'is cleaned', 'option_b':'was cleaned', 'option_c':'is cleaning', 'option_d':'cleans', 'correct_answer':0, 'explanation':'Hiện tại đơn bị động: is/am/are + V3/ed'},
+        # Level 6 - Bài 1
+        {'lesson_id':11, 'question':'Từ nào có nghĩa là "cuộc họp"?', 'option_a':'Meeting', 'option_b':'Report', 'option_c':'Email', 'option_d':'Deadline', 'correct_answer':0, 'explanation':'Meeting = Cuộc họp'},
+        {'lesson_id':11, 'question':'"Deadline" có nghĩa là gì?', 'option_a':'Cuộc họp', 'option_b':'Báo cáo', 'option_c':'Hạn chót', 'option_d':'Thư điện tử', 'correct_answer':2, 'explanation':'Deadline = Hạn chót'},
+        {'lesson_id':11, 'question':'"Presentation" có nghĩa là gì?', 'option_a':'Cuộc họp', 'option_b':'Báo cáo', 'option_c':'Thuyết trình', 'option_d':'Thư điện tử', 'correct_answer':2, 'explanation':'Presentation = Thuyết trình'},
+        # Level 6 - Bài 2
+        {'lesson_id':12, 'question':'"Airport" có nghĩa là gì?', 'option_a':'Sân bay', 'option_b':'Khách sạn', 'option_c':'Nhà ga', 'option_d':'Bến xe', 'correct_answer':0, 'explanation':'Airport = Sân bay'},
+        {'lesson_id':12, 'question':'"Hotel" có nghĩa là gì?', 'option_a':'Sân bay', 'option_b':'Khách sạn', 'option_c':'Nhà ga', 'option_d':'Bến xe', 'correct_answer':1, 'explanation':'Hotel = Khách sạn'},
+        {'lesson_id':12, 'question':'"Reservation" có nghĩa là gì?', 'option_a':'Vé', 'option_b':'Đặt chỗ', 'option_c':'Du lịch', 'option_d':'Sân bay', 'correct_answer':1, 'explanation':'Reservation = Đặt chỗ'},
+    ]
+    
+    for data in exercises_data:
+        db.session.add(Exercise(**data))
+    db.session.commit()
+    print(f"✅ Đã tạo {Exercise.query.count()} bài tập")
+    
+    # ===== QUIZ (BỔ SUNG NHIỀU HƠN) =====
+    quizzes_data = [
+        # LEVEL 1 (4 quiz)
+        {'level_id':1, 'question':'Từ nào là màu sắc?', 'option_a':'Red', 'option_b':'Table', 'option_c':'Run', 'option_d':'Happy', 'correct_answer':0, 'xp_reward':30},
+        {'level_id':1, 'question':'Từ nào là số đếm?', 'option_a':'Apple', 'option_b':'Three', 'option_c':'Cat', 'option_d':'Dog', 'correct_answer':1, 'xp_reward':30},
+        {'level_id':1, 'question':'Chữ cái "A" phát âm là gì?', 'option_a':'/biː/', 'option_b':'/siː/', 'option_c':'/eɪ/', 'option_d':'/diː/', 'correct_answer':2, 'xp_reward':30},
+        {'level_id':1, 'question':'Từ nào bắt đầu bằng chữ "B"?', 'option_a':'Apple', 'option_b':'Cat', 'option_c':'Ball', 'option_d':'Dog', 'correct_answer':2, 'xp_reward':30},
+        # LEVEL 2 (4 quiz)
+        {'level_id':2, 'question':'"Cat" có nghĩa là gì?', 'option_a':'Chó', 'option_b':'Mèo', 'option_c':'Chim', 'option_d':'Cá', 'correct_answer':1, 'xp_reward':40},
+        {'level_id':2, 'question':'"Mother" có nghĩa là gì?', 'option_a':'Bố', 'option_b':'Mẹ', 'option_c':'Anh trai', 'option_d':'Chị gái', 'correct_answer':1, 'xp_reward':40},
+        {'level_id':2, 'question':'Con voi trong tiếng Anh là gì?', 'option_a':'Horse', 'option_b':'Elephant', 'option_c':'Bird', 'option_d':'Fish', 'correct_answer':1, 'xp_reward':40},
+        {'level_id':2, 'question':'"Grandma" có nghĩa là gì?', 'option_a':'Ông', 'option_b':'Bà', 'option_c':'Bố', 'option_d':'Mẹ', 'correct_answer':1, 'xp_reward':40},
+        # LEVEL 3 (4 quiz)
+        {'level_id':3, 'question':'Câu nào đúng ở thì hiện tại đơn?', 'option_a':'He eat apples.', 'option_b':'He eats apples.', 'option_c':'He eating apples.', 'option_d':'He ate apples.', 'correct_answer':1, 'xp_reward':50},
+        {'level_id':3, 'question':'Chia động từ: She (go) ____ to school.', 'option_a':'go', 'option_b':'goes', 'option_c':'going', 'option_d':'went', 'correct_answer':1, 'xp_reward':50},
+        {'level_id':3, 'question':'Phủ định: "He likes cats." → He ____ cats.', 'option_a':"don't like", 'option_b':"doesn't like", 'option_c':"not like", 'option_d':"isn't like", 'correct_answer':1, 'xp_reward':50},
+        {'level_id':3, 'question':'Nghi vấn: "They play football." → ____ they play football?', 'option_a':'Do', 'option_b':'Does', 'option_c':'Is', 'option_d':'Are', 'correct_answer':0, 'xp_reward':50},
+        # LEVEL 4 (4 quiz)
+        {'level_id':4, 'question':'"Beautiful" có nghĩa là gì?', 'option_a':'Xấu xí', 'option_b':'Đẹp', 'option_c':'Cao', 'option_d':'Thấp', 'correct_answer':1, 'xp_reward':50},
+        {'level_id':4, 'question':'Quá khứ của "go" là gì?', 'option_a':'goed', 'option_b':'went', 'option_c':'gone', 'option_d':'going', 'correct_answer':1, 'xp_reward':50},
+        {'level_id':4, 'question':'"I am going to study" nghĩa là gì?', 'option_a':'Tôi đang học', 'option_b':'Tôi sẽ học', 'option_c':'Tôi đã học', 'option_d':'Tôi học', 'correct_answer':1, 'xp_reward':50},
+        {'level_id':4, 'question':'Quá khứ của "eat" là gì?', 'option_a':'eated', 'option_b':'ate', 'option_c':'eaten', 'option_d':'eating', 'correct_answer':1, 'xp_reward':50},
+        # LEVEL 5 (4 quiz)
+        {'level_id':5, 'question':'Câu bị động của "She writes a letter" là gì?', 'option_a':'A letter is written by her.', 'option_b':'A letter was written by her.', 'option_c':'A letter is being written by her.', 'option_d':'A letter has been written by her.', 'correct_answer':0, 'xp_reward':60},
+        {'level_id':5, 'question':'Hoàn thành: If it rains, I ____ stay home.', 'option_a':'will', 'option_b':'would', 'option_c':'am', 'option_d':'was', 'correct_answer':0, 'xp_reward':60},
+        {'level_id':5, 'question':'Bị động: "He cleans the room" → The room ____ by him.', 'option_a':'is cleaned', 'option_b':'was cleaned', 'option_c':'is cleaning', 'option_d':'cleans', 'correct_answer':0, 'xp_reward':60},
+        {'level_id':5, 'question':'Hoàn thành: If she (come) ____, I will tell her.', 'option_a':'come', 'option_b':'comes', 'option_c':'came', 'option_d':'coming', 'correct_answer':1, 'xp_reward':60},
+        # LEVEL 6 (4 quiz)
+        {'level_id':6, 'question':'Từ nào là đại từ quan hệ?', 'option_a':'Who', 'option_b':'And', 'option_c':'But', 'option_d':'So', 'correct_answer':0, 'xp_reward':70},
+        {'level_id':6, 'question':'"Meeting" có nghĩa là gì?', 'option_a':'Cuộc họp', 'option_b':'Báo cáo', 'option_c':'Thuyết trình', 'option_d':'Hạn chót', 'correct_answer':0, 'xp_reward':70},
+        {'level_id':6, 'question':'"Airport" có nghĩa là gì?', 'option_a':'Sân bay', 'option_b':'Khách sạn', 'option_c':'Nhà ga', 'option_d':'Bến xe', 'correct_answer':0, 'xp_reward':70},
+        {'level_id':6, 'question':'"Deadline" có nghĩa là gì?', 'option_a':'Cuộc họp', 'option_b':'Báo cáo', 'option_c':'Hạn chót', 'option_d':'Thư điện tử', 'correct_answer':2, 'xp_reward':70},
+    ]
+    
+    for data in quizzes_data:
+        db.session.add(Quiz(**data))
+    db.session.commit()
+    print(f"✅ Đã tạo {Quiz.query.count()} quiz")
     
     print("🎉 Khởi tạo dữ liệu hoàn tất!")
 
