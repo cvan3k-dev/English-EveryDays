@@ -173,13 +173,15 @@
             currentLevel: 1,
             xp: 0,
             completedLessons: [],
-            quizPassed: {},
+            quizPassed: {},        // level_id: true/false (tất cả quiz đã qua)
             achievements: [],
             user: null,
             isLoggedIn: false,
             levels: [],
             lessons: {},
-            quizzes: {},
+            quizzes: {},          // Lưu danh sách quiz theo level
+            currentQuizIndex: 0,  // Quiz đang làm trong level
+            quizCompleted: {},    // Số quiz đã hoàn thành của mỗi level
             currentLessonId: null
         };
 
@@ -306,6 +308,8 @@
                 showToast('👋 Đã đăng xuất!');
                 state.completedLessons = [];
                 state.quizPassed = {};
+                state.quizCompleted = {};
+                state.currentQuizIndex = 0;
                 state.xp = 0;
                 state.currentLevel = 1;
                 renderAll();
@@ -355,12 +359,19 @@
             }
         }
 
+        // ---- SỬA HÀM loadQuizForLevel ----
         async function loadQuizForLevel(levelId) {
             try {
-                const quiz = await apiCall(`/api/quiz/${levelId}`);
-                state.quizzes[levelId] = quiz;
+                const quizzes = await apiCall(`/api/quizzes/${levelId}`);
+                state.quizzes[levelId] = quizzes;
+                // Reset index khi chuyển level
+                state.currentQuizIndex = 0;
+                // Nếu chưa có quizCompleted cho level này, đặt về 0
+                if (!state.quizCompleted[levelId]) {
+                    state.quizCompleted[levelId] = 0;
+                }
             } catch (err) {
-                state.quizzes[levelId] = null;
+                state.quizzes[levelId] = [];
             }
         }
 
@@ -381,7 +392,7 @@
             document.getElementById('xpDisplay').textContent = state.xp;
             document.getElementById('lessonDoneDisplay').textContent = state.completedLessons.length;
             document.getElementById('lessonTotalDisplay').textContent = totalLessons || 0;
-            
+
             const levelData = state.levels.find(l => l.id === state.currentLevel);
             const nextLevel = state.levels.find(l => l.id === state.currentLevel + 1);
             let xpPercent = 0;
@@ -408,7 +419,7 @@
         function renderLessons() {
             const container = document.getElementById('lessonList');
             const lessons = state.lessons[state.currentLevel] || [];
-            
+
             if (lessons.length === 0) {
                 container.innerHTML = `<div class="text-center" style="padding: 30px; color: #888;">🎉 Chúc mừng! Bạn đã hoàn thành tất cả bài học ở level này!</div>`;
                 return;
@@ -495,14 +506,14 @@
             const parent = button.closest('.exercise-item');
             const buttons = parent.querySelectorAll('.options button');
             buttons.forEach(btn => btn.disabled = true);
-            
+
             try {
                 const result = await apiCall('/api/progress/exercise', 'POST', {
                     exercise_id: exerciseId,
                     lesson_id: state.currentLessonId,
                     user_answer: selected
                 });
-                
+
                 if (result.correct) {
                     button.classList.add('correct');
                     showToast('✅ Chính xác!');
@@ -515,7 +526,7 @@
                     });
                     showToast('❌ Sai rồi! Xem giải thích bên dưới.');
                 }
-                
+
                 const explanationEl = document.getElementById(`explanation-${exerciseId}`);
                 if (result.explanation) {
                     explanationEl.textContent = '💡 ' + result.explanation;
@@ -540,6 +551,7 @@
                 });
                 state.xp = data.xp;
                 state.completedLessons.push(String(state.currentLessonId));
+                // Cập nhật level
                 const newLevel = Math.min(6, Math.floor(state.xp / 150) + 1);
                 if (newLevel > state.currentLevel) {
                     state.currentLevel = newLevel;
@@ -555,29 +567,34 @@
             }
         }
 
-        // ===== QUIZ =====
+        // ============================================================
+        // QUIZ (ĐÃ SỬA ĐỂ HIỂN THỊ NHIỀU QUIZ)
+        // ============================================================
         function renderQuiz() {
             const container = document.getElementById('quizContainer');
-            const quiz = state.quizzes[state.currentLevel];
+            const quizzes = state.quizzes[state.currentLevel] || [];
             const passed = state.quizPassed[state.currentLevel] || false;
+            const completedCount = state.quizCompleted[state.currentLevel] || 0;
 
-            if (!quiz) {
-                container.innerHTML = `<div class="text-center" style="padding: 30px; color: #888;">🎯 Hoàn thành các bài học để mở khóa Quiz!</div>`;
-                return;
-            }
-
-            if (passed) {
+            // Nếu đã hoàn thành tất cả quiz của level
+            if (passed || (quizzes.length > 0 && completedCount >= quizzes.length)) {
                 container.innerHTML = `
                     <div class="text-center" style="padding: 30px; background: white; border-radius: 20px;">
                         <div style="font-size: 64px;">🎉</div>
-                        <h3>Bạn đã vượt qua Quiz Level ${state.currentLevel}!</h3>
-                        <p style="color: #888;">+${quiz.xp_reward} XP</p>
+                        <h3>Bạn đã vượt qua tất cả Quiz Level ${state.currentLevel}!</h3>
+                        <p style="color: #888;">Tổng XP nhận được: ${quizzes.reduce((sum, q) => sum + q.xp_reward, 0)} XP</p>
                         <button class="btn-success" onclick="resetQuiz()">Làm lại</button>
                     </div>
                 `;
                 return;
             }
 
+            if (quizzes.length === 0) {
+                container.innerHTML = `<div class="text-center" style="padding: 30px; color: #888;">🎯 Hoàn thành các bài học để mở khóa Quiz!</div>`;
+                return;
+            }
+
+            // Kiểm tra đã hoàn thành bài học chưa
             const lessons = state.lessons[state.currentLevel] || [];
             const allCompleted = lessons.every(l => state.completedLessons.includes(String(l.id)));
             if (!allCompleted) {
@@ -585,12 +602,26 @@
                 return;
             }
 
+            // Lấy quiz hiện tại theo index
+            const idx = state.currentQuizIndex;
+            if (idx >= quizzes.length) {
+                // Nếu đã làm hết quiz, đánh dấu hoàn thành level
+                state.quizPassed[state.currentLevel] = true;
+                renderQuiz();
+                return;
+            }
+
+            const quiz = quizzes[idx];
             container.innerHTML = `
                 <div class="quiz-container">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                        <span style="font-weight: 600; color: #2d3436;">Quiz ${idx+1}/${quizzes.length}</span>
+                        <span style="color: #888; font-size: 14px;">+${quiz.xp_reward} XP</span>
+                    </div>
                     <div class="quiz-question" style="font-size:18px;font-weight:600;margin-bottom:20px;">${quiz.question}</div>
                     <div class="quiz-options" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="quizOptions">
-                        ${quiz.options.map((opt, idx) => `
-                            <button onclick="checkQuizAnswer(${idx})" style="padding:15px;border:2px solid #e9ecef;border-radius:15px;background:white;cursor:pointer;transition:all 0.3s;font-size:16px;text-align:left;">${opt}</button>
+                        ${quiz.options.map((opt, optIdx) => `
+                            <button onclick="checkQuizAnswer(${optIdx})" style="padding:15px;border:2px solid #e9ecef;border-radius:15px;background:white;cursor:pointer;transition:all 0.3s;font-size:16px;text-align:left;">${opt}</button>
                         `).join('')}
                     </div>
                     <div id="quizFeedback" class="mt-20"></div>
@@ -599,39 +630,70 @@
         }
 
         async function checkQuizAnswer(selected) {
-            const quiz = state.quizzes[state.currentLevel];
-            if (!quiz) return;
+            const quizzes = state.quizzes[state.currentLevel] || [];
+            const idx = state.currentQuizIndex;
+            if (idx >= quizzes.length) return;
+            const quiz = quizzes[idx];
 
             const buttons = document.querySelectorAll('#quizOptions button');
-            buttons.forEach((btn, idx) => {
+            buttons.forEach((btn, i) => {
                 btn.disabled = true;
-                if (idx === quiz.correct_answer) btn.classList.add('correct');
-                else if (idx === selected && idx !== quiz.correct_answer) btn.classList.add('wrong');
+                if (i === quiz.correct_answer) btn.classList.add('correct');
+                else if (i === selected && i !== quiz.correct_answer) btn.classList.add('wrong');
             });
 
             const feedback = document.getElementById('quizFeedback');
             if (selected === quiz.correct_answer) {
                 try {
-                    const data = await apiCall('/api/progress/quiz', 'POST', { level_id: state.currentLevel });
+                    // Gửi kết quả quiz hiện tại
+                    const data = await apiCall('/api/progress/quiz', 'POST', {
+                        level_id: state.currentLevel,
+                        quiz_id: quiz.id
+                    });
                     state.xp = data.xp;
-                    state.quizPassed[state.currentLevel] = true;
+
+                    // Cập nhật số quiz đã hoàn thành
+                    state.quizCompleted[state.currentLevel] = (state.quizCompleted[state.currentLevel] || 0) + 1;
+
+                    // Chuyển sang quiz tiếp theo
+                    state.currentQuizIndex++;
+
                     feedback.innerHTML = `
-                        <div class="text-center" style="padding:20px;background:white;border-radius:20px;margin-top:10px;">
-                            <div style="font-size:48px;">🌟</div>
-                            <h3>Chính xác! +${quiz.xp_reward} XP</h3>
-                            <button class="btn-primary" onclick="renderAll()">Tiếp tục</button>
+                        <div style="background: #f0fff4; padding: 15px; border-radius: 15px; margin-top: 10px; text-align: center; border: 2px solid #27ae60;">
+                            <span style="color: #27ae60; font-size: 18px;">✅ Chính xác! +${quiz.xp_reward} XP</span>
                         </div>
                     `;
+
+                    // Tự động chuyển quiz sau 1.5 giây
+                    setTimeout(() => {
+                        renderQuiz();
+                    }, 1500);
+
+                    showToast(`🎉 Quiz ${idx+1}/${quizzes.length} hoàn thành! +${quiz.xp_reward} XP`);
+
+                    // Nếu đã hoàn thành tất cả quiz, đánh dấu level đã qua
+                    if (state.currentQuizIndex >= quizzes.length) {
+                        state.quizPassed[state.currentLevel] = true;
+                    }
+
+                    // Cập nhật level
+                    const newLevel = Math.min(6, Math.floor(state.xp / 150) + 1);
+                    if (newLevel > state.currentLevel) {
+                        state.currentLevel = newLevel;
+                        await loadLessonsForLevel(newLevel);
+                        await loadQuizForLevel(newLevel);
+                        showToast(`🚀 LEVEL UP! Bạn đã lên Level ${newLevel}!`);
+                    }
+
                     renderAll();
-                    showToast(`🎉 Quiz hoàn thành! +${quiz.xp_reward} XP`);
                 } catch (err) {
                     showToast('❌ Lỗi: ' + err.message);
                 }
             } else {
                 feedback.innerHTML = `
-                    <div style="background:#fff5f5;padding:20px;border-radius:15px;text-align:center;margin-top:10px;">
-                        <p style="color:#e74c3c;font-size:18px;">❌ Sai rồi! Hãy thử lại nhé!</p>
-                        <button class="btn-primary" onclick="renderQuiz()">Thử lại</button>
+                    <div style="background:#fff5f5;padding:15px;border-radius:15px;text-align:center;margin-top:10px;border:2px solid #e74c3c;">
+                        <p style="color:#e74c3c;font-size:16px;">❌ Sai rồi! Hãy thử lại nhé!</p>
+                        <button class="btn-primary" onclick="renderQuiz()" style="margin-top:10px;">Thử lại</button>
                     </div>
                 `;
             }
@@ -639,6 +701,8 @@
 
         function resetQuiz() {
             state.quizPassed[state.currentLevel] = false;
+            state.currentQuizIndex = 0;
+            state.quizCompleted[state.currentLevel] = 0;
             renderQuiz();
         }
 
@@ -655,7 +719,6 @@
                 { id: 'ach_7', name: '📚 Người học siêng năng', icon: '📚', desc: 'Hoàn thành 20 bài học' },
             ];
 
-            // Hướng dẫn cách nhận thành tựu
             let html = `
                 <div style="background: #fff5f7; border-radius: 15px; padding: 20px; margin-bottom: 20px; border-left: 5px solid #f5576c;">
                     <h3 style="color: #f5576c; margin-bottom: 10px;">🏆 CÁCH NHẬN THÀNH TỰU</h3>
