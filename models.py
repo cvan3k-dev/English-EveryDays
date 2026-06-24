@@ -20,7 +20,7 @@ class Lesson(db.Model):
     level_id = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text)
-    content = db.Column(db.Text)
+    content = db.Column(db.Text)  # Markdown
     xp_reward = db.Column(db.Integer, default=20)
     order = db.Column(db.Integer, default=0)
     exercises = db.relationship('Exercise', backref='lesson', lazy=True)
@@ -33,7 +33,7 @@ class Exercise(db.Model):
     option_b = db.Column(db.String(200))
     option_c = db.Column(db.String(200))
     option_d = db.Column(db.String(200))
-    correct_answer = db.Column(db.Integer)
+    correct_answer = db.Column(db.Integer)  # 0,1,2,3
     exercise_type = db.Column(db.String(50), default='multiple_choice')
     explanation = db.Column(db.Text)
 
