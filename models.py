@@ -4,7 +4,6 @@ from datetime import datetime
 
 db = SQLAlchemy()
 
-# Bảng người dùng
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
@@ -14,22 +13,18 @@ class User(UserMixin, db.Model):
     current_level = db.Column(db.Integer, default=1)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_admin = db.Column(db.Boolean, default=False)
-    
     progress = db.relationship('UserProgress', backref='user', lazy=True)
 
-# Bảng bài học
 class Lesson(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     level_id = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text)
-    content = db.Column(db.Text)  # Nội dung lý thuyết (hỗ trợ markdown)
+    content = db.Column(db.Text)
     xp_reward = db.Column(db.Integer, default=20)
     order = db.Column(db.Integer, default=0)
-    
     exercises = db.relationship('Exercise', backref='lesson', lazy=True)
 
-# Bảng bài tập
 class Exercise(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     lesson_id = db.Column(db.Integer, db.ForeignKey('lesson.id'), nullable=False)
@@ -38,11 +33,10 @@ class Exercise(db.Model):
     option_b = db.Column(db.String(200))
     option_c = db.Column(db.String(200))
     option_d = db.Column(db.String(200))
-    correct_answer = db.Column(db.Integer)  # 0=A, 1=B, 2=C, 3=D
+    correct_answer = db.Column(db.Integer)
     exercise_type = db.Column(db.String(50), default='multiple_choice')
     explanation = db.Column(db.Text)
 
-# Bảng Quiz
 class Quiz(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     level_id = db.Column(db.Integer, nullable=False)
@@ -54,7 +48,6 @@ class Quiz(db.Model):
     correct_answer = db.Column(db.Integer)
     xp_reward = db.Column(db.Integer, default=30)
 
-# Bảng tiến trình học
 class UserProgress(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
