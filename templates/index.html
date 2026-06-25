@@ -244,7 +244,7 @@
         };
 
         // ============================================================
-        // API HELPER
+        // API HELPER (ĐÃ SỬA LỖI)
         // ============================================================
         async function apiCall(url, method = 'GET', body = null) {
             try {
@@ -258,22 +258,31 @@
                 const res = await fetch(url, options);
                 const text = await res.text();
 
-                // Kiểm tra nếu response rỗng
+                // Nếu response rỗng
                 if (!text || text.trim() === '') {
                     throw new Error('Server trả về phản hồi rỗng!');
                 }
 
+                // Thử parse JSON
                 try {
                     const data = JSON.parse(text);
-                    if (!res.ok) throw new Error(data.error || 'Lỗi từ server');
+                    // Nếu status không ok nhưng vẫn có JSON -> trả về data (có chứa error)
+                    if (!res.ok) {
+                        // Nếu có error message, throw để frontend xử lý
+                        if (data.error) {
+                            throw new Error(data.error);
+                        }
+                        throw new Error(data.message || 'Lỗi từ server');
+                    }
                     return data;
-                } catch (e) {
+                } catch (parseError) {
+                    // Nếu không parse được JSON
                     console.error('Response không phải JSON:', text.substring(0, 300));
                     throw new Error('Server trả về HTML thay vì JSON. Kiểm tra logs!');
                 }
             } catch (err) {
                 console.error('API Error:', err);
-                showToast('❌ Lỗi: ' + err.message);
+                // Không show toast ở đây để loadDailyQuestion xử lý riêng
                 throw err;
             }
         }
@@ -489,7 +498,8 @@
                     `;
                 }
             } catch (err) {
-                container.innerHTML = `<div style="padding: 15px; color: #e74c3c; text-align: center;">❌ Lỗi tải câu hỏi: ${err.message}</div>`;
+                // Xử lý lỗi từ apiCall (bao gồm cả lỗi "Chưa có câu hỏi")
+                container.innerHTML = `<div style="padding: 15px; color: #e74c3c; text-align: center;">❌ ${err.message}</div>`;
             }
         }
 
