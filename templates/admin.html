@@ -85,6 +85,8 @@
         <a href="#" onclick="loadSection('users')"><i class="fas fa-users"></i> Người dùng</a>
         <a href="#" onclick="loadSection('lessons')"><i class="fas fa-book"></i> Bài học</a>
         <a href="#" onclick="loadSection('quizzes')"><i class="fas fa-puzzle-piece"></i> Quiz</a>
+        <a href="#" onclick="loadSection('daily')"><i class="fas fa-calendar-day"></i> Câu hỏi hàng ngày</a>
+        <a href="#" onclick="loadSection('exercise-stats')"><i class="fas fa-chart-bar"></i> Thống kê bài tập</a>
         <div class="logout">
             <a onclick="logout()"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
         </div>
@@ -107,7 +109,7 @@
         </div>
     </div>
 
-    <!-- ===== MODAL EDIT (ĐÃ SỬA LỖI) ===== -->
+    <!-- ===== MODAL EDIT (CHO CẢ LESSON, QUIZ VÀ DAILY QUESTION) ===== -->
     <div class="modal-overlay" id="editModal">
         <div class="modal-box">
             <span class="close" onclick="closeEditModal()">&times;</span>
@@ -120,7 +122,7 @@
                     <label>Level ID</label>
                     <input type="number" id="editLevel" value="1" min="1" max="6">
                     <label>Tên</label>
-                    <input type="text" id="editName" required>
+                    <input type="text" id="editName">
                     <label>Mô tả</label>
                     <textarea id="editDesc" rows="2"></textarea>
                     <label>Nội dung</label>
@@ -146,6 +148,32 @@
                     <input type="number" id="editQuizCorrect" value="0" min="0" max="3">
                     <label>XP thưởng</label>
                     <input type="number" id="editQuizXP" value="30">
+                </div>
+                <!-- Daily Question fields -->
+                <div id="dailyFields" style="display:none;">
+                    <label>Câu hỏi</label>
+                    <textarea id="editDailyQuestion" rows="2"></textarea>
+                    <label>Đáp án A</label>
+                    <input type="text" id="editDailyA">
+                    <label>Đáp án B</label>
+                    <input type="text" id="editDailyB">
+                    <label>Đáp án C</label>
+                    <input type="text" id="editDailyC">
+                    <label>Đáp án D</label>
+                    <input type="text" id="editDailyD">
+                    <label>Đáp án đúng (0=A, 1=B, 2=C, 3=D)</label>
+                    <input type="number" id="editDailyCorrect" value="0" min="0" max="3">
+                    <label>Giải thích</label>
+                    <textarea id="editDailyExplanation" rows="2"></textarea>
+                    <label>Ngày bắt đầu</label>
+                    <input type="datetime-local" id="editDailyStart">
+                    <label>Ngày kết thúc</label>
+                    <input type="datetime-local" id="editDailyEnd">
+                    <label>Trạng thái</label>
+                    <select id="editDailyActive">
+                        <option value="1">✅ Hoạt động</option>
+                        <option value="0">❌ Tạm dừng</option>
+                    </select>
                 </div>
                 <button type="submit" class="btn-submit">Lưu</button>
             </form>
@@ -208,6 +236,14 @@
                 case 'quizzes':
                     title.innerHTML = '<i class="fas fa-puzzle-piece"></i> Quản lý Quiz';
                     loadQuizzes();
+                    break;
+                case 'daily':
+                    title.innerHTML = '<i class="fas fa-calendar-day"></i> Câu hỏi hàng ngày';
+                    loadDailyQuestions();
+                    break;
+                case 'exercise-stats':
+                    title.innerHTML = '<i class="fas fa-chart-bar"></i> Thống kê bài tập';
+                    loadExerciseStats();
                     break;
                 default:
                     content.innerHTML = '<div class="text-center" style="padding: 40px; color: #888;">Chọn chức năng từ menu bên trái</div>';
@@ -484,29 +520,120 @@
         }
 
         // ============================================================
-        // MODAL (ĐÃ SỬA LỖI)
+        // DAILY QUESTIONS (ADMIN)
+        // ============================================================
+        async function loadDailyQuestions() {
+            const content = document.getElementById('sectionContent');
+            content.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Đang tải...</div>';
+            
+            try {
+                const questions = await apiCall('/api/admin/daily-questions');
+                let html = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+                        <h3><i class="fas fa-calendar-day"></i> Quản lý câu hỏi hàng ngày</h3>
+                        <button class="btn btn-success" onclick="openAddModal('daily')"><i class="fas fa-plus"></i> Thêm câu hỏi</button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead><tr><th>ID</th><th>Câu hỏi</th><th>Bắt đầu</th><th>Kết thúc</th><th>Trạng thái</th><th>Hành động</th></tr></thead>
+                            <tbody>
+                                ${questions && questions.length > 0 ? questions.map(q => `
+                                    <tr>
+                                        <td>${q.id}</td>
+                                        <td>${q.question.substring(0, 50)}${q.question.length > 50 ? '...' : ''}</td>
+                                        <td>${new Date(q.start_date).toLocaleDateString('vi-VN')}</td>
+                                        <td>${new Date(q.end_date).toLocaleDateString('vi-VN')}</td>
+                                        <td>${q.is_active ? '<span style="color:#27ae60;">✅ Hoạt động</span>' : '<span style="color:#e74c3c;">❌ Tạm dừng</span>'}</td>
+                                        <td>
+                                            <button class="btn btn-warning btn-sm" onclick="editDaily(${q.id})"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-danger btn-sm" onclick="deleteDaily(${q.id})"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                `).join('') : '<tr><td colspan="6" class="text-center" style="color:#888;">Chưa có câu hỏi nào!</td></tr>'}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                content.innerHTML = html;
+            } catch (err) {
+                content.innerHTML = `<div style="color:#e74c3c;text-align:center;padding:30px;">❌ Lỗi: ${err.message}</div>`;
+            }
+        }
+
+        async function editDaily(id) {
+            try {
+                const questions = await apiCall('/api/admin/daily-questions');
+                const item = questions.find(q => q.id === id);
+                if (!item) throw new Error('Không tìm thấy!');
+                openAddModal('daily', item);
+            } catch (err) {
+                showToast('❌ Lỗi: ' + err.message);
+            }
+        }
+
+        async function deleteDaily(id) {
+            if (!confirm('Xóa câu hỏi này?')) return;
+            try {
+                await apiCall(`/api/admin/daily-questions/${id}`, 'DELETE');
+                showToast('✅ Đã xóa!');
+                loadDailyQuestions();
+            } catch (err) {
+                showToast('❌ Lỗi: ' + err.message);
+            }
+        }
+
+        // ============================================================
+        // EXERCISE STATS (ADMIN)
+        // ============================================================
+        async function loadExerciseStats() {
+            const content = document.getElementById('sectionContent');
+            content.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Đang tải...</div>';
+            
+            try {
+                const stats = await apiCall('/api/admin/exercise-stats');
+                let html = `
+                    <h3><i class="fas fa-chart-bar"></i> Thống kê bài tập của người dùng</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead><tr><th>ID</th><th>Tên</th><th>Email</th><th>Bài học</th><th>Daily Q.</th><th>Quiz</th><th>XP</th><th>Level</th></tr></thead>
+                            <tbody>
+                                ${stats && stats.length > 0 ? stats.map(s => `
+                                    <tr>
+                                        <td>${s.id}</td>
+                                        <td><strong>${s.username}</strong></td>
+                                        <td>${s.email || 'N/A'}</td>
+                                        <td>${s.lessons_completed}</td>
+                                        <td>${s.daily_questions_done}</td>
+                                        <td>${s.quiz_passed}</td>
+                                        <td>${s.total_xp}</td>
+                                        <td>${s.current_level}</td>
+                                    </tr>
+                                `).join('') : '<tr><td colspan="8" class="text-center" style="color:#888;">Chưa có dữ liệu!</td></tr>'}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                content.innerHTML = html;
+            } catch (err) {
+                content.innerHTML = `<div style="color:#e74c3c;text-align:center;padding:30px;">❌ Lỗi: ${err.message}</div>`;
+            }
+        }
+
+        // ============================================================
+        // MODAL (HỖ TRỢ CẢ LESSON, QUIZ VÀ DAILY)
         // ============================================================
         function openAddModal(type, data = null) {
             const modal = document.getElementById('editModal');
             const title = document.getElementById('editModalTitle');
             
-            const lessonFields = document.getElementById('lessonFields');
-            const quizFields = document.getElementById('quizFields');
+            // Ẩn/hiện các trường
+            document.getElementById('lessonFields').style.display = type === 'lesson' ? 'block' : 'none';
+            document.getElementById('quizFields').style.display = type === 'quiz' ? 'block' : 'none';
+            document.getElementById('dailyFields').style.display = type === 'daily' ? 'block' : 'none';
             
-            // Reset required attributes
-            document.querySelectorAll('#lessonFields input, #lessonFields textarea, #quizFields input, #quizFields textarea').forEach(el => {
-                el.removeAttribute('required');
-            });
+            document.getElementById('editType').value = type;
             
             if (type === 'lesson') {
-                lessonFields.style.display = 'block';
-                quizFields.style.display = 'none';
-                // Thêm required cho lesson fields
-                document.querySelectorAll('#lessonFields input, #lessonFields textarea').forEach(el => {
-                    if (el.id === 'editName' || el.id === 'editLevel') {
-                        el.setAttribute('required', 'required');
-                    }
-                });
                 document.getElementById('editId').value = data ? data.id : '';
                 document.getElementById('editLevel').value = data ? data.level_id : 1;
                 document.getElementById('editName').value = data ? data.name : '';
@@ -514,15 +641,7 @@
                 document.getElementById('editContent').value = data ? data.content : '';
                 document.getElementById('editXP').value = data ? data.xp_reward : 20;
                 title.textContent = data ? 'Sửa bài học' : 'Thêm bài học mới';
-            } else { // quiz
-                lessonFields.style.display = 'none';
-                quizFields.style.display = 'block';
-                // Thêm required cho quiz fields
-                document.querySelectorAll('#quizFields input, #quizFields textarea').forEach(el => {
-                    if (el.id !== 'editQuizXP' && el.id !== 'editQuizCorrect') {
-                        el.setAttribute('required', 'required');
-                    }
-                });
+            } else if (type === 'quiz') {
                 document.getElementById('editId').value = data ? data.id : '';
                 document.getElementById('editQuizLevel').value = data ? data.level_id : 1;
                 document.getElementById('editQuizQuestion').value = data ? data.question : '';
@@ -533,6 +652,19 @@
                 document.getElementById('editQuizCorrect').value = data ? data.correct_answer : 0;
                 document.getElementById('editQuizXP').value = data ? data.xp_reward : 30;
                 title.textContent = data ? 'Sửa quiz' : 'Thêm quiz mới';
+            } else { // daily
+                document.getElementById('editId').value = data ? data.id : '';
+                document.getElementById('editDailyQuestion').value = data ? data.question : '';
+                document.getElementById('editDailyA').value = data ? data.option_a : '';
+                document.getElementById('editDailyB').value = data ? data.option_b : '';
+                document.getElementById('editDailyC').value = data ? data.option_c : '';
+                document.getElementById('editDailyD').value = data ? data.option_d : '';
+                document.getElementById('editDailyCorrect').value = data ? data.correct_answer : 0;
+                document.getElementById('editDailyExplanation').value = data ? data.explanation : '';
+                document.getElementById('editDailyStart').value = data ? data.start_date.substring(0, 16) : '';
+                document.getElementById('editDailyEnd').value = data ? data.end_date.substring(0, 16) : '';
+                document.getElementById('editDailyActive').value = data ? (data.is_active ? '1' : '0') : '1';
+                title.textContent = data ? 'Sửa câu hỏi' : 'Thêm câu hỏi mới';
             }
             
             modal.classList.add('show');
@@ -543,7 +675,7 @@
         }
 
         // ============================================================
-        // SAVE / DELETE (ĐÃ SỬA LỖI)
+        // SAVE / DELETE (HỖ TRỢ CẢ 3 LOẠI)
         // ============================================================
         async function saveItem(e) {
             e.preventDefault();
@@ -553,36 +685,42 @@
             let url, method, data;
             
             if (type === 'lesson') {
-                const name = document.getElementById('editName').value.trim();
-                if (!name) { showToast('❌ Vui lòng nhập tên bài học!'); return; }
                 data = {
                     level_id: parseInt(document.getElementById('editLevel').value) || 1,
-                    name: name,
+                    name: document.getElementById('editName').value.trim(),
                     description: document.getElementById('editDesc').value || '',
                     content: document.getElementById('editContent').value || '',
                     xp_reward: parseInt(document.getElementById('editXP').value) || 20
                 };
                 url = `/api/admin/lessons${id ? '/' + id : ''}`;
                 method = id ? 'PUT' : 'POST';
-            } else { // quiz
-                const question = document.getElementById('editQuizQuestion').value.trim();
-                const optA = document.getElementById('editQuizA').value.trim();
-                const optB = document.getElementById('editQuizB').value.trim();
-                const optC = document.getElementById('editQuizC').value.trim();
-                const optD = document.getElementById('editQuizD').value.trim();
-                if (!question) { showToast('❌ Vui lòng nhập câu hỏi!'); return; }
-                if (!optA || !optB || !optC || !optD) { showToast('❌ Vui lòng nhập đầy đủ 4 đáp án!'); return; }
+            } else if (type === 'quiz') {
                 data = {
                     level_id: parseInt(document.getElementById('editQuizLevel').value) || 1,
-                    question: question,
-                    option_a: optA,
-                    option_b: optB,
-                    option_c: optC,
-                    option_d: optD,
+                    question: document.getElementById('editQuizQuestion').value.trim(),
+                    option_a: document.getElementById('editQuizA').value.trim(),
+                    option_b: document.getElementById('editQuizB').value.trim(),
+                    option_c: document.getElementById('editQuizC').value.trim(),
+                    option_d: document.getElementById('editQuizD').value.trim(),
                     correct_answer: parseInt(document.getElementById('editQuizCorrect').value) || 0,
                     xp_reward: parseInt(document.getElementById('editQuizXP').value) || 30
                 };
                 url = `/api/admin/quizzes${id ? '/' + id : ''}`;
+                method = id ? 'PUT' : 'POST';
+            } else { // daily
+                data = {
+                    question: document.getElementById('editDailyQuestion').value.trim(),
+                    option_a: document.getElementById('editDailyA').value.trim(),
+                    option_b: document.getElementById('editDailyB').value.trim(),
+                    option_c: document.getElementById('editDailyC').value.trim(),
+                    option_d: document.getElementById('editDailyD').value.trim(),
+                    correct_answer: parseInt(document.getElementById('editDailyCorrect').value) || 0,
+                    explanation: document.getElementById('editDailyExplanation').value || '',
+                    start_date: document.getElementById('editDailyStart').value,
+                    end_date: document.getElementById('editDailyEnd').value,
+                    is_active: document.getElementById('editDailyActive').value === '1'
+                };
+                url = `/api/admin/daily-questions${id ? '/' + id : ''}`;
                 method = id ? 'PUT' : 'POST';
             }
 
@@ -590,7 +728,9 @@
                 await apiCall(url, method, data);
                 closeEditModal();
                 showToast('✅ Lưu thành công!');
-                loadSection(type + 's');
+                if (type === 'lesson') loadLessons();
+                else if (type === 'quiz') loadQuizzes();
+                else loadDailyQuestions();
             } catch (err) {
                 showToast('❌ Lỗi: ' + err.message);
             }
@@ -599,9 +739,11 @@
         async function deleteItem(type, id) {
             if (!confirm(`Xóa ${type === 'lesson' ? 'bài học' : 'quiz'} này?`)) return;
             try {
-                await apiCall(`/api/admin/${type}s/${id}`, 'DELETE');
+                const url = type === 'lesson' ? `/api/admin/lessons/${id}` : `/api/admin/quizzes/${id}`;
+                await apiCall(url, 'DELETE');
                 showToast('✅ Đã xóa!');
-                loadSection(type + 's');
+                if (type === 'lesson') loadLessons();
+                else loadQuizzes();
             } catch (err) {
                 showToast('❌ Lỗi: ' + err.message);
             }
