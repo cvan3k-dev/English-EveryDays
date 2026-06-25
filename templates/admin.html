@@ -8,8 +8,6 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
         body { background: #f0f2f5; display: flex; min-height: 100vh; }
-        
-        /* ===== SIDEBAR ===== */
         .sidebar { width: 260px; background: #2d3436; color: white; padding: 20px; min-height: 100vh; position: fixed; top: 0; left: 0; }
         .sidebar h2 { margin-bottom: 30px; font-size: 22px; display: flex; align-items: center; gap: 10px; }
         .sidebar h2 i { color: #f5576c; }
@@ -18,28 +16,19 @@
         .sidebar a i { width: 24px; margin-right: 10px; }
         .sidebar .logout { margin-top: 30px; border-top: 1px solid #444; padding-top: 15px; }
         .sidebar .logout a { color: #e74c3c; cursor: pointer; }
-        
-        /* ===== MAIN ===== */
         .main { margin-left: 260px; padding: 25px; flex: 1; }
         .page-title { font-size: 28px; color: #2d3436; margin-bottom: 25px; }
         .page-title i { color: #f5576c; margin-right: 10px; }
-        
-        /* ===== STATS ===== */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 30px; }
         .stat-card { background: white; padding: 20px 25px; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
         .stat-card .label { font-size: 13px; color: #888; font-weight: 600; text-transform: uppercase; }
         .stat-card .number { font-size: 28px; font-weight: 700; color: #2d3436; margin-top: 5px; }
-        .stat-card .number i { font-size: 20px; margin-left: 5px; }
-        
-        /* ===== TABLES ===== */
         .table-container { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); margin-bottom: 25px; overflow-x: auto; }
         .table-container h3 { margin-bottom: 15px; color: #2d3436; display: flex; align-items: center; gap: 10px; }
         table { width: 100%; border-collapse: collapse; font-size: 14px; }
         th { text-align: left; padding: 12px 15px; background: #f8f9fa; font-weight: 600; color: #2d3436; border-bottom: 2px solid #e9ecef; }
         td { padding: 12px 15px; border-bottom: 1px solid #f1f2f6; }
         tr:hover td { background: #f8f9fa; }
-        
-        /* ===== BUTTONS ===== */
         .btn { padding: 8px 16px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 13px; display: inline-flex; align-items: center; gap: 5px; }
         .btn:hover { transform: translateY(-1px); }
         .btn-primary { background: #f5576c; color: white; }
@@ -48,8 +37,6 @@
         .btn-warning { background: #f39c12; color: white; }
         .btn-sm { padding: 5px 12px; font-size: 12px; }
         .btn i { font-size: 13px; }
-        
-        /* ===== MODAL ===== */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
         .modal-overlay.show { display: flex; }
         .modal-box { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 700px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; }
@@ -63,23 +50,17 @@
         .modal-box textarea { min-height: 100px; resize: vertical; }
         .modal-box .btn-submit { margin-top: 15px; width: 100%; padding: 12px; background: #f5576c; color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 16px; cursor: pointer; }
         .modal-box .btn-submit:hover { background: #e04156; }
-        
         .user-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0; }
         .user-detail-item { background: #f8f9fa; padding: 12px 18px; border-radius: 10px; }
         .user-detail-item .label { color: #888; font-size: 12px; text-transform: uppercase; }
         .user-detail-item .value { font-weight: 700; font-size: 16px; color: #2d3436; }
         .status-badge { padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
         .status-badge.admin { background: #f5576c; color: white; }
-        
-        /* ===== LOADING ===== */
         .loading { text-align: center; padding: 40px; color: #888; font-size: 16px; }
         .loading i { animation: spin 1s linear infinite; margin-right: 10px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        /* ===== TOAST ===== */
         .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #2d3436; color: white; padding: 15px 30px; border-radius: 50px; font-weight: 600; z-index: 9999; animation: slideUp 0.5s ease; max-width: 90%; text-align: center; }
         @keyframes slideUp { from { transform: translateX(-50%) translateY(50px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
-        
         @media (max-width: 768px) {
             .sidebar { width: 100%; min-height: auto; position: relative; padding: 15px; }
             .sidebar a { display: inline-block; padding: 10px 15px; }
@@ -126,7 +107,7 @@
         </div>
     </div>
 
-    <!-- ===== MODAL EDIT ===== -->
+    <!-- ===== MODAL EDIT (CHO CẢ LESSON VÀ QUIZ) ===== -->
     <div class="modal-overlay" id="editModal">
         <div class="modal-box">
             <span class="close" onclick="closeEditModal()">&times;</span>
@@ -134,16 +115,38 @@
             <form id="editForm" onsubmit="saveItem(event)">
                 <input type="hidden" id="editId">
                 <input type="hidden" id="editType" value="lesson">
-                <label>Level ID</label>
-                <input type="number" id="editLevel" value="1" min="1" max="6">
-                <label>Tên</label>
-                <input type="text" id="editName" required>
-                <label>Mô tả</label>
-                <textarea id="editDesc" rows="2"></textarea>
-                <label>Nội dung</label>
-                <textarea id="editContent" rows="5"></textarea>
-                <label>XP thưởng</label>
-                <input type="number" id="editXP" value="20">
+                <!-- Lesson fields -->
+                <div id="lessonFields">
+                    <label>Level ID</label>
+                    <input type="number" id="editLevel" value="1" min="1" max="6">
+                    <label>Tên</label>
+                    <input type="text" id="editName" required>
+                    <label>Mô tả</label>
+                    <textarea id="editDesc" rows="2"></textarea>
+                    <label>Nội dung</label>
+                    <textarea id="editContent" rows="5"></textarea>
+                    <label>XP thưởng</label>
+                    <input type="number" id="editXP" value="20">
+                </div>
+                <!-- Quiz fields -->
+                <div id="quizFields" style="display:none;">
+                    <label>Level ID</label>
+                    <input type="number" id="editQuizLevel" value="1" min="1" max="6">
+                    <label>Câu hỏi</label>
+                    <textarea id="editQuizQuestion" rows="2" required></textarea>
+                    <label>Đáp án A</label>
+                    <input type="text" id="editQuizA" required>
+                    <label>Đáp án B</label>
+                    <input type="text" id="editQuizB" required>
+                    <label>Đáp án C</label>
+                    <input type="text" id="editQuizC" required>
+                    <label>Đáp án D</label>
+                    <input type="text" id="editQuizD" required>
+                    <label>Đáp án đúng (0=A, 1=B, 2=C, 3=D)</label>
+                    <input type="number" id="editQuizCorrect" value="0" min="0" max="3">
+                    <label>XP thưởng</label>
+                    <input type="number" id="editQuizXP" value="30">
+                </div>
                 <button type="submit" class="btn-submit">Lưu</button>
             </form>
         </div>
@@ -423,7 +426,7 @@
         }
 
         // ============================================================
-        // QUIZZES
+        // QUIZZES (ĐÃ SỬA LỖI - HOẠT ĐỘNG ĐẦY ĐỦ)
         // ============================================================
         async function loadQuizzes() {
             const content = document.getElementById('sectionContent');
@@ -444,7 +447,7 @@
                                     <tr>
                                         <td>${q.id}</td>
                                         <td>${q.level_id}</td>
-                                        <td>${q.question.substring(0, 40)}${q.question.length > 40 ? '...' : ''}</td>
+                                        <td>${q.question.substring(0, 50)}${q.question.length > 50 ? '...' : ''}</td>
                                         <td>${['A', 'B', 'C', 'D'][q.correct_answer]}</td>
                                         <td>${q.xp_reward}</td>
                                         <td>
@@ -481,18 +484,40 @@
         }
 
         // ============================================================
-        // MODAL
+        // MODAL (HỖ TRỢ CẢ LESSON VÀ QUIZ)
         // ============================================================
         function openAddModal(type, data = null) {
+            const modal = document.getElementById('editModal');
+            const title = document.getElementById('editModalTitle');
+            
+            // Ẩn/hiện các trường
+            document.getElementById('lessonFields').style.display = type === 'lesson' ? 'block' : 'none';
+            document.getElementById('quizFields').style.display = type === 'quiz' ? 'block' : 'none';
+            
             document.getElementById('editType').value = type;
-            document.getElementById('editId').value = data ? data.id : '';
-            document.getElementById('editLevel').value = data ? data.level_id : 1;
-            document.getElementById('editName').value = data ? data.name : '';
-            document.getElementById('editDesc').value = data ? data.description : '';
-            document.getElementById('editContent').value = data ? data.content : '';
-            document.getElementById('editXP').value = data ? data.xp_reward : 20;
-            document.getElementById('editModalTitle').textContent = data ? `Sửa ${type === 'lesson' ? 'bài học' : 'quiz'}` : `Thêm ${type === 'lesson' ? 'bài học' : 'quiz'} mới`;
-            document.getElementById('editModal').classList.add('show');
+            
+            if (type === 'lesson') {
+                document.getElementById('editId').value = data ? data.id : '';
+                document.getElementById('editLevel').value = data ? data.level_id : 1;
+                document.getElementById('editName').value = data ? data.name : '';
+                document.getElementById('editDesc').value = data ? data.description : '';
+                document.getElementById('editContent').value = data ? data.content : '';
+                document.getElementById('editXP').value = data ? data.xp_reward : 20;
+                title.textContent = data ? 'Sửa bài học' : 'Thêm bài học mới';
+            } else { // quiz
+                document.getElementById('editId').value = data ? data.id : '';
+                document.getElementById('editQuizLevel').value = data ? data.level_id : 1;
+                document.getElementById('editQuizQuestion').value = data ? data.question : '';
+                document.getElementById('editQuizA').value = data ? data.option_a : '';
+                document.getElementById('editQuizB').value = data ? data.option_b : '';
+                document.getElementById('editQuizC').value = data ? data.option_c : '';
+                document.getElementById('editQuizD').value = data ? data.option_d : '';
+                document.getElementById('editQuizCorrect').value = data ? data.correct_answer : 0;
+                document.getElementById('editQuizXP').value = data ? data.xp_reward : 30;
+                title.textContent = data ? 'Sửa quiz' : 'Thêm quiz mới';
+            }
+            
+            modal.classList.add('show');
         }
 
         function closeEditModal() {
@@ -500,23 +525,41 @@
         }
 
         // ============================================================
-        // SAVE / DELETE
+        // SAVE / DELETE (HỖ TRỢ CẢ LESSON VÀ QUIZ)
         // ============================================================
         async function saveItem(e) {
             e.preventDefault();
             const type = document.getElementById('editType').value;
             const id = document.getElementById('editId').value;
-            const data = {
-                level_id: parseInt(document.getElementById('editLevel').value),
-                name: document.getElementById('editName').value,
-                description: document.getElementById('editDesc').value,
-                content: document.getElementById('editContent').value,
-                xp_reward: parseInt(document.getElementById('editXP').value)
-            };
+            
+            let url, method, data;
+            
+            if (type === 'lesson') {
+                data = {
+                    level_id: parseInt(document.getElementById('editLevel').value),
+                    name: document.getElementById('editName').value,
+                    description: document.getElementById('editDesc').value,
+                    content: document.getElementById('editContent').value,
+                    xp_reward: parseInt(document.getElementById('editXP').value)
+                };
+                url = `/api/admin/lessons${id ? '/' + id : ''}`;
+                method = id ? 'PUT' : 'POST';
+            } else { // quiz
+                data = {
+                    level_id: parseInt(document.getElementById('editQuizLevel').value),
+                    question: document.getElementById('editQuizQuestion').value,
+                    option_a: document.getElementById('editQuizA').value,
+                    option_b: document.getElementById('editQuizB').value,
+                    option_c: document.getElementById('editQuizC').value,
+                    option_d: document.getElementById('editQuizD').value,
+                    correct_answer: parseInt(document.getElementById('editQuizCorrect').value),
+                    xp_reward: parseInt(document.getElementById('editQuizXP').value)
+                };
+                url = `/api/admin/quizzes${id ? '/' + id : ''}`;
+                method = id ? 'PUT' : 'POST';
+            }
 
             try {
-                const url = `/api/admin/${type}s${id ? '/' + id : ''}`;
-                const method = id ? 'PUT' : 'POST';
                 await apiCall(url, method, data);
                 closeEditModal();
                 showToast('✅ Lưu thành công!');
