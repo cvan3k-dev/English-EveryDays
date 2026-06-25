@@ -58,3 +58,29 @@ class UserProgress(db.Model):
     quiz_passed = db.Column(db.Boolean, default=False)
     quiz_score = db.Column(db.Integer, default=0)
     exercise_completed = db.Column(db.Boolean, default=False)
+
+class DailyQuestion(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    question = db.Column(db.Text, nullable=False)
+    option_a = db.Column(db.String(200), nullable=False)
+    option_b = db.Column(db.String(200), nullable=False)
+    option_c = db.Column(db.String(200), nullable=False)
+    option_d = db.Column(db.String(200), nullable=False)
+    correct_answer = db.Column(db.Integer, nullable=False)  # 0,1,2,3
+    explanation = db.Column(db.Text, nullable=True)
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    start_date = db.Column(db.DateTime, nullable=False)  # Thời gian bắt đầu hiển thị
+    end_date = db.Column(db.DateTime, nullable=False)    # Thời gian kết thúc hiển thị
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_active = db.Column(db.Boolean, default=True)
+    
+    # Quan hệ
+    responses = db.relationship('DailyQuestionResponse', backref='question', lazy=True)
+
+class DailyQuestionResponse(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    question_id = db.Column(db.Integer, db.ForeignKey('daily_question.id'), nullable=False)
+    answer = db.Column(db.Integer, nullable=False)  # 0,1,2,3
+    is_correct = db.Column(db.Boolean, default=False)
+    submitted_at = db.Column(db.DateTime, default=datetime.utcnow)
