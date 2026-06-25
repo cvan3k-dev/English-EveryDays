@@ -13,6 +13,7 @@ class User(UserMixin, db.Model):
     current_level = db.Column(db.Integer, default=1)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_admin = db.Column(db.Boolean, default=False)
+    achievements = db.Column(db.Text, default='')  # Lưu danh sách thành tích dạng JSON
     progress = db.relationship('UserProgress', backref='user', lazy=True)
 
 class Lesson(db.Model):
@@ -57,6 +58,3 @@ class UserProgress(db.Model):
     quiz_passed = db.Column(db.Boolean, default=False)
     quiz_score = db.Column(db.Integer, default=0)
     exercise_completed = db.Column(db.Boolean, default=False)
-class User(UserMixin, db.Model):
-    # ... các trường hiện có
-    achievements = db.Column(db.Text, default='')  # Lưu danh sách thành tích dạng JSON
