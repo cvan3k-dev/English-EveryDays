@@ -107,7 +107,7 @@
         </div>
     </div>
 
-    <!-- ===== MODAL EDIT (CHO CẢ LESSON VÀ QUIZ) ===== -->
+    <!-- ===== MODAL EDIT (ĐÃ SỬA LỖI) ===== -->
     <div class="modal-overlay" id="editModal">
         <div class="modal-box">
             <span class="close" onclick="closeEditModal()">&times;</span>
@@ -133,15 +133,15 @@
                     <label>Level ID</label>
                     <input type="number" id="editQuizLevel" value="1" min="1" max="6">
                     <label>Câu hỏi</label>
-                    <textarea id="editQuizQuestion" rows="2" required></textarea>
+                    <textarea id="editQuizQuestion" rows="2"></textarea>
                     <label>Đáp án A</label>
-                    <input type="text" id="editQuizA" required>
+                    <input type="text" id="editQuizA">
                     <label>Đáp án B</label>
-                    <input type="text" id="editQuizB" required>
+                    <input type="text" id="editQuizB">
                     <label>Đáp án C</label>
-                    <input type="text" id="editQuizC" required>
+                    <input type="text" id="editQuizC">
                     <label>Đáp án D</label>
-                    <input type="text" id="editQuizD" required>
+                    <input type="text" id="editQuizD">
                     <label>Đáp án đúng (0=A, 1=B, 2=C, 3=D)</label>
                     <input type="number" id="editQuizCorrect" value="0" min="0" max="3">
                     <label>XP thưởng</label>
@@ -426,7 +426,7 @@
         }
 
         // ============================================================
-        // QUIZZES (ĐÃ SỬA LỖI - HOẠT ĐỘNG ĐẦY ĐỦ)
+        // QUIZZES
         // ============================================================
         async function loadQuizzes() {
             const content = document.getElementById('sectionContent');
@@ -484,19 +484,29 @@
         }
 
         // ============================================================
-        // MODAL (HỖ TRỢ CẢ LESSON VÀ QUIZ)
+        // MODAL (ĐÃ SỬA LỖI)
         // ============================================================
         function openAddModal(type, data = null) {
             const modal = document.getElementById('editModal');
             const title = document.getElementById('editModalTitle');
             
-            // Ẩn/hiện các trường
-            document.getElementById('lessonFields').style.display = type === 'lesson' ? 'block' : 'none';
-            document.getElementById('quizFields').style.display = type === 'quiz' ? 'block' : 'none';
+            const lessonFields = document.getElementById('lessonFields');
+            const quizFields = document.getElementById('quizFields');
             
-            document.getElementById('editType').value = type;
+            // Reset required attributes
+            document.querySelectorAll('#lessonFields input, #lessonFields textarea, #quizFields input, #quizFields textarea').forEach(el => {
+                el.removeAttribute('required');
+            });
             
             if (type === 'lesson') {
+                lessonFields.style.display = 'block';
+                quizFields.style.display = 'none';
+                // Thêm required cho lesson fields
+                document.querySelectorAll('#lessonFields input, #lessonFields textarea').forEach(el => {
+                    if (el.id === 'editName' || el.id === 'editLevel') {
+                        el.setAttribute('required', 'required');
+                    }
+                });
                 document.getElementById('editId').value = data ? data.id : '';
                 document.getElementById('editLevel').value = data ? data.level_id : 1;
                 document.getElementById('editName').value = data ? data.name : '';
@@ -505,6 +515,14 @@
                 document.getElementById('editXP').value = data ? data.xp_reward : 20;
                 title.textContent = data ? 'Sửa bài học' : 'Thêm bài học mới';
             } else { // quiz
+                lessonFields.style.display = 'none';
+                quizFields.style.display = 'block';
+                // Thêm required cho quiz fields
+                document.querySelectorAll('#quizFields input, #quizFields textarea').forEach(el => {
+                    if (el.id !== 'editQuizXP' && el.id !== 'editQuizCorrect') {
+                        el.setAttribute('required', 'required');
+                    }
+                });
                 document.getElementById('editId').value = data ? data.id : '';
                 document.getElementById('editQuizLevel').value = data ? data.level_id : 1;
                 document.getElementById('editQuizQuestion').value = data ? data.question : '';
@@ -525,7 +543,7 @@
         }
 
         // ============================================================
-        // SAVE / DELETE (HỖ TRỢ CẢ LESSON VÀ QUIZ)
+        // SAVE / DELETE (ĐÃ SỬA LỖI)
         // ============================================================
         async function saveItem(e) {
             e.preventDefault();
@@ -535,25 +553,34 @@
             let url, method, data;
             
             if (type === 'lesson') {
+                const name = document.getElementById('editName').value.trim();
+                if (!name) { showToast('❌ Vui lòng nhập tên bài học!'); return; }
                 data = {
-                    level_id: parseInt(document.getElementById('editLevel').value),
-                    name: document.getElementById('editName').value,
-                    description: document.getElementById('editDesc').value,
-                    content: document.getElementById('editContent').value,
-                    xp_reward: parseInt(document.getElementById('editXP').value)
+                    level_id: parseInt(document.getElementById('editLevel').value) || 1,
+                    name: name,
+                    description: document.getElementById('editDesc').value || '',
+                    content: document.getElementById('editContent').value || '',
+                    xp_reward: parseInt(document.getElementById('editXP').value) || 20
                 };
                 url = `/api/admin/lessons${id ? '/' + id : ''}`;
                 method = id ? 'PUT' : 'POST';
             } else { // quiz
+                const question = document.getElementById('editQuizQuestion').value.trim();
+                const optA = document.getElementById('editQuizA').value.trim();
+                const optB = document.getElementById('editQuizB').value.trim();
+                const optC = document.getElementById('editQuizC').value.trim();
+                const optD = document.getElementById('editQuizD').value.trim();
+                if (!question) { showToast('❌ Vui lòng nhập câu hỏi!'); return; }
+                if (!optA || !optB || !optC || !optD) { showToast('❌ Vui lòng nhập đầy đủ 4 đáp án!'); return; }
                 data = {
-                    level_id: parseInt(document.getElementById('editQuizLevel').value),
-                    question: document.getElementById('editQuizQuestion').value,
-                    option_a: document.getElementById('editQuizA').value,
-                    option_b: document.getElementById('editQuizB').value,
-                    option_c: document.getElementById('editQuizC').value,
-                    option_d: document.getElementById('editQuizD').value,
-                    correct_answer: parseInt(document.getElementById('editQuizCorrect').value),
-                    xp_reward: parseInt(document.getElementById('editQuizXP').value)
+                    level_id: parseInt(document.getElementById('editQuizLevel').value) || 1,
+                    question: question,
+                    option_a: optA,
+                    option_b: optB,
+                    option_c: optC,
+                    option_d: optD,
+                    correct_answer: parseInt(document.getElementById('editQuizCorrect').value) || 0,
+                    xp_reward: parseInt(document.getElementById('editQuizXP').value) || 30
                 };
                 url = `/api/admin/quizzes${id ? '/' + id : ''}`;
                 method = id ? 'PUT' : 'POST';
