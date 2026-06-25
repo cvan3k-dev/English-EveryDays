@@ -1343,5 +1343,82 @@ def admin_exercise_stats():
         })
     return jsonify(result)
 
+@app.route('/fix-daily')
+def fix_daily():
+    """Sửa lỗi daily question không hiển thị"""
+    try:
+        with app.app_context():
+            from datetime import datetime, timedelta
+            
+            # Lấy tất cả câu hỏi
+            questions = DailyQuestion.query.all()
+            
+            if not questions:
+                # Tạo câu hỏi mới nếu chưa có
+                now = datetime.now()
+                start = now - timedelta(days=1)  # Bắt đầu từ hôm qua
+                end = now + timedelta(days=30)   # Kết thúc sau 30 ngày
+                
+                q = DailyQuestion(
+                    question="Từ nào có nghĩa là 'mèo' trong tiếng Anh?",
+                    option_a="Dog",
+                    option_b="Cat",
+                    option_c="Bird",
+                    option_d="Fish",
+                    correct_answer=1,
+                    explanation="Cat là từ tiếng Anh có nghĩa là mèo.",
+                    created_by=1,
+                    start_date=start,
+                    end_date=end,
+                    is_active=True
+                )
+                db.session.add(q)
+                db.session.commit()
+                return f"""
+                <h2>✅ Đã tạo câu hỏi mới!</h2>
+                <ul>
+                    <li>ID: {q.id}</li>
+                    <li>Câu hỏi: {q.question}</li>
+                    <li>Bắt đầu: {q.start_date}</li>
+                    <li>Kết thúc: {q.end_date}</li>
+                    <li>Trạng thái: {'Hoạt động' if q.is_active else 'Tạm dừng'}</li>
+                </ul>
+                <p><a href="/">Về trang chủ</a></p>
+                """
+            
+            # Hiển thị danh sách câu hỏi và sửa lỗi
+            html = "<h2>📋 Danh sách câu hỏi</h2><ul>"
+            now = datetime.now()
+            for q in questions:
+                # Sửa ngày tháng nếu cần
+                if q.start_date > now or q.end_date < now or not q.is_active:
+                    # Sửa lại cho hợp lệ
+                    if q.start_date > now:
+                        q.start_date = now - timedelta(days=1)
+                    if q.end_date < now:
+                        q.end_date = now + timedelta(days=30)
+                    if not q.is_active:
+                        q.is_active = True
+                    db.session.commit()
+                    status = "🔄 Đã sửa"
+                else:
+                    status = "✅ Hợp lệ"
+                
+                html += f"""
+                <li>
+                    <strong>{q.question}</strong><br>
+                    ID: {q.id} | 
+                    Bắt đầu: {q.start_date} | 
+                    Kết thúc: {q.end_date} | 
+                    Trạng thái: {'Hoạt động' if q.is_active else 'Tạm dừng'} |
+                    {status}
+                </li>
+                """
+            html += "</ul>"
+            html += '<p><a href="/">Về trang chủ</a> | <a href="/api/daily-question">Kiểm tra API</a></p>'
+            return html
+    except Exception as e:
+        return f"<h2>❌ Lỗi: {e}</h2>"
+        
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
