@@ -6,7 +6,7 @@
     <title>📚 English Everydays - Học Tiếng Anh Mỗi Ngày</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== RESET ===== */
+        /* ===== RESET & BASE ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
         body { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); min-height: 100vh; padding: 20px; display: flex; justify-content: center; align-items: center; }
         .app { max-width: 950px; width: 100%; background: rgba(255,255,255,0.95); border-radius: 30px; padding: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
@@ -32,18 +32,22 @@
         .level-card { background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); border-radius: 20px; padding: 25px; color: white; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; min-height: 100px; }
         .level-card .level-info h2 { font-size: 22px; margin-bottom: 5px; }
         .level-card .level-badge { font-size: 48px; background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 20px; backdrop-filter: blur(5px); }
-
-        <!-- ===== DAILY QUESTION ===== -->
- <div id="dailyQuestionSection" style="background: linear-gradient(135deg, #e0f0ff 0%, #f0f8ff 100%); border-radius: 15px; padding: 20px; margin: 20px 0; border: 2px solid #4a90d9;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-          <h3 style="color: #2d3436;"><i class="fas fa-calendar-day" style="color: #4a90d9;"></i> Câu hỏi hằng ngày</h3>
-         <span id="dailyDate" style="font-size: 14px; color: #888;"></span>
-      </div>
-     <div id="dailyQuestionContent">
-         <div class="text-center" style="padding: 20px; color: #888;">🔄 Đang tải câu hỏi hôm nay...</div>
-     </div>
-</div>
-        /* ===== HƯỚNG DẪN ===== */
+        
+        /* ===== DAILY QUESTION ===== */
+        .daily-section { background: #f0f4ff; border-radius: 15px; padding: 20px; margin: 20px 0; border: 2px solid #4a90d9; }
+        .daily-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 5px; }
+        .daily-header h3 { color: #2d3436; font-size: 18px; }
+        .daily-header h3 i { color: #4a90d9; }
+        .daily-date { font-size: 14px; color: #888; }
+        .daily-answer { background: #f0fff4; border-radius: 12px; padding: 15px; border: 2px solid #27ae60; }
+        .daily-wrong { background: #fff5f5; border-radius: 12px; padding: 15px; border: 2px solid #e74c3c; }
+        .daily-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .daily-options button { padding: 12px; border: 2px solid #e9ecef; border-radius: 10px; background: white; cursor: pointer; transition: all 0.3s; text-align: left; }
+        .daily-options button:hover { border-color: #4a90d9; background: #f7f9fc; }
+        .daily-options button:disabled { cursor: not-allowed; opacity: 0.7; }
+        .daily-feedback { margin-top: 10px; }
+        
+        /* ===== GUIDE ===== */
         .guide-section { background: #fff5f7; border-radius: 15px; padding: 20px; margin: 20px 0; border-left: 5px solid #f5576c; }
         .guide-section h3 { color: #f5576c; margin-bottom: 10px; }
         .guide-section ul { list-style: none; padding: 0; font-size: 14px; color: #2d3436; line-height: 1.8; }
@@ -101,16 +105,20 @@
         .achievement-item .ach-icon { font-size: 36px; margin-bottom: 8px; }
         .achievement-item .ach-name { font-weight: 600; font-size: 13px; color: #2d3436; }
         
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 650px) { .app { padding: 15px; } .header { flex-direction: column; text-align: center; } .user-stats { justify-content: center; } .level-card { flex-direction: column; text-align: center; } .exercise-item .options { grid-template-columns: 1fr; } .tabs button { font-size: 12px; padding: 10px; } }
-        
+        /* ===== BUTTONS ===== */
         .btn-primary { background: #f5576c; color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 16px; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(245,87,108,0.4); }
         .btn-success { background: #27ae60; color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; cursor: pointer; }
+        .btn-success:hover { background: #219a52; }
         .mt-20 { margin-top: 20px; }
         .text-center { text-align: center; }
+        
+        /* ===== TOAST ===== */
         .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #2d3436; color: white; padding: 15px 30px; border-radius: 50px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 9999; animation: toastSlideUp 0.5s ease; max-width: 90%; text-align: center; }
         @keyframes toastSlideUp { from { transform: translateX(-50%) translateY(50px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 650px) { .app { padding: 15px; } .header { flex-direction: column; text-align: center; } .user-stats { justify-content: center; } .level-card { flex-direction: column; text-align: center; } .exercise-item .options { grid-template-columns: 1fr; } .tabs button { font-size: 12px; padding: 10px; } .daily-options { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -145,6 +153,17 @@
             <div class="level-badge" id="levelEmoji">🐣</div>
         </div>
 
+        <!-- DAILY QUESTION SECTION -->
+        <div class="daily-section" id="dailySection">
+            <div class="daily-header">
+                <h3><i class="fas fa-calendar-day"></i> Câu hỏi hằng ngày</h3>
+                <span class="daily-date" id="dailyDate"></span>
+            </div>
+            <div id="dailyQuestionContent">
+                <div class="text-center" style="padding: 20px; color: #888;">🔄 Đang tải câu hỏi hôm nay...</div>
+            </div>
+        </div>
+
         <!-- HƯỚNG DẪN SỬ DỤNG -->
         <div class="guide-section">
             <h3>📖 HƯỚNG DẪN SỬ DỤNG</h3>
@@ -153,6 +172,7 @@
                 <li>✅ <strong>Nhận XP:</strong> Hoàn thành bài học và quiz để nhận điểm kinh nghiệm.</li>
                 <li>✅ <strong>Lên Level:</strong> Tích lũy đủ XP để mở khóa level tiếp theo.</li>
                 <li>✅ <strong>Thành tựu:</strong> Hoàn thành các mốc để nhận huy hiệu.</li>
+                <li>✅ <strong>Câu hỏi hằng ngày:</strong> Trả lời câu hỏi mỗi ngày để nhận thêm XP.</li>
                 <li>🔐 <strong>Đăng nhập:</strong> Cần đăng nhập để lưu tiến trình.</li>
             </ul>
         </div>
@@ -326,6 +346,7 @@
                     showToast('👋 Chào mừng ' + username + '!');
                     await loadUserProgress();
                     await loadAllData();
+                    await loadDailyQuestion();
                 } else {
                     showToast('✅ Đăng ký thành công! Hãy đăng nhập.');
                     openLoginModal();
@@ -352,13 +373,14 @@
                 state.currentLevel = 1;
                 state.achievements = [];
                 renderAll();
+                loadDailyQuestion();
             } catch (err) {
                 showToast('Lỗi đăng xuất!');
             }
         }
 
         // ============================================================
-        // USER PROGRESS (ĐÃ CẬP NHẬT THÀNH TÍCH)
+        // USER PROGRESS
         // ============================================================
         async function loadUserProgress() {
             try {
@@ -367,7 +389,7 @@
                 state.quizPassed = data.quiz_passed || {};
                 state.xp = data.xp || 0;
                 state.currentLevel = data.current_level || 1;
-                state.achievements = data.achievements || [];  // <-- Lấy thành tích từ server
+                state.achievements = data.achievements || [];
             } catch (err) {
                 // Chưa login thì bỏ qua
             }
@@ -408,6 +430,102 @@
                 }
             } catch (err) {
                 state.quizzes[levelId] = [];
+            }
+        }
+
+        // ============================================================
+        // DAILY QUESTION
+        // ============================================================
+        async function loadDailyQuestion() {
+            const container = document.getElementById('dailyQuestionContent');
+            const dateEl = document.getElementById('dailyDate');
+            const today = new Date();
+            dateEl.textContent = today.toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'numeric', year: 'numeric' });
+
+            try {
+                const data = await apiCall('/api/daily-question');
+
+                if (data.error) {
+                    container.innerHTML = `<div style="padding: 15px; color: #888; text-align: center;">📭 ${data.error}</div>`;
+                    return;
+                }
+
+                if (data.user_answered) {
+                    const isCorrect = data.user_answered.is_correct;
+                    container.innerHTML = `
+                        <div class="${isCorrect ? 'daily-answer' : 'daily-wrong'}">
+                            <div style="font-weight: 600; margin-bottom: 10px;">${data.question}</div>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+                                ${data.options.map((opt, idx) => `
+                                    <span style="padding: 5px 15px; border-radius: 20px; background: ${idx === data.user_answered.answer ? (isCorrect ? '#27ae60' : '#e74c3c') : '#e9ecef'}; color: ${idx === data.user_answered.answer ? 'white' : '#2d3436'}; font-weight: ${idx === data.user_answered.answer ? '700' : '400'};">
+                                        ${String.fromCharCode(65 + idx)}. ${opt}
+                                    </span>
+                                `).join('')}
+                            </div>
+                            ${data.explanation ? `<div style="background: #e9ecef; padding: 10px; border-radius: 8px; font-size: 14px;">💡 ${data.explanation}</div>` : ''}
+                            <div style="margin-top: 10px; font-weight: 600; color: ${isCorrect ? '#27ae60' : '#e74c3c'};">
+                                ${isCorrect ? '✅ Chính xác! Bạn đã trả lời đúng.' : '❌ Bạn đã trả lời sai. Hãy xem giải thích bên trên.'}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div id="dailyQuestionForm">
+                            <div style="font-weight: 600; margin-bottom: 10px;">${data.question}</div>
+                            <div class="daily-options">
+                                ${data.options.map((opt, idx) => `
+                                    <button onclick="submitDailyAnswer(${data.id}, ${idx})">
+                                        <strong>${String.fromCharCode(65 + idx)}.</strong> ${opt}
+                                    </button>
+                                `).join('')}
+                            </div>
+                            <div id="dailyQuestionFeedback" class="daily-feedback"></div>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                container.innerHTML = `<div style="padding: 15px; color: #e74c3c; text-align: center;">❌ Lỗi tải câu hỏi: ${err.message}</div>`;
+            }
+        }
+
+        async function submitDailyAnswer(questionId, answer) {
+            if (!state.isLoggedIn) {
+                showToast('🔐 Vui lòng đăng nhập để trả lời câu hỏi!');
+                openLoginModal();
+                return;
+            }
+
+            const buttons = document.querySelectorAll('#dailyQuestionForm .daily-options button');
+            buttons.forEach(btn => btn.disabled = true);
+
+            try {
+                const data = await apiCall('/api/daily-question/answer', 'POST', {
+                    question_id: questionId,
+                    answer: answer
+                });
+
+                const feedback = document.getElementById('dailyQuestionFeedback');
+                if (data.correct) {
+                    feedback.innerHTML = `
+                        <div style="background: #f0fff4; padding: 15px; border-radius: 12px; border: 2px solid #27ae60; margin-top: 10px;">
+                            <span style="color: #27ae60; font-weight: 600;">✅ Chính xác! </span>
+                            ${data.explanation ? `💡 ${data.explanation}` : ''}
+                        </div>
+                    `;
+                    showToast('🎉 Chúc mừng! Bạn đã trả lời đúng!');
+                } else {
+                    const correctLetter = String.fromCharCode(65 + data.correct_answer);
+                    feedback.innerHTML = `
+                        <div style="background: #fff5f5; padding: 15px; border-radius: 12px; border: 2px solid #e74c3c; margin-top: 10px;">
+                            <span style="color: #e74c3c; font-weight: 600;">❌ Sai rồi! </span>
+                            Đáp án đúng là <strong>${correctLetter}</strong>.
+                            ${data.explanation ? `💡 ${data.explanation}` : ''}
+                        </div>
+                    `;
+                }
+                setTimeout(() => loadDailyQuestion(), 3000);
+            } catch (err) {
+                showToast('❌ Lỗi: ' + err.message);
             }
         }
 
@@ -587,8 +705,7 @@
                 });
                 state.xp = data.xp;
                 state.completedLessons.push(String(state.currentLessonId));
-                
-                // Cập nhật level
+
                 const newLevel = Math.min(6, Math.floor(state.xp / 150) + 1);
                 if (newLevel > state.currentLevel) {
                     state.currentLevel = newLevel;
@@ -596,10 +713,8 @@
                     await loadQuizForLevel(newLevel);
                     showToast(`🚀 LEVEL UP! Bạn đã lên Level ${newLevel}!`);
                 }
-                
-                // Reload thành tích (có thể đã được mở khóa)
+
                 await loadUserProgress();
-                
                 closeLessonModal();
                 renderAll();
                 showToast(`🎉 Hoàn thành bài học!`);
@@ -689,7 +804,7 @@
                     state.currentQuizIndex++;
 
                     feedback.innerHTML = `
-                        <div style="background: #f0fff4; padding: 15px; border-radius: 15px; margin-top: 10px; text-align: center; border: 2px solid #27ae60;">
+                        <div style="background: #f0fff4; padding: 15px; border-radius: 15px; margin-top: 10px; border: 2px solid #27ae60;">
                             <span style="color: #27ae60; font-size: 18px;">✅ Chính xác! +${quiz.xp_reward} XP</span>
                         </div>
                     `;
@@ -701,7 +816,6 @@
                         state.quizPassed[state.currentLevel] = true;
                     }
 
-                    // Cập nhật level
                     const newLevel = Math.min(6, Math.floor(state.xp / 150) + 1);
                     if (newLevel > state.currentLevel) {
                         state.currentLevel = newLevel;
@@ -710,7 +824,6 @@
                         showToast(`🚀 LEVEL UP! Bạn đã lên Level ${newLevel}!`);
                     }
 
-                    // Reload thành tích
                     await loadUserProgress();
                     renderAll();
                 } catch (err) {
@@ -733,7 +846,7 @@
             renderQuiz();
         }
 
-        // ===== ACHIEVEMENTS (ĐÃ CẬP NHẬT) =====
+        // ===== ACHIEVEMENTS =====
         function renderAchievements() {
             const container = document.getElementById('achievementList');
             const achievements = [
@@ -803,6 +916,7 @@
         // ============================================================
         async function init() {
             await loadAllData();
+            await loadDailyQuestion();
             try {
                 const data = await apiCall('/api/user/status');
                 if (data.logged_in) {
