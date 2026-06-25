@@ -5,7 +5,7 @@ import markdown
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from models import db, User, Lesson, Exercise, Quiz, UserProgress
+from models import db, User, Lesson, Exercise, Quiz, UserProgress, DailyQuestion, DailyQuestionResponse
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -31,7 +31,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 # ============================================================
-# HÀM KIỂM TRA VÀ MỞ KHÓA THÀNH TÍCH
+# HÀM KIỂM TRA VÀ MỞ KHÓA THÀNH TÍCH (GIỮ NGUYÊN)
 # ============================================================
 def check_and_unlock_achievements(user_id):
     """Tự động kiểm tra và mở khóa thành tích cho user"""
@@ -76,7 +76,7 @@ def check_and_unlock_achievements(user_id):
             print(f"✅ Đã mở khóa thành tích cho {user.username}: {new_achievements}")
 
 # ============================================================
-# KHỞI TẠO DATABASE VÀ DỮ LIỆU MẪU
+# KHỞI TẠO DATABASE VÀ DỮ LIỆU MẪU (GIỮ NGUYÊN)
 # ============================================================
 with app.app_context():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
@@ -746,7 +746,7 @@ Từ vựng và mẫu câu du lịch giúp bạn tự tin khi đi nước ngoài
         print(f"ℹ️ Đã có dữ liệu: {Lesson.query.count()} bài học, {Quiz.query.count()} quiz")
 
 # ============================================================
-# ROUTES
+# ROUTES (GIỮ NGUYÊN TẤT CẢ + THÊM MỚI)
 # ============================================================
 
 @app.route('/')
@@ -768,7 +768,7 @@ def init_db_route():
     except Exception as e:
         return f"❌ Lỗi: {e}"
 
-# ===== API AUTH =====
+# ===== API AUTH (GIỮ NGUYÊN) =====
 @app.route('/api/register', methods=['POST'])
 def register():
     data = request.json
@@ -828,7 +828,7 @@ def get_user_progress():
         'achievements': achievements
     })
 
-# ===== API LEARNING =====
+# ===== API LEARNING (GIỮ NGUYÊN) =====
 @app.route('/api/levels')
 def get_levels():
     levels = [
@@ -891,7 +891,7 @@ def get_quiz_old(level_id):
         })
     return jsonify({'error': 'Chưa có quiz!'}), 404
 
-# ===== API PROGRESS =====
+# ===== API PROGRESS (GIỮ NGUYÊN) =====
 @app.route('/api/progress/lesson', methods=['POST'])
 @login_required
 def complete_lesson():
@@ -971,7 +971,7 @@ def pass_quiz():
     
     return jsonify({'message': 'Quiz hoàn thành!', 'xp': current_user.xp})
 
-# ===== API ADMIN =====
+# ===== API ADMIN (GIỮ NGUYÊN) =====
 @app.route('/api/admin/stats')
 @login_required
 def admin_stats():
@@ -1110,6 +1110,181 @@ def admin_quiz_detail(quiz_id):
         db.session.delete(quiz)
         db.session.commit()
         return jsonify({'message': 'Đã xóa quiz!'})
+
+# ============================================================
+# TÍNH NĂNG MỚI: DAILY QUESTIONS (THÊM MỚI)
+# ============================================================
+
+@app.route('/api/daily-question')
+def get_daily_question():
+    today = datetime.datetime.now()
+    question = DailyQuestion.query.filter(
+        DailyQuestion.start_date <= today,
+        DailyQuestion.end_date >= today,
+        DailyQuestion.is_active == True
+    ).order_by(DailyQuestion.start_date.desc()).first()
+    if not question:
+        return jsonify({'error': 'Chưa có câu hỏi cho hôm nay!'}), 404
+    user_answered = None
+    if current_user.is_authenticated:
+        response = DailyQuestionResponse.query.filter_by(
+            user_id=current_user.id,
+            question_id=question.id
+        ).first()
+        if response:
+            user_answered = {'answer': response.answer, 'is_correct': response.is_correct}
+    return jsonify({
+        'id': question.id,
+        'question': question.question,
+        'options': [question.option_a, question.option_b, question.option_c, question.option_d],
+        'explanation': question.explanation,
+        'user_answered': user_answered
+    })
+
+@app.route('/api/daily-question/answer', methods=['POST'])
+@login_required
+def answer_daily_question():
+    data = request.json
+    question_id = data.get('question_id')
+    answer = data.get('answer')
+    question = DailyQuestion.query.get(question_id)
+    if not question:
+        return jsonify({'error': 'Không tìm thấy câu hỏi!'}), 404
+    existing = DailyQuestionResponse.query.filter_by(
+        user_id=current_user.id,
+        question_id=question_id
+    ).first()
+    if existing:
+        return jsonify({'error': 'Bạn đã trả lời câu hỏi này rồi!'}), 400
+    is_correct = (answer == question.correct_answer)
+    response = DailyQuestionResponse(
+        user_id=current_user.id,
+        question_id=question_id,
+        answer=answer,
+        is_correct=is_correct
+    )
+    db.session.add(response)
+    db.session.commit()
+    return jsonify({
+        'correct': is_correct,
+        'explanation': question.explanation,
+        'correct_answer': question.correct_answer
+    })
+
+# ============================================================
+# TÍNH NĂNG MỚI: ADMIN DAILY QUESTIONS (THÊM MỚI)
+# ============================================================
+
+@app.route('/api/admin/daily-questions', methods=['GET', 'POST'])
+@login_required
+def admin_daily_questions():
+    if not current_user.is_admin:
+        return jsonify({'error': 'Unauthorized'}), 403
+    if request.method == 'GET':
+        questions = DailyQuestion.query.order_by(DailyQuestion.created_at.desc()).all()
+        return jsonify([{
+            'id': q.id,
+            'question': q.question,
+            'options': [q.option_a, q.option_b, q.option_c, q.option_d],
+            'correct_answer': q.correct_answer,
+            'explanation': q.explanation,
+            'start_date': q.start_date.isoformat(),
+            'end_date': q.end_date.isoformat(),
+            'is_active': q.is_active
+        } for q in questions])
+    if request.method == 'POST':
+        data = request.json
+        try:
+            start_date = datetime.datetime.fromisoformat(data.get('start_date'))
+            end_date = datetime.datetime.fromisoformat(data.get('end_date'))
+        except:
+            return jsonify({'error': 'Định dạng thời gian không hợp lệ!'}), 400
+        question = DailyQuestion(
+            question=data.get('question'),
+            option_a=data.get('option_a'),
+            option_b=data.get('option_b'),
+            option_c=data.get('option_c'),
+            option_d=data.get('option_d'),
+            correct_answer=int(data.get('correct_answer', 0)),
+            explanation=data.get('explanation', ''),
+            created_by=current_user.id,
+            start_date=start_date,
+            end_date=end_date
+        )
+        db.session.add(question)
+        db.session.commit()
+        return jsonify({'message': 'Đã thêm câu hỏi!', 'id': question.id}), 201
+
+@app.route('/api/admin/daily-questions/<int:qid>', methods=['PUT', 'DELETE'])
+@login_required
+def admin_daily_question_detail(qid):
+    if not current_user.is_admin:
+        return jsonify({'error': 'Unauthorized'}), 403
+    question = DailyQuestion.query.get(qid)
+    if not question:
+        return jsonify({'error': 'Không tìm thấy câu hỏi!'}), 404
+    if request.method == 'PUT':
+        data = request.json
+        question.question = data.get('question', question.question)
+        question.option_a = data.get('option_a', question.option_a)
+        question.option_b = data.get('option_b', question.option_b)
+        question.option_c = data.get('option_c', question.option_c)
+        question.option_d = data.get('option_d', question.option_d)
+        question.correct_answer = int(data.get('correct_answer', question.correct_answer))
+        question.explanation = data.get('explanation', question.explanation)
+        question.start_date = datetime.datetime.fromisoformat(data.get('start_date', question.start_date.isoformat()))
+        question.end_date = datetime.datetime.fromisoformat(data.get('end_date', question.end_date.isoformat()))
+        question.is_active = data.get('is_active', question.is_active)
+        db.session.commit()
+        return jsonify({'message': 'Đã cập nhật câu hỏi!'})
+    if request.method == 'DELETE':
+        db.session.delete(question)
+        db.session.commit()
+        return jsonify({'message': 'Đã xóa câu hỏi!'})
+
+@app.route('/api/admin/daily-questions/stats')
+@login_required
+def admin_daily_question_stats():
+    if not current_user.is_admin:
+        return jsonify({'error': 'Unauthorized'}), 403
+    questions = DailyQuestion.query.all()
+    stats = []
+    for q in questions:
+        responses = DailyQuestionResponse.query.filter_by(question_id=q.id).all()
+        total = len(responses)
+        correct = sum(1 for r in responses if r.is_correct)
+        stats.append({
+            'id': q.id,
+            'question': q.question[:50] + '...' if len(q.question) > 50 else q.question,
+            'date': q.start_date.strftime('%d/%m/%Y'),
+            'total_answers': total,
+            'correct_answers': correct,
+            'correct_rate': round(correct/total*100, 1) if total > 0 else 0
+        })
+    return jsonify(stats)
+
+@app.route('/api/admin/exercise-stats')
+@login_required
+def admin_exercise_stats():
+    if not current_user.is_admin:
+        return jsonify({'error': 'Unauthorized'}), 403
+    users = User.query.all()
+    result = []
+    for u in users:
+        lessons_done = UserProgress.query.filter_by(user_id=u.id, completed=True).count()
+        daily_done = DailyQuestionResponse.query.filter_by(user_id=u.id).count()
+        quiz_done = UserProgress.query.filter_by(user_id=u.id, quiz_passed=True).count()
+        result.append({
+            'id': u.id,
+            'username': u.username,
+            'email': u.email,
+            'lessons_completed': lessons_done,
+            'daily_questions_done': daily_done,
+            'quiz_passed': quiz_done,
+            'total_xp': u.xp,
+            'current_level': u.current_level
+        })
+    return jsonify(result)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
