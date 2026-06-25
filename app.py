@@ -912,6 +912,61 @@ def pass_quiz():
     
     return jsonify({'message': 'Quiz hoàn thành!', 'xp': current_user.xp})
 
+#==== thành tích ====
+# Thêm hàm kiểm tra và cập nhật thành tích
+def check_and_update_achievements(user_id):
+    with app.app_context():
+        user = User.query.get(user_id)
+        if not user:
+            return
+        
+        # Lấy danh sách bài học đã hoàn thành
+        completed_lessons = [p.lesson_id for p in UserProgress.query.filter_by(user_id=user_id, completed=True).all()]
+        completed_count = len(completed_lessons)
+        
+        # Lấy tất cả lesson theo level
+        all_lessons_by_level = {}
+        for level in range(1, 7):
+            lessons = Lesson.query.filter_by(level_id=level).all()
+            all_lessons_by_level[level] = [l.id for l in lessons]
+        
+        achievements_to_unlock = []
+        
+        # Kiểm tra từng level
+        for level in range(1, 7):
+            ach_id = f'ach_{level}'
+            if ach_id not in user.achievements:
+                level_lessons = all_lessons_by_level.get(level, [])
+                if level_lessons and all(l_id in completed_lessons for l_id in level_lessons):
+                    achievements_to_unlock.append(ach_id)
+        
+        # Thành tích "Người học siêng năng" (20 bài)
+        if 'ach_7' not in user.achievements and completed_count >= 20:
+            achievements_to_unlock.append('ach_7')
+        
+        # Lưu thành tích mới
+        if achievements_to_unlock:
+            current_achievements = user.achievements or []
+            user.achievements = list(set(current_achievements + achievements_to_unlock))
+            db.session.commit()
+            print(f"✅ Đã mở khóa thành tích cho user {user.username}: {achievements_to_unlock}")
+
+# Gọi hàm này trong các route complete_lesson và pass_quiz
+@app.route('/api/progress/lesson', methods=['POST'])
+@login_required
+def complete_lesson():
+    # ... (code hiện tại)
+    # Sau khi cập nhật progress, gọi hàm kiểm tra thành tích
+    check_and_update_achievements(current_user.id)
+    # ... (trả về response)
+
+@app.route('/api/progress/quiz', methods=['POST'])
+@login_required
+def pass_quiz():
+    # ... (code hiện tại)
+    # Sau khi cập nhật xp, gọi hàm kiểm tra thành tích
+    check_and_update_achievements(current_user.id)
+    # ... (trả về response)
 # ===== API ADMIN =====
 @app.route('/api/admin/stats')
 @login_required
