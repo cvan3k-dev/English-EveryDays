@@ -445,11 +445,19 @@
             try {
                 const data = await apiCall('/api/daily-question');
 
-                if (data.error) {
+        // Kiểm tra nếu response có error
+                if (data && data.error) {
                     container.innerHTML = `<div style="padding: 15px; color: #888; text-align: center;">📭 ${data.error}</div>`;
                     return;
                 }
 
+        // Nếu không có dữ liệu (data rỗng hoặc không có question)
+                if (!data || !data.question) {
+                    container.innerHTML = `<div style="padding: 15px; color: #888; text-align: center;">📭 Chưa có câu hỏi cho hôm nay. Hãy quay lại sau!</div>`;
+                    return;
+                }
+
+        // Nếu user đã trả lời
                 if (data.user_answered) {
                     const isCorrect = data.user_answered.is_correct;
                     container.innerHTML = `
@@ -469,6 +477,7 @@
                         </div>
                     `;
                 } else {
+            // Chưa trả lời – hiển thị form
                     container.innerHTML = `
                         <div id="dailyQuestionForm">
                             <div style="font-weight: 600; margin-bottom: 10px;">${data.question}</div>
@@ -484,6 +493,7 @@
                     `;
                 }
             } catch (err) {
+        // Bắt lỗi từ apiCall (nếu có)
                 container.innerHTML = `<div style="padding: 15px; color: #e74c3c; text-align: center;">❌ Lỗi tải câu hỏi: ${err.message}</div>`;
             }
         }
