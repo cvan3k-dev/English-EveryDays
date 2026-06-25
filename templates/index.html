@@ -707,6 +707,7 @@
         }
 
         // ===== ACHIEVEMENTS =====
+        // Hàm renderAchievements cần lấy dữ liệu từ server (state.achievements)
         function renderAchievements() {
             const container = document.getElementById('achievementList');
             const achievements = [
@@ -719,32 +720,36 @@
                 { id: 'ach_7', name: '📚 Người học siêng năng', icon: '📚', desc: 'Hoàn thành 20 bài học' },
             ];
 
-            let html = `
-                <div style="background: #fff5f7; border-radius: 15px; padding: 20px; margin-bottom: 20px; border-left: 5px solid #f5576c;">
-                    <h3 style="color: #f5576c; margin-bottom: 10px;">🏆 CÁCH NHẬN THÀNH TỰU</h3>
-                    <ul style="list-style: none; padding: 0; font-size: 14px; color: #2d3436; line-height: 1.8;">
-                        <li>✅ Hoàn thành tất cả bài học trong 1 Level → Nhận huy hiệu Level đó</li>
-                        <li>✅ Hoàn thành 20 bài học bất kỳ → Nhận huy hiệu "Người học siêng năng"</li>
-                        <li>💡 Mỗi huy hiệu sẽ được đánh dấu khi bạn đạt đủ điều kiện</li>
-                    </ul>
-                </div>
-                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:15px;">
-            `;
+    // Hướng dẫn cách nhận thành tựu
+        let html = `
+            <div style="background: #fff5f7; border-radius: 15px; padding: 20px; margin-bottom: 20px; border-left: 5px solid #f5576c;">
+                <h3 style="color: #f5576c; margin-bottom: 10px;">🏆 CÁCH NHẬN THÀNH TỰU</h3>
+                <ul style="list-style: none; padding: 0; font-size: 14px; color: #2d3436; line-height: 1.8;">
+                    <li>✅ Hoàn thành tất cả bài học trong 1 Level → Nhận huy hiệu Level đó</li>
+                    <li>✅ Hoàn thành 20 bài học bất kỳ → Nhận huy hiệu "Người học siêng năng"</li>
+                    <li>💡 Mỗi huy hiệu sẽ được đánh dấu khi bạn đạt đủ điều kiện</li>
+                </ul>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:15px;">
+        `;
 
-            for (const ach of achievements) {
-                const unlocked = state.achievements.includes(ach.id);
-                html += `
-                    <div class="achievement-item" style="background:white;border-radius:15px;padding:20px;text-align:center;border:2px solid ${unlocked ? '#f5576c' : '#e9ecef'};${unlocked ? 'background:#fff5f7;' : 'opacity:0.5;filter:grayscale(1);'}">
-                        <div style="font-size:36px;margin-bottom:8px;">${ach.icon}</div>
-                        <div style="font-weight:600;font-size:13px;color:#2d3436;">${ach.name}</div>
-                        <div style="font-size:11px;color:#888;margin-top:5px;">${ach.desc}</div>
-                        <div style="font-size:11px;color:#888;margin-top:5px;">${unlocked ? '✅ Đã mở' : '🔒 Khóa'}</div>
-                    </div>
-                `;
-            }
-            html += '</div>';
-            container.innerHTML = html;
+        for (const ach of achievements) {
+            const unlocked = state.achievements.includes(ach.id);
+            html += `
+                <div class="achievement-item" style="background:white;border-radius:15px;padding:20px;text-align:center;border:2px solid ${unlocked ? '#f5576c' : '#e9ecef'};${unlocked ? 'background:#fff5f7;' : 'opacity:0.5;filter:grayscale(1);'}">
+                    <div style="font-size:36px;margin-bottom:8px;">${ach.icon}</div>
+                    <div style="font-weight:600;font-size:13px;color:#2d3436;">${ach.name}</div>
+                    <div style="font-size:11px;color:#888;margin-top:5px;">${ach.desc}</div>
+                    <div style="font-size:11px;color:#888;margin-top:5px;">${unlocked ? '✅ Đã mở' : '🔒 Khóa'}</div>
+                </div>
+            `;
         }
+        html += '</div>';
+        container.innerHTML = html;
+    }
+
+// Sau mỗi lần hoàn thành bài học hoặc quiz, cần gọi lại hàm renderAchievements
+// Đã có trong renderAll() => sẽ tự động cập nhật
 
         // ===== TABS =====
         function switchTab(tab) {
