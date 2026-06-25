@@ -1,7 +1,7 @@
 import os
 import datetime
-import markdown
 import json
+import markdown
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
@@ -31,6 +31,51 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 # ============================================================
+# HÀM KIỂM TRA VÀ MỞ KHÓA THÀNH TÍCH
+# ============================================================
+def check_and_unlock_achievements(user_id):
+    """Tự động kiểm tra và mở khóa thành tích cho user"""
+    with app.app_context():
+        user = User.query.get(user_id)
+        if not user:
+            return
+        
+        # Lấy danh sách thành tích hiện có
+        current_achievements = json.loads(user.achievements) if user.achievements else []
+        
+        # Lấy danh sách bài học đã hoàn thành
+        completed = UserProgress.query.filter_by(user_id=user_id, completed=True).all()
+        completed_ids = [str(p.lesson_id) for p in completed]
+        completed_count = len(completed_ids)
+        
+        # Lấy tất cả bài học theo level
+        all_lessons_by_level = {}
+        for level in range(1, 7):
+            lessons = Lesson.query.filter_by(level_id=level).all()
+            all_lessons_by_level[level] = [str(l.id) for l in lessons]
+        
+        new_achievements = []
+        
+        # Kiểm tra từng level (1->6)
+        for level in range(1, 7):
+            ach_id = f'ach_{level}'
+            if ach_id not in current_achievements:
+                level_lessons = all_lessons_by_level.get(level, [])
+                if level_lessons and all(l_id in completed_ids for l_id in level_lessons):
+                    new_achievements.append(ach_id)
+        
+        # Thành tích "Người học siêng năng" (20 bài)
+        if 'ach_7' not in current_achievements and completed_count >= 20:
+            new_achievements.append('ach_7')
+        
+        # Lưu thành tích mới
+        if new_achievements:
+            updated = list(set(current_achievements + new_achievements))
+            user.achievements = json.dumps(updated)
+            db.session.commit()
+            print(f"✅ Đã mở khóa thành tích cho {user.username}: {new_achievements}")
+
+# ============================================================
 # KHỞI TẠO DATABASE VÀ DỮ LIỆU MẪU
 # ============================================================
 with app.app_context():
@@ -44,7 +89,8 @@ with app.app_context():
             username='admin',
             password=generate_password_hash('admin123'),
             email='admin@example.com',
-            is_admin=True
+            is_admin=True,
+            achievements='[]'
         )
         db.session.add(admin)
         db.session.commit()
@@ -54,11 +100,9 @@ with app.app_context():
     if Lesson.query.count() == 0:
         print("⏳ Đang tạo dữ liệu mẫu...")
 
-        # ============================================================
-        # BÀI HỌC (LÝ THUYẾT CHI TIẾT - MỞ RỘNG)
-        # ============================================================
+        # ===== BÀI HỌC (LÝ THUYẾT CHI TIẾT) =====
         lessons_data = [
-            # ==================== LEVEL 1: EGG ====================
+            # LEVEL 1
             {
                 'level_id': 1,
                 'name': '🔤 Bảng chữ cái ABC',
@@ -156,7 +200,7 @@ Số đếm từ 1 đến 20 trong tiếng Anh được chia thành các nhóm:
                 'xp_reward': 25,
                 'order': 2
             },
-            # ==================== LEVEL 2: CHICK ====================
+            # LEVEL 2
             {
                 'level_id': 2,
                 'name': '👨‍👩‍👧‍👦 Gia đình (Family)',
@@ -249,7 +293,7 @@ Từ vựng về động vật giúp bạn miêu tả thế giới xung quanh.
                 'xp_reward': 35,
                 'order': 2
             },
-            # ==================== LEVEL 3: PARROT ====================
+            # LEVEL 3
             {
                 'level_id': 3,
                 'name': '⏰ Thì hiện tại đơn',
@@ -351,7 +395,7 @@ Thêm **"do not"** (don't) hoặc **"does not"** (doesn't) trước động từ
                 'xp_reward': 40,
                 'order': 2
             },
-            # ==================== LEVEL 4: DOLPHIN ====================
+            # LEVEL 4
             {
                 'level_id': 4,
                 'name': '⏳ Thì quá khứ đơn',
@@ -449,7 +493,7 @@ Thì tương lai gần (Near Future Tense) diễn tả dự định hoặc kế 
                 'xp_reward': 50,
                 'order': 2
             },
-            # ==================== LEVEL 5: LION ====================
+            # LEVEL 5
             {
                 'level_id': 5,
                 'name': '🎯 Câu điều kiện loại 1',
@@ -534,7 +578,7 @@ Câu bị động (Passive Voice) dùng khi người thực hiện hành động
                 'xp_reward': 60,
                 'order': 2
             },
-            # ==================== LEVEL 6: EAGLE ====================
+            # LEVEL 6
             {
                 'level_id': 6,
                 'name': '💼 Giao tiếp công sở',
@@ -733,7 +777,7 @@ def register():
     email = data.get('email')
     if User.query.filter_by(username=username).first():
         return jsonify({'error': 'Tên đăng nhập đã tồn tại!'}), 400
-    user = User(username=username, password=generate_password_hash(password), email=email)
+    user = User(username=username, password=generate_password_hash(password), email=email, achievements='[]')
     db.session.add(user)
     db.session.commit()
     return jsonify({'message': 'Đăng ký thành công!'}), 201
@@ -766,18 +810,22 @@ def user_status():
 def get_user_progress():
     progress = UserProgress.query.filter_by(user_id=current_user.id, completed=True).all()
     completed_lessons = [str(p.lesson_id) for p in progress]
+    
     quiz_passed = {}
     for p in progress:
         if p.quiz_passed:
             lesson = Lesson.query.get(p.lesson_id)
             if lesson:
                 quiz_passed[str(lesson.level_id)] = True
+    
+    achievements = json.loads(current_user.achievements) if current_user.achievements else []
+    
     return jsonify({
         'xp': current_user.xp,
         'current_level': current_user.current_level,
         'completed_lessons': completed_lessons,
         'quiz_passed': quiz_passed,
-        'achievements': []
+        'achievements': achievements
     })
 
 # ===== API LEARNING =====
@@ -849,10 +897,12 @@ def get_quiz_old(level_id):
 def complete_lesson():
     data = request.json
     lesson_id = data.get('lesson_id')
+    
     progress = UserProgress.query.filter_by(user_id=current_user.id, lesson_id=lesson_id).first()
     if not progress:
         progress = UserProgress(user_id=current_user.id, lesson_id=lesson_id)
         db.session.add(progress)
+    
     if not progress.completed:
         progress.completed = True
         progress.completed_at = datetime.datetime.utcnow()
@@ -867,7 +917,12 @@ def complete_lesson():
             elif current_user.xp >= 150: new_level = 2
             current_user.current_level = new_level
         db.session.commit()
+        
+        # ===== KIỂM TRA THÀNH TÍCH =====
+        check_and_unlock_achievements(current_user.id)
+        
         return jsonify({'message': 'Bài học đã hoàn thành!', 'xp': current_user.xp})
+    
     return jsonify({'message': 'Đã hoàn thành rồi!'})
 
 @app.route('/api/progress/exercise', methods=['POST'])
@@ -911,63 +966,11 @@ def pass_quiz():
     current_user.current_level = new_level
     db.session.commit()
     
+    # ===== KIỂM TRA THÀNH TÍCH =====
+    check_and_unlock_achievements(current_user.id)
+    
     return jsonify({'message': 'Quiz hoàn thành!', 'xp': current_user.xp})
 
-#==== thành tích ====
-# Thêm hàm kiểm tra và cập nhật thành tích
-def check_and_update_achievements(user_id):
-    with app.app_context():
-        user = User.query.get(user_id)
-        if not user:
-            return
-        
-        # Lấy danh sách bài học đã hoàn thành
-        completed_lessons = [p.lesson_id for p in UserProgress.query.filter_by(user_id=user_id, completed=True).all()]
-        completed_count = len(completed_lessons)
-        
-        # Lấy tất cả lesson theo level
-        all_lessons_by_level = {}
-        for level in range(1, 7):
-            lessons = Lesson.query.filter_by(level_id=level).all()
-            all_lessons_by_level[level] = [l.id for l in lessons]
-        
-        achievements_to_unlock = []
-        
-        # Kiểm tra từng level
-        for level in range(1, 7):
-            ach_id = f'ach_{level}'
-            if ach_id not in user.achievements:
-                level_lessons = all_lessons_by_level.get(level, [])
-                if level_lessons and all(l_id in completed_lessons for l_id in level_lessons):
-                    achievements_to_unlock.append(ach_id)
-        
-        # Thành tích "Người học siêng năng" (20 bài)
-        if 'ach_7' not in user.achievements and completed_count >= 20:
-            achievements_to_unlock.append('ach_7')
-        
-        # Lưu thành tích mới
-        if achievements_to_unlock:
-            current_achievements = user.achievements or []
-            user.achievements = list(set(current_achievements + achievements_to_unlock))
-            db.session.commit()
-            print(f"✅ Đã mở khóa thành tích cho user {user.username}: {achievements_to_unlock}")
-
-# Gọi hàm này trong các route complete_lesson và pass_quiz
-@app.route('/api/progress/lesson', methods=['POST'])
-@login_required
-def complete_lesson():
-    # ... (code hiện tại)
-    # Sau khi cập nhật progress, gọi hàm kiểm tra thành tích
-    check_and_update_achievements(current_user.id)
-    # ... (trả về response)
-
-@app.route('/api/progress/quiz', methods=['POST'])
-@login_required
-def pass_quiz():
-    # ... (code hiện tại)
-    # Sau khi cập nhật xp, gọi hàm kiểm tra thành tích
-    check_and_update_achievements(current_user.id)
-    # ... (trả về response)
 # ===== API ADMIN =====
 @app.route('/api/admin/stats')
 @login_required
