@@ -6,9 +6,12 @@
     <title>📚 English Everydays - Học Tiếng Anh Mỗi Ngày</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* ===== RESET ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
         body { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); min-height: 100vh; padding: 20px; display: flex; justify-content: center; align-items: center; }
         .app { max-width: 950px; width: 100%; background: rgba(255,255,255,0.95); border-radius: 30px; padding: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        
+        /* ===== HEADER ===== */
         .header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; }
         .header h1 { font-size: 26px; color: #2d3436; display: flex; align-items: center; gap: 10px; }
         .header h1 i { color: #f5576c; animation: bounce 2s infinite; }
@@ -24,18 +27,28 @@
         .btn-logout { background: #e9ecef; color: #2d3436; }
         .btn-register { background: #2d3436; color: white; }
         .btn-login:hover, .btn-register:hover { transform: scale(1.05); }
+        
+        /* ===== LEVEL CARD ===== */
         .level-card { background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); border-radius: 20px; padding: 25px; color: white; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; min-height: 100px; }
         .level-card .level-info h2 { font-size: 22px; margin-bottom: 5px; }
         .level-card .level-badge { font-size: 48px; background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 20px; backdrop-filter: blur(5px); }
+        
+        /* ===== HƯỚNG DẪN ===== */
         .guide-section { background: #fff5f7; border-radius: 15px; padding: 20px; margin: 20px 0; border-left: 5px solid #f5576c; }
         .guide-section h3 { color: #f5576c; margin-bottom: 10px; }
         .guide-section ul { list-style: none; padding: 0; font-size: 14px; color: #2d3436; line-height: 1.8; }
+        
+        /* ===== TABS ===== */
         .tabs { display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
         .tabs button { padding: 12px 25px; border: none; border-radius: 50px; background: #f1f2f6; color: #2d3436; font-weight: 600; cursor: pointer; transition: all 0.3s ease; flex: 1; min-width: 100px; }
         .tabs button.active { background: #f5576c; color: white; box-shadow: 0 4px 15px rgba(245,87,108,0.4); }
         .tabs button:hover { transform: translateY(-2px); }
+        
+        /* ===== CONTENT ===== */
         .content { background: #f8f9fa; border-radius: 20px; padding: 25px; min-height: 350px; }
         .hidden { display: none !important; }
+        
+        /* ===== LESSON ITEMS ===== */
         .lesson-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: white; border-radius: 15px; margin-bottom: 12px; transition: all 0.3s ease; cursor: pointer; border: 2px solid transparent; }
         .lesson-item:hover { border-color: #f5576c; transform: translateX(5px); }
         .lesson-item.completed { border-color: #27ae60; background: #f0fff4; }
@@ -45,6 +58,8 @@
         .lesson-item.completed .lesson-icon { background: #27ae60; color: white; }
         .lesson-item .lesson-status { font-size: 13px; padding: 5px 15px; border-radius: 50px; background: #e9ecef; color: #888; flex-shrink: 0; }
         .lesson-item.completed .lesson-status { background: #27ae60; color: white; }
+        
+        /* ===== MODAL ===== */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; }
         .modal-overlay.show { display: flex; }
         .modal-box { background: white; padding: 35px; border-radius: 25px; width: 90%; max-width: 700px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; }
@@ -55,6 +70,8 @@
         .modal-box .lesson-content { line-height: 1.8; font-size: 15px; margin-bottom: 20px; }
         .modal-box .lesson-content h3 { color: #f5576c; margin-top: 15px; margin-bottom: 8px; }
         .modal-box .lesson-content ul, .modal-box .lesson-content ol { padding-left: 25px; }
+        
+        /* ===== EXERCISE ===== */
         .exercise-item { background: #f8f9fa; padding: 15px; border-radius: 15px; margin-bottom: 15px; }
         .exercise-item .question { font-weight: 600; margin-bottom: 10px; }
         .exercise-item .options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -65,6 +82,18 @@
         .exercise-item .options button:disabled { cursor: not-allowed; opacity: 0.7; }
         .exercise-item .explanation { margin-top: 10px; padding: 10px; background: #e9ecef; border-radius: 8px; display: none; }
         .exercise-item .explanation.show { display: block; }
+        
+        /* ===== ACHIEVEMENTS ===== */
+        .achievement-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
+        .achievement-item { background: white; border-radius: 15px; padding: 20px; text-align: center; border: 2px solid #e9ecef; transition: all 0.3s ease; }
+        .achievement-item.unlocked { border-color: #f5576c; background: #fff5f7; }
+        .achievement-item.locked { opacity: 0.5; filter: grayscale(1); }
+        .achievement-item .ach-icon { font-size: 36px; margin-bottom: 8px; }
+        .achievement-item .ach-name { font-weight: 600; font-size: 13px; color: #2d3436; }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 650px) { .app { padding: 15px; } .header { flex-direction: column; text-align: center; } .user-stats { justify-content: center; } .level-card { flex-direction: column; text-align: center; } .exercise-item .options { grid-template-columns: 1fr; } .tabs button { font-size: 12px; padding: 10px; } }
+        
         .btn-primary { background: #f5576c; color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 16px; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(245,87,108,0.4); }
         .btn-success { background: #27ae60; color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; cursor: pointer; }
@@ -72,7 +101,6 @@
         .text-center { text-align: center; }
         .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #2d3436; color: white; padding: 15px 30px; border-radius: 50px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 9999; animation: toastSlideUp 0.5s ease; max-width: 90%; text-align: center; }
         @keyframes toastSlideUp { from { transform: translateX(-50%) translateY(50px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
-        @media (max-width: 650px) { .app { padding: 15px; } .header { flex-direction: column; text-align: center; } .user-stats { justify-content: center; } .level-card { flex-direction: column; text-align: center; } .exercise-item .options { grid-template-columns: 1fr; } .tabs button { font-size: 12px; padding: 10px; } }
     </style>
 </head>
 <body>
@@ -130,7 +158,7 @@
         <div class="content" id="contentArea">
             <div id="tab-lessons"><div id="lessonList"><div class="text-center" style="padding: 30px; color: #888;">📖 Đang tải bài học...</div></div></div>
             <div id="tab-quiz" class="hidden"><div id="quizContainer"><div class="text-center" style="padding: 30px; color: #888;">📝 Đang tải quiz...</div></div></div>
-            <div id="tab-achievements" class="hidden"><div id="achievementList" class="text-center" style="padding: 30px; color: #888;">🏆 Đang tải thành tích...</div></div>
+            <div id="tab-achievements" class="hidden"><div id="achievementList"><div class="text-center" style="padding: 30px; color: #888;">🏆 Đang tải thành tích...</div></div></div>
         </div>
     </div>
 
@@ -173,15 +201,15 @@
             currentLevel: 1,
             xp: 0,
             completedLessons: [],
-            quizPassed: {},        // level_id: true/false (tất cả quiz đã qua)
+            quizPassed: {},
             achievements: [],
             user: null,
             isLoggedIn: false,
             levels: [],
             lessons: {},
-            quizzes: {},          // Lưu danh sách quiz theo level
-            currentQuizIndex: 0,  // Quiz đang làm trong level
-            quizCompleted: {},    // Số quiz đã hoàn thành của mỗi level
+            quizzes: {},
+            currentQuizIndex: 0,
+            quizCompleted: {},
             currentLessonId: null
         };
 
@@ -312,6 +340,7 @@
                 state.currentQuizIndex = 0;
                 state.xp = 0;
                 state.currentLevel = 1;
+                state.achievements = [];
                 renderAll();
             } catch (err) {
                 showToast('Lỗi đăng xuất!');
@@ -319,7 +348,7 @@
         }
 
         // ============================================================
-        // USER PROGRESS
+        // USER PROGRESS (ĐÃ CẬP NHẬT THÀNH TÍCH)
         // ============================================================
         async function loadUserProgress() {
             try {
@@ -328,7 +357,7 @@
                 state.quizPassed = data.quiz_passed || {};
                 state.xp = data.xp || 0;
                 state.currentLevel = data.current_level || 1;
-                state.achievements = data.achievements || [];
+                state.achievements = data.achievements || [];  // <-- Lấy thành tích từ server
             } catch (err) {
                 // Chưa login thì bỏ qua
             }
@@ -359,14 +388,11 @@
             }
         }
 
-        // ---- SỬA HÀM loadQuizForLevel ----
         async function loadQuizForLevel(levelId) {
             try {
                 const quizzes = await apiCall(`/api/quizzes/${levelId}`);
                 state.quizzes[levelId] = quizzes;
-                // Reset index khi chuyển level
                 state.currentQuizIndex = 0;
-                // Nếu chưa có quizCompleted cho level này, đặt về 0
                 if (!state.quizCompleted[levelId]) {
                     state.quizCompleted[levelId] = 0;
                 }
@@ -551,6 +577,7 @@
                 });
                 state.xp = data.xp;
                 state.completedLessons.push(String(state.currentLessonId));
+                
                 // Cập nhật level
                 const newLevel = Math.min(6, Math.floor(state.xp / 150) + 1);
                 if (newLevel > state.currentLevel) {
@@ -559,6 +586,10 @@
                     await loadQuizForLevel(newLevel);
                     showToast(`🚀 LEVEL UP! Bạn đã lên Level ${newLevel}!`);
                 }
+                
+                // Reload thành tích (có thể đã được mở khóa)
+                await loadUserProgress();
+                
                 closeLessonModal();
                 renderAll();
                 showToast(`🎉 Hoàn thành bài học!`);
@@ -567,22 +598,19 @@
             }
         }
 
-        // ============================================================
-        // QUIZ (ĐÃ SỬA ĐỂ HIỂN THỊ NHIỀU QUIZ)
-        // ============================================================
+        // ===== QUIZ =====
         function renderQuiz() {
             const container = document.getElementById('quizContainer');
             const quizzes = state.quizzes[state.currentLevel] || [];
             const passed = state.quizPassed[state.currentLevel] || false;
             const completedCount = state.quizCompleted[state.currentLevel] || 0;
 
-            // Nếu đã hoàn thành tất cả quiz của level
             if (passed || (quizzes.length > 0 && completedCount >= quizzes.length)) {
                 container.innerHTML = `
                     <div class="text-center" style="padding: 30px; background: white; border-radius: 20px;">
                         <div style="font-size: 64px;">🎉</div>
                         <h3>Bạn đã vượt qua tất cả Quiz Level ${state.currentLevel}!</h3>
-                        <p style="color: #888;">Tổng XP nhận được: ${quizzes.reduce((sum, q) => sum + q.xp_reward, 0)} XP</p>
+                        <p style="color: #888;">Tổng XP: ${quizzes.reduce((sum, q) => sum + q.xp_reward, 0)}</p>
                         <button class="btn-success" onclick="resetQuiz()">Làm lại</button>
                     </div>
                 `;
@@ -594,7 +622,6 @@
                 return;
             }
 
-            // Kiểm tra đã hoàn thành bài học chưa
             const lessons = state.lessons[state.currentLevel] || [];
             const allCompleted = lessons.every(l => state.completedLessons.includes(String(l.id)));
             if (!allCompleted) {
@@ -602,10 +629,8 @@
                 return;
             }
 
-            // Lấy quiz hiện tại theo index
             const idx = state.currentQuizIndex;
             if (idx >= quizzes.length) {
-                // Nếu đã làm hết quiz, đánh dấu hoàn thành level
                 state.quizPassed[state.currentLevel] = true;
                 renderQuiz();
                 return;
@@ -645,17 +670,12 @@
             const feedback = document.getElementById('quizFeedback');
             if (selected === quiz.correct_answer) {
                 try {
-                    // Gửi kết quả quiz hiện tại
                     const data = await apiCall('/api/progress/quiz', 'POST', {
                         level_id: state.currentLevel,
                         quiz_id: quiz.id
                     });
                     state.xp = data.xp;
-
-                    // Cập nhật số quiz đã hoàn thành
                     state.quizCompleted[state.currentLevel] = (state.quizCompleted[state.currentLevel] || 0) + 1;
-
-                    // Chuyển sang quiz tiếp theo
                     state.currentQuizIndex++;
 
                     feedback.innerHTML = `
@@ -664,14 +684,9 @@
                         </div>
                     `;
 
-                    // Tự động chuyển quiz sau 1.5 giây
-                    setTimeout(() => {
-                        renderQuiz();
-                    }, 1500);
-
+                    setTimeout(() => { renderQuiz(); }, 1500);
                     showToast(`🎉 Quiz ${idx+1}/${quizzes.length} hoàn thành! +${quiz.xp_reward} XP`);
 
-                    // Nếu đã hoàn thành tất cả quiz, đánh dấu level đã qua
                     if (state.currentQuizIndex >= quizzes.length) {
                         state.quizPassed[state.currentLevel] = true;
                     }
@@ -685,6 +700,8 @@
                         showToast(`🚀 LEVEL UP! Bạn đã lên Level ${newLevel}!`);
                     }
 
+                    // Reload thành tích
+                    await loadUserProgress();
                     renderAll();
                 } catch (err) {
                     showToast('❌ Lỗi: ' + err.message);
@@ -706,8 +723,7 @@
             renderQuiz();
         }
 
-        // ===== ACHIEVEMENTS =====
-        // Hàm renderAchievements cần lấy dữ liệu từ server (state.achievements)
+        // ===== ACHIEVEMENTS (ĐÃ CẬP NHẬT) =====
         function renderAchievements() {
             const container = document.getElementById('achievementList');
             const achievements = [
@@ -720,36 +736,32 @@
                 { id: 'ach_7', name: '📚 Người học siêng năng', icon: '📚', desc: 'Hoàn thành 20 bài học' },
             ];
 
-    // Hướng dẫn cách nhận thành tựu
-        let html = `
-            <div style="background: #fff5f7; border-radius: 15px; padding: 20px; margin-bottom: 20px; border-left: 5px solid #f5576c;">
-                <h3 style="color: #f5576c; margin-bottom: 10px;">🏆 CÁCH NHẬN THÀNH TỰU</h3>
-                <ul style="list-style: none; padding: 0; font-size: 14px; color: #2d3436; line-height: 1.8;">
-                    <li>✅ Hoàn thành tất cả bài học trong 1 Level → Nhận huy hiệu Level đó</li>
-                    <li>✅ Hoàn thành 20 bài học bất kỳ → Nhận huy hiệu "Người học siêng năng"</li>
-                    <li>💡 Mỗi huy hiệu sẽ được đánh dấu khi bạn đạt đủ điều kiện</li>
-                </ul>
-            </div>
-            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:15px;">
-        `;
-
-        for (const ach of achievements) {
-            const unlocked = state.achievements.includes(ach.id);
-            html += `
-                <div class="achievement-item" style="background:white;border-radius:15px;padding:20px;text-align:center;border:2px solid ${unlocked ? '#f5576c' : '#e9ecef'};${unlocked ? 'background:#fff5f7;' : 'opacity:0.5;filter:grayscale(1);'}">
-                    <div style="font-size:36px;margin-bottom:8px;">${ach.icon}</div>
-                    <div style="font-weight:600;font-size:13px;color:#2d3436;">${ach.name}</div>
-                    <div style="font-size:11px;color:#888;margin-top:5px;">${ach.desc}</div>
-                    <div style="font-size:11px;color:#888;margin-top:5px;">${unlocked ? '✅ Đã mở' : '🔒 Khóa'}</div>
+            let html = `
+                <div style="background: #fff5f7; border-radius: 15px; padding: 20px; margin-bottom: 20px; border-left: 5px solid #f5576c;">
+                    <h3 style="color: #f5576c; margin-bottom: 10px;">🏆 CÁCH NHẬN THÀNH TỰU</h3>
+                    <ul style="list-style: none; padding: 0; font-size: 14px; color: #2d3436; line-height: 1.8;">
+                        <li>✅ Hoàn thành tất cả bài học trong 1 Level → Nhận huy hiệu Level đó</li>
+                        <li>✅ Hoàn thành 20 bài học bất kỳ → Nhận huy hiệu "Người học siêng năng"</li>
+                        <li>💡 Mỗi huy hiệu sẽ được đánh dấu khi bạn đạt đủ điều kiện</li>
+                    </ul>
                 </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:15px;">
             `;
-        }
-        html += '</div>';
-        container.innerHTML = html;
-    }
 
-// Sau mỗi lần hoàn thành bài học hoặc quiz, cần gọi lại hàm renderAchievements
-// Đã có trong renderAll() => sẽ tự động cập nhật
+            for (const ach of achievements) {
+                const unlocked = state.achievements.includes(ach.id);
+                html += `
+                    <div class="achievement-item ${unlocked ? 'unlocked' : 'locked'}">
+                        <div class="ach-icon">${ach.icon}</div>
+                        <div class="ach-name">${ach.name}</div>
+                        <div style="font-size:11px;color:#888;margin-top:5px;">${ach.desc}</div>
+                        <div style="font-size:11px;color:#888;margin-top:5px;">${unlocked ? '✅ Đã mở' : '🔒 Khóa'}</div>
+                    </div>
+                `;
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        }
 
         // ===== TABS =====
         function switchTab(tab) {
