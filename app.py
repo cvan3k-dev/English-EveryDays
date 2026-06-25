@@ -1112,7 +1112,7 @@ def admin_quiz_detail(quiz_id):
         return jsonify({'message': 'Đã xóa quiz!'})
 
 # ============================================================
-# ===== TÍNH NĂNG MỚI: DAILY QUESTIONS =====
+# ===== TÍNH NĂNG MỚI: DAILY QUESTIONS (ĐÃ SỬA LỖI) =====
 # ============================================================
 
 @app.route('/api/daily-question')
@@ -1171,7 +1171,7 @@ def answer_daily_question():
         'correct_answer': question.correct_answer
     })
 
-# ===== ADMIN DAILY QUESTIONS =====
+# ===== ADMIN DAILY QUESTIONS (ĐÃ SỬA LỖI) =====
 @app.route('/api/admin/daily-questions', methods=['GET', 'POST'])
 @login_required
 def admin_daily_questions():
@@ -1194,19 +1194,35 @@ def admin_daily_questions():
         try:
             start_date = datetime.datetime.fromisoformat(data.get('start_date'))
             end_date = datetime.datetime.fromisoformat(data.get('end_date'))
-        except:
-            return jsonify({'error': 'Định dạng thời gian không hợp lệ!'}), 400
+        except Exception as e:
+            return jsonify({'error': f'Định dạng thời gian không hợp lệ: {str(e)}'}), 400
+        
+        # Kiểm tra dữ liệu đầu vào
+        required_fields = ['question', 'option_a', 'option_b', 'option_c', 'option_d']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({'error': f'Thiếu trường {field}!'}), 400
+        
+        # Kiểm tra correct_answer hợp lệ
+        try:
+            correct_answer = int(data.get('correct_answer', 0))
+            if correct_answer not in [0, 1, 2, 3]:
+                return jsonify({'error': 'Đáp án đúng phải là 0, 1, 2 hoặc 3!'}), 400
+        except ValueError:
+            return jsonify({'error': 'Đáp án đúng phải là số!'}), 400
+        
         question = DailyQuestion(
             question=data.get('question'),
             option_a=data.get('option_a'),
             option_b=data.get('option_b'),
             option_c=data.get('option_c'),
             option_d=data.get('option_d'),
-            correct_answer=int(data.get('correct_answer', 0)),
+            correct_answer=correct_answer,
             explanation=data.get('explanation', ''),
             created_by=current_user.id,
             start_date=start_date,
-            end_date=end_date
+            end_date=end_date,
+            is_active=data.get('is_active', True)
         )
         db.session.add(question)
         db.session.commit()
@@ -1222,6 +1238,7 @@ def admin_daily_question_detail(qid):
         return jsonify({'error': 'Không tìm thấy câu hỏi!'}), 404
     if request.method == 'PUT':
         data = request.json
+        # Cập nhật các trường
         question.question = data.get('question', question.question)
         question.option_a = data.get('option_a', question.option_a)
         question.option_b = data.get('option_b', question.option_b)
@@ -1229,8 +1246,13 @@ def admin_daily_question_detail(qid):
         question.option_d = data.get('option_d', question.option_d)
         question.correct_answer = int(data.get('correct_answer', question.correct_answer))
         question.explanation = data.get('explanation', question.explanation)
-        question.start_date = datetime.datetime.fromisoformat(data.get('start_date', question.start_date.isoformat()))
-        question.end_date = datetime.datetime.fromisoformat(data.get('end_date', question.end_date.isoformat()))
+        try:
+            if data.get('start_date'):
+                question.start_date = datetime.datetime.fromisoformat(data.get('start_date'))
+            if data.get('end_date'):
+                question.end_date = datetime.datetime.fromisoformat(data.get('end_date'))
+        except Exception as e:
+            return jsonify({'error': f'Lỗi định dạng thời gian: {str(e)}'}), 400
         question.is_active = data.get('is_active', question.is_active)
         db.session.commit()
         return jsonify({'message': 'Đã cập nhật câu hỏi!'})
