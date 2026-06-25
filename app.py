@@ -768,6 +768,44 @@ def init_db_route():
     except Exception as e:
         return f"❌ Lỗi: {e}"
 
+# ===== ROUTE THÊM CÂU HỎI MẪU CHO DAILY QUESTION =====
+@app.route('/init-daily')
+def init_daily():
+    try:
+        with app.app_context():
+            from datetime import datetime, timedelta
+            now = datetime.now()
+            start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+            end = start + timedelta(days=1)
+            
+            # Kiểm tra nếu đã có câu hỏi thì không tạo lại
+            if DailyQuestion.query.count() > 0:
+                return "ℹ️ Đã có câu hỏi trong database. Không cần thêm mới."
+            
+            # Kiểm tra admin đã tồn tại
+            admin = User.query.filter_by(username='admin').first()
+            if not admin:
+                return "❌ Chưa có admin! Vui lòng chạy /init-db trước."
+            
+            q = DailyQuestion(
+                question="Từ nào có nghĩa là 'mèo' trong tiếng Anh?",
+                option_a="Dog",
+                option_b="Cat",
+                option_c="Bird",
+                option_d="Fish",
+                correct_answer=1,
+                explanation="Cat là từ tiếng Anh có nghĩa là mèo.",
+                created_by=admin.id,
+                start_date=start,
+                end_date=end,
+                is_active=True
+            )
+            db.session.add(q)
+            db.session.commit()
+            return "✅ Đã thêm câu hỏi mẫu thành công! Hãy tải lại trang chủ để xem."
+    except Exception as e:
+        return f"❌ Lỗi: {str(e)}"
+
 # ===== API AUTH (GIỮ NGUYÊN) =====
 @app.route('/api/register', methods=['POST'])
 def register():
