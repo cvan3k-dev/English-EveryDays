@@ -1112,7 +1112,7 @@ def admin_quiz_detail(quiz_id):
         return jsonify({'message': 'Đã xóa quiz!'})
 
 # ============================================================
-# TÍNH NĂNG MỚI: DAILY QUESTIONS (THÊM MỚI)
+# ===== TÍNH NĂNG MỚI: DAILY QUESTIONS =====
 # ============================================================
 
 @app.route('/api/daily-question')
@@ -1124,7 +1124,7 @@ def get_daily_question():
         DailyQuestion.is_active == True
     ).order_by(DailyQuestion.start_date.desc()).first()
     if not question:
-        return jsonify({'error': 'Chưa có câu hỏi cho hôm nay!'}), 404
+        return jsonify({'error': 'Chưa có câu hỏi cho hôm nay!'}), 200
     user_answered = None
     if current_user.is_authenticated:
         response = DailyQuestionResponse.query.filter_by(
@@ -1171,10 +1171,7 @@ def answer_daily_question():
         'correct_answer': question.correct_answer
     })
 
-# ============================================================
-# TÍNH NĂNG MỚI: ADMIN DAILY QUESTIONS (THÊM MỚI)
-# ============================================================
-
+# ===== ADMIN DAILY QUESTIONS =====
 @app.route('/api/admin/daily-questions', methods=['GET', 'POST'])
 @login_required
 def admin_daily_questions():
